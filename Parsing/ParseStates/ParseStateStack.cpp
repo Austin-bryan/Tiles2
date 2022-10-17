@@ -13,16 +13,15 @@ ParseStateStack::~ParseStateStack() { }
 
 void ParseStateStack::PopState()
 {
+	for(const auto& currentState : CurrentStates)
+		Log(currentState->Name(), FColor::Black);
 	CurrentStates.Pop();
-}
-void ParseStateStack::Print() const
-{
-	// for (const auto state : CurrentStates)
-	// 	Log(state->Name(), FColor::Emerald, 0.0f);
 }
 void ParseStateStack::PushState(const EBoardParseState state)
 {
 	CurrentStates.Push(CreateState(state));
+	for(const auto& currentState : CurrentStates)
+		Log(currentState->Name(), FColor::White);
 }
 const TSharedPtr<ParseState>& ParseStateStack::CurrentState() const
 {

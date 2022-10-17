@@ -73,10 +73,6 @@ void Parser::Parse(EBoardShape& shape, FCoord* coord, FTiles& tiles)
 			pos->Next();
 	}
 }
-void Parser::PrintStack() const
-{
-	stack->Print();	
-}
 void Parser::SetupBoard(EBoardShape& shape, FCoord*& coord)
 {
 	// Sets board shape and coord if seed is correct
@@ -155,6 +151,6 @@ void Parser::Throw(const char    error, FString&& expected, const TUniquePtr<Par
 }
 void Parser::Throw(const FString error, FString&& expected, const TUniquePtr<ParseError>& errorThrower)
 {
-	errorThrower->Throw(pos, error, expected);
+	errorThrower->Throw(pos, error, expected, stack->CurrentState()->Name());
 	shouldBreak = true;
 }
