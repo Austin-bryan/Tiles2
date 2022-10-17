@@ -21,7 +21,6 @@ public:
 
 	void PushState(EBoardParseState state);
 	void PopState();
-	void Print() const;
 private:
 	TArray<TSharedPtr<ParseState>> CurrentStates;
 	Parser& parser;
