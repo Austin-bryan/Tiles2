@@ -111,8 +111,8 @@ void ParameterParseState::OnPushed() {}
 void ParameterParseState::ParseLeftParen() { PushNextState(); }
 void ParameterParseState::OnPopped()
 {
-	for (auto& p : parsedParameters)
-		Log(p, FColor::Green);
+	// for (auto& p : parsedParameters)
+	// 	Log(p, FColor::Green);
 
 	// If this is a non primative type
 	if (parameterType.has_value())
