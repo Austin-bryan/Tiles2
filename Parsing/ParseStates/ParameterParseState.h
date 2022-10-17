@@ -54,8 +54,7 @@ private:
 
 	std::optional<const type_info*> parameterType;
 	TArray<FParameter> parsedParameters;
-	TArray<EParameter> expectedParameters;
-	// TArray<const type_info*> expectedParameters;
+	TArray<const type_info*> expectedParameters;
 	int parameterIndex = 0;
 };
 template <>

@@ -10,7 +10,7 @@ class ATile;
 
 using FTiles = TMap<FCoord*, ATile*>;
 
-//todo:= tiles should be private map that is passed by reference to populator and gettiles returns const reference to prevent permuatiion	
+//todo== tiles should be private map that is passed by reference to populator and gettiles returns const reference to prevent permuatiion	
 UCLASS()
 class TILES2_API ABoard : public AActor
 {
@@ -24,7 +24,6 @@ public:
 	EBoardShape GetBoardShape() const { return Shape; }
 protected:
 	virtual void BeginPlay() override;
-
 	EBoardShape Shape;
 
 	UPROPERTY(EditAnywhere, BlueprintReadonly)
