@@ -1,0 +1,64 @@
+======== Level Format: ======== 
+
+Shape (X, Y, Z) | <tiles>
+Shape (X, Z) | <tiles>
+
+<Shape>
+Tri ::= Triangle
+Hex ::= Hexagon
+Sqr ::= Square
+
+$ Scramble toggle, used for boards that requrie a manual scramble
+
+======== Tile Format: ======== 
+<> Double Side
+{} Property
+() Param
+/ Tile Seperator
+, Delimiter
+
+<'color1'{ 'type1'('param1', 'param2'), 'type2'('param3') }, 'color2'{ 'type2'}>
+
+======== Examples: ======== 
+r
+r{ ca }
+r{ ir(4) }
+r{ ca, ir(4) }
+<r{ ca }, b{ ir }>
+
+======== Colorless: ======== 
+- Properties that have no color, and are therefore in the color slot
+x ::= Gap Tile
+z ::= Wrap Tile
+
+r{ ca, band((4, 2), (2, 1)), slice(v, h), sub((2, 1), (2, 2)) }
+
+======== Subgrid: ======== 
+r{ sub('start coord', 'end coord) }
+
+Subgrid will now be treated as a property.
+It requires a start coord and end coord.
+If coords are not adjacent, an error will be thrown.
+
+Coord based parameters are required to have the number of coord values
+as determined by the board shape. Failure to match results in an error.
+
+======== Bandaged: ========
+r{ band('start coord', 'end coord') }
+
+Bandaged also requires a start and end coord.
+All tiles that fit within the created rectangle are bandaged.
+
+======== Slice: ========
+r{ slice(v | h | u | d) }
+
+v ::= Vertical Slice
+h ::= Horzizontal Slice
+u ::= Uphill Diagonal Slice
+d ::= Downhill Diagonal Slice
+
+Square: v | h
+Hexagon: v| u | d
+Triangle: h | u | d
+
+Usage of slices not in complice with the board shape invokes an error.

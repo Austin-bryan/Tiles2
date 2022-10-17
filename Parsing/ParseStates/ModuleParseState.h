@@ -1,0 +1,31 @@
+#pragma once
+#include "CoreMinimal.h"
+#include "ParseState.h"
+
+/**
+ *
+ */
+class TILES2_API ModuleParseState : public ParseState
+{
+	using onModuleFinished = void(ModuleParseState::*)(void);
+public:
+	explicit ModuleParseState(Parser& parser, TSharedPtr<ParseState> parent);
+	~ModuleParseState() override {}
+
+	void ParseAlpha(char c) final;
+	void ParseDelimiter() final;
+	void ParseRightBrace() final;
+	void FinishModuleState(const char c, bool shouldPop);
+	void ParseLeftParen() final;
+	FString Name() const override { return "Module State"; }
+	
+	const FString& ParsedModule() const { return parsedText; }
+	FString GetExpectedMessage() final;
+private:
+	FString parsedText;
+	bool isInDelimiter;
+	bool hasFinishedParameters = false;
+	
+	bool IsModuleValid() const;
+	bool HasParameters() const;
+};
