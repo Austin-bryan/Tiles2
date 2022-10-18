@@ -31,7 +31,7 @@ FString FParameter::ToString() const
 }
 
 // ---------------- ParameterParseState ---------------- //
-ParameterParseState::ParameterParseState(Parser& parser, TSharedPtr<ParseState> parent) : ParameterRequesterParseState{parser, parent} { }
+ParameterParseState::ParameterParseState(Parser& parser, const TSharedPtr<ParseState> parent) : ParameterRequesterParseState{parser, parent} { }
 
 FString ParameterParseState::Name() const { return "Parameter State"; }
 void ParameterParseState::ParseExpectedTypes(const FString& parameterSeed, const bool waitForLeftParen)

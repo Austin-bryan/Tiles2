@@ -12,8 +12,4 @@ void ABoard::BeginPlay()
 	parser.Parse(Shape, Size, tiles);
 }
 float ABoard::GetCenteredPosition(const float coord) { return coord / 2; }
-
-void ABoard::Tick(float deltaTime)
-{
-	Super::Tick(deltaTime);
-}
+void ABoard::Tick(float deltaTime) { Super::Tick(deltaTime); }

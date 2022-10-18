@@ -3,7 +3,6 @@
 ColorParseState::ColorParseState()
 {
 }
-
 ColorParseState::~ColorParseState()
 {
 }

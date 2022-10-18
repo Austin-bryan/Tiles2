@@ -14,7 +14,7 @@ BoardPopulator::BoardPopulator(ABoard* const board, const EBoardShape& boardShap
 	controller->bEnableClickEvents     = true;
 	controller->bEnableMouseOverEvents = true;
 }
-ATile* BoardPopulator::CreateTile(FCoord* coord, TMap<FCoord*, ATile*>& tiles)
+ATile* BoardPopulator::CreateTile(FCoord* coord, TMap<FCoord*, ATile*>& tiles) const
 {
 	const auto forward = board->GetActorForwardVector();
 	const auto positionX = forward * GetOffsetX(coord) * GetSpaceX();

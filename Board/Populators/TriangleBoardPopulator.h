@@ -10,7 +10,6 @@ class TILES2_API TriangleBoardPopulator : public BoardPopulator
 public:
 	TriangleBoardPopulator(ABoard* const board, const EBoardShape& shape) :
 		BoardPopulator(board, shape){ }
-	// void SpawnTile(FCoord, FCoord, int, bool);
 	void Populate(FCoord*, TMap<FCoord*, ATile*>& tiles) override;
 
 	float GetSpaceX() const override { return 67; }

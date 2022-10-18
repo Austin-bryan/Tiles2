@@ -130,12 +130,12 @@ inline FString format(const std::initializer_list<FString> args)
 class TILES2_API Token
 {
 public:
-	Token(char type, char value = '\0');
+	explicit Token(char type, char value = '\0');
 
 	char GetType()  const { return type; }
 	char GetValue() const { return value; };
 
-	static bool CreateToken(char c, Token& result);
+	static bool CreateToken(const char c, Token& result);
 	FString ToString() const;
 private:
 	char type, value;

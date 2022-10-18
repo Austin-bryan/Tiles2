@@ -49,10 +49,10 @@ ATile::ATile()
 	CoordText->SetWorldSize(18);
 }
 
-void ATile::SetColor(ETileColor color)
+void ATile::SetColor(const ETileColor color) const
 {
-	FString path = fstr("MaterialInstanceConstant'/Game/Materials/TileColors/MI_") + ATile::TileColorStrings[color] + fstr("Tile.MI_") + ATile::TileColorStrings[color] + fstr("Tile'");
-	auto mat = Cast<UMaterialInstanceConstant>(StaticLoadObject(UMaterialInstanceConstant::StaticClass(), NULL, *path));
+	const FString path = fstr("MaterialInstanceConstant'/Game/Materials/TileColors/MI_") + ATile::TileColorStrings[color] + fstr("Tile.MI_") + ATile::TileColorStrings[color] + fstr("Tile'");
+	const auto mat = Cast<UMaterialInstanceConstant>(StaticLoadObject(UMaterialInstanceConstant::StaticClass(), nullptr, *path));
 	Mesh->SetMaterial(0, mat);
 }
 void ATile::BeginPlay() 
@@ -73,7 +73,7 @@ void ATile::SetCoord(FCoord* coord)
 	Coord = coord;
 	CoordText->SetText(FText::FromString(coord->ToString()));
 }
-void ATile::SetShape(EBoardShape boardShape)
+void ATile::SetShape(const EBoardShape boardShape) const
 {
 	FString meshDir;
 	switch (boardShape)
@@ -82,10 +82,8 @@ void ATile::SetShape(EBoardShape boardShape)
 	case EBoardShape::Triangle: meshDir = TRIANGLE_TILE; break;
 	case EBoardShape::Hex:      meshDir = HEX_TILE;      break;
 	}
-	auto tileMesh = Cast<UStaticMesh>(StaticLoadObject(UStaticMesh::StaticClass(), NULL, *meshDir));
+	const auto tileMesh = Cast<UStaticMesh>(StaticLoadObject(UStaticMesh::StaticClass(), nullptr, *meshDir));
 	Mesh->SetStaticMesh(tileMesh);
-
-
 }
 void ATile::NotifyActorOnClicked(FKey buttonPressed) 
 {

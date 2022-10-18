@@ -36,7 +36,7 @@ private:
 class TILES2_API ParameterParseState final : public ParameterRequesterParseState
 {
 public:
-	explicit ParameterParseState(Parser& parser, TSharedPtr<ParseState> parent);
+	explicit ParameterParseState(Parser& parser, const TSharedPtr<ParseState> parent);
 
 	void OnPushed() override;
 	void OnPopped() override;

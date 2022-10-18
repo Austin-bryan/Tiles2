@@ -8,7 +8,7 @@
 class TILES2_API LexerPosition
 {
 public:
-	LexerPosition(FString seed);
+	explicit LexerPosition(FString seed);
 	void Next();
 	int GetIndex() const { return index; }
 	int GetTile() const { return tile; }

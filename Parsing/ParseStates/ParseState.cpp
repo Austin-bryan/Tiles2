@@ -4,7 +4,7 @@
 #include "ParseStateStack.h"
 #include "Parsing/Parser.h"
 
-ParseState::ParseState(Parser& parser, TSharedPtr<ParseState> parentState) : parser{ parser }, parent{ parentState }
+ParseState::ParseState(Parser& parser, const TSharedPtr<ParseState> parentState) : parser{ parser }, parent{ parentState }
 {
 	tokenFunctionMap = std::map<char, parseMethod>
 	{

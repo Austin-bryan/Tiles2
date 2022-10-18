@@ -41,5 +41,4 @@ protected:
 private:
 	static float GetCenteredPosition(const float coord);
 	FTiles tiles;
-	//TOptional<Parser> parser;
 };

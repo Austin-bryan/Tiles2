@@ -4,7 +4,7 @@
 #include "ParameterParseState.h"
 #include "Parser.h"
 
-NumberParseState::NumberParseState(Parser& parser, TSharedPtr<ParseState> parent) : ParseState(parser, parent) {}
+NumberParseState::NumberParseState(Parser& parser, const TSharedPtr<ParseState> parent) : ParseState(parser, parent) {}
 NumberParseState::~NumberParseState(){}
 
 void NumberParseState::ParseNumber(const int n)

@@ -24,5 +24,5 @@ protected:
 	virtual float GetOffsetX(FCoord*) const = 0;
 	virtual float GetOffsetZ(FCoord*) const = 0;
 
-	ATile* CreateTile(FCoord*, TMap<FCoord*, ATile*>& tiles);
+	ATile* CreateTile(FCoord*, TMap<FCoord*, ATile*>& tiles) const;
 };

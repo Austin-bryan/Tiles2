@@ -1,6 +1,6 @@
 #include "Parsing/ParseStates/ParameterRequesterParseState.h"
 
-ParameterRequesterParseState::ParameterRequesterParseState(Parser& parser, TSharedPtr<ParseState> parent)
+ParameterRequesterParseState::ParameterRequesterParseState(Parser& parser, const TSharedPtr<ParseState> parent)
     : ParseState{ parser, parent } { }
 ParameterRequesterParseState::~ParameterRequesterParseState() { }
 

@@ -1,6 +1,7 @@
 #include "Coord/HexCoord.h"
+#include "Logger.h"
 
-FCoord* FHexCoord::operator+(EDirection direction)
+FCoord* FHexCoord::operator+(const EDirection direction)
 {
 	switch (direction)
 	{
@@ -26,9 +27,9 @@ FString FHexCoord::ToString() const
 		+ fstr(", ") + FString::SanitizeFloat(Z) + fstr(")");
 }
 
-FCoord* FHexCoord::operator+=(EDirection dir)
+FCoord* FHexCoord::operator+=(const EDirection direction)
 {
-	const auto cache = static_cast<FHexCoord*>(*this + dir);
+	const auto cache = static_cast<FHexCoord*>(*this + direction);
 	this->X = cache->X;
 	this->Y = cache->Y;
 	this->Z = cache->Z;

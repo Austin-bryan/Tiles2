@@ -7,7 +7,7 @@ struct TILES2_API FHexCoord : public FCoord
 {
 public:
 	FHexCoord() : FCoord() {}
-	FHexCoord(float x, float y, float z) : FCoord(x, y, z) {}
+	FHexCoord(const float x, const float y, const float z) : FCoord(x, y, z) {}
 
 	FCoord* operator+(EDirection direction) override;
 	FCoord* operator+=(EDirection direction) override;

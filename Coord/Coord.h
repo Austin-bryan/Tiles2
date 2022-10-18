@@ -1,28 +1,18 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "Enums.h"
-#include "Logger.h"
 #include <string>
-//#include "Coord.generated.h"
 
-//USTRUCT(BlueprintType)
 struct TILES2_API FCoord
 {
-//	GENERATED_BODY();
-public:
 virtual ~FCoord() = default;
 static FCoord* Create(EBoardShape shape, int X, int Z, int Y);
 
 	FCoord();
-	FCoord(float, float);
-	FCoord(float, float, float);
+	FCoord(const float, const float);
+	FCoord(const float, const float, const float);
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float X;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float Y;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float Z;
+	float X, Y, Z;
 
 	virtual FString ToString() const;
 	float Largest() const;
@@ -45,5 +35,6 @@ static FCoord* Create(EBoardShape shape, int X, int Z, int Y);
 	//FCoord operator*(const FCoord& other) const { return FCoord(X * other.X, Y * other.Y, Z * other.Z); }
 	//FCoord operator/(const FCoord& other) const { return FCoord(X / other.X, Y / other.Y, Z / other.Z); }
 
+	// ReSharper disable once CppNonExplicitConversionOperator
 	operator FString() const { return ToString(); }
 };

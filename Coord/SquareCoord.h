@@ -7,7 +7,7 @@ struct TILES2_API FSquareCoord : public FCoord
 {
 public:
 	FSquareCoord() : FCoord() {}
-	FSquareCoord(float x, float z) : FCoord(x, z) { }
+	FSquareCoord(const float x, const float z) : FCoord(x, z) { }
 
 	FString ToString() const override;
 	FCoord* operator+(EDirection direction) override;

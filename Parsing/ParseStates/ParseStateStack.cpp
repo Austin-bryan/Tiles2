@@ -23,6 +23,8 @@ void ParseStateStack::PushState(const EBoardParseState state)
 	CurrentStates.Push(CreateState(state));
 	PrintStack(FColor::Orange);
 }
+
+// ReSharper disable once CppMemberFunctionMayBeStatic
 void ParseStateStack::PrintStack(const FColor color) const
 {
 #ifdef printStack

@@ -13,7 +13,7 @@ class TILES2_API ParseState
 	using parseMethod = void(ParseState::*)(void);
 	friend class Parser;
 public:
-	explicit ParseState(Parser& parser, TSharedPtr<ParseState> parentState);
+	explicit ParseState(Parser& parser, const TSharedPtr<ParseState> parentState);
 	virtual ~ParseState(){}
 	
 	virtual FString Name() const { return "Unused Parse State"; }

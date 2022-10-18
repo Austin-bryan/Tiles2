@@ -8,7 +8,7 @@
 class TILES2_API NumberParseState final : public ParseState
 {
 public:
-	explicit NumberParseState(Parser& parser, TSharedPtr<ParseState> parent);
+	explicit NumberParseState(Parser& parser, const TSharedPtr<ParseState> parent);
 	~NumberParseState();
 
 	void ParseNumber(const int n) override;

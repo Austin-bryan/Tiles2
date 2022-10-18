@@ -4,7 +4,7 @@
 #include "ParameterParseState.h"
 #include "Parser.h"
 
-StringParseState::StringParseState(Parser& parser, TSharedPtr<ParseState> parent) : ParseState(parser, parent){}
+StringParseState::StringParseState(Parser& parser, const TSharedPtr<ParseState> parent) : ParseState(parser, parent){}
 StringParseState::~StringParseState(){}
 
 void StringParseState::ParseAlpha(const char c)

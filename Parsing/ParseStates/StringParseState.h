@@ -8,7 +8,7 @@
 class TILES2_API StringParseState final : public ParseState
 {
 public:
-	explicit StringParseState(Parser& parser, TSharedPtr<ParseState> parent);
+	explicit StringParseState(Parser& parser, const TSharedPtr<ParseState> parent);
 	~StringParseState();
 
 	void ParseAlpha(const char c) override;

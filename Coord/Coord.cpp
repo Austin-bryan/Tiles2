@@ -3,7 +3,7 @@
 #include "TriCoord.h"
 #include "HexCoord.h"
 
-FCoord* FCoord::Create(EBoardShape shape, int X, int Z, int Y)
+FCoord* FCoord::Create(const EBoardShape shape, const int X, const int Z, const int Y)
 {
 	switch (shape)
 	{
@@ -12,10 +12,9 @@ FCoord* FCoord::Create(EBoardShape shape, int X, int Z, int Y)
 	default:					return new FSquareCoord(X, Z);
 	}
 }
-
-FCoord::FCoord()						  : X{ 0 }, Y{ 0 }, Z{ 0 } {}
-FCoord::FCoord(float x, float z)		  : X{ x }, Y{ 0 }, Z{ z } {}
-FCoord::FCoord(float x, float y, float z) : X{ x }, Y{ y }, Z{ z } {}
+FCoord::FCoord()											: X{ 0 }, Y{ 0 }, Z{ 0 } {}
+FCoord::FCoord(const float x, const float z)				: X{ x }, Y{ 0 }, Z{ z } {}
+FCoord::FCoord(const float x, const float y, const float z) : X{ x }, Y{ y }, Z{ z } {}
 
 float FCoord::Largest() const
 {

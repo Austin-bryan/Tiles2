@@ -9,7 +9,7 @@
 class TILES2_API DefaultParseState : public ParseState
 {
 public:
-	explicit DefaultParseState(Parser& parser, TSharedPtr<ParseState> parent);
+	explicit DefaultParseState(Parser& parser, const TSharedPtr<ParseState> parent);
 	~DefaultParseState();
 	
 	void ParseAlpha(const char c) override;

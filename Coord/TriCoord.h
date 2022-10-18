@@ -1,6 +1,7 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "Enums.h"
+#include "Logger.h"
 #include "Coord/Coord.h"
 #include "Board/Populators/TriangleBoardPopulator.h"
 
@@ -8,8 +9,8 @@ struct TILES2_API FTriCoord : public FCoord
 {
 	friend class TriangleBoardPopulator;
 public:
-	explicit FTriCoord(bool isUp) : FCoord(), isUp {isUp} {}
-	FTriCoord(float x, float y, float z, bool isUp) : FCoord(x, y, z), isUp{ isUp } {}
+	explicit FTriCoord(const bool isUp) : FCoord(), isUp {isUp} {}
+	FTriCoord(const float x, const float y, const float z, const bool isUp);
 
 	bool GetIsUp() const { return isUp; }
 
@@ -33,4 +34,4 @@ public:
 private:
 	bool isUp;
 };
-int GetHalf(float n);	
+int GetHalf(float n);

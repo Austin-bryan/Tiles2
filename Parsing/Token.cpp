@@ -2,7 +2,7 @@
 #include <ctype.h>
 #include "Logger.h"
 
-bool Token::CreateToken(char c, Token& result)
+bool Token::CreateToken(const char c, Token& result)
 {
 	if (!(isalnum(c) || Tokens.Contains(fstr(c))))
 		return false;

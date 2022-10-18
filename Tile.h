@@ -16,8 +16,8 @@ class TILES2_API ATile : public AActor
 public:	
 	ATile();
 	virtual void Tick(float DeltaTime) override;
-	void SetShape(EBoardShape);
-	void SetColor(ETileColor color);
+	void SetShape(const EBoardShape) const;
+	void SetColor(const ETileColor color) const;
 
 	FCoord* GetCoord() const { return Coord; }
 	void SetCoord(FCoord* coord);

@@ -8,7 +8,7 @@
 class TILES2_API ParameterRequesterParseState : public ParseState
 {
 public:
-	explicit ParameterRequesterParseState(Parser& parser, TSharedPtr<ParseState> parent);
+	explicit ParameterRequesterParseState(Parser& parser, const TSharedPtr<ParseState> parent);
 	~ParameterRequesterParseState();
 	void AddParameter(FParameter&& parameter);
 	virtual void OnParametersFinished(){}

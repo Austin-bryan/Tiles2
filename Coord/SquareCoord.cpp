@@ -1,6 +1,7 @@
 #include "Coord/SquareCoord.h"
+#include "Logger.h"
 
-FCoord* FSquareCoord::operator+(EDirection direction)
+FCoord* FSquareCoord::operator+(const EDirection direction)
 {
 	switch (direction)
 	{
@@ -8,17 +9,17 @@ FCoord* FSquareCoord::operator+(EDirection direction)
 	case EDirection::Down:  return new FSquareCoord(X + 0, Z + 1);
 	case EDirection::Left:  return new FSquareCoord(X - 1, Z + 0);
 	case EDirection::Right: return new FSquareCoord(X + 1, Z + 0);
+	default: return this;
 	}
-	return this;
 }
 FCoord* FSquareCoord::operator=(FCoord* other)
 {
 	X = other->X, Z = other->Z;
 	return this;
 }
-FCoord* FSquareCoord::operator+=(EDirection dir)
+FCoord* FSquareCoord::operator+=(const EDirection direction)
 {
-	const auto cache = static_cast<FSquareCoord*>(*this + dir);
+	const auto cache = static_cast<FSquareCoord*>(*this + direction);
 	this->X = cache->X;
 	this->Z = cache->Z;
 

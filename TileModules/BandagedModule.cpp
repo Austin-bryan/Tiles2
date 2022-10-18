@@ -17,7 +17,7 @@ void UBandagedModule::ApplyParameters(const TArray<FParameter>& parameters)
 	}
 }
 
-void UBandagedModule::BeginPlay()
+void UBandagedModule::BeginPlay() 
 {
 	Log("Begin");
 	Super::BeginPlay();

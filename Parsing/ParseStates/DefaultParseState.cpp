@@ -3,7 +3,7 @@
 #include "Parser.h"
 #include "Tile.h"
 
-DefaultParseState::DefaultParseState(Parser& parser, TSharedPtr<ParseState> parent) : ParseState(parser, parent){ }
+DefaultParseState::DefaultParseState(Parser& parser, const TSharedPtr<ParseState> parent) : ParseState(parser, parent){ }
 DefaultParseState::~DefaultParseState() { }
 void DefaultParseState::ParseAlpha(const char c)
 {

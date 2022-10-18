@@ -6,12 +6,12 @@
 
 #include "ParameterParseState.h"
 
-ModuleParseState::ModuleParseState(Parser& parser, TSharedPtr<ParseState> parent) : ParameterRequesterParseState(parser, parent) { isInDelimiter = false; }
+ModuleParseState::ModuleParseState(Parser& parser, const TSharedPtr<ParseState> parent) : ParameterRequesterParseState(parser, parent) { isInDelimiter = false; }
 
 void ModuleParseState::ParseAlpha(char c) { parsedText += fstr(c); }
 void ModuleParseState::ParseDelimiter()  { FinishModuleState(TRightBrace, false); }
 void ModuleParseState::ParseRightBrace() { FinishModuleState(TRightBrace, true); }
-void ModuleParseState::FinishModuleState(const char c, bool shouldPop)
+void ModuleParseState::FinishModuleState(const char c, const bool shouldPop)
 {
 	if (parsedText == fstr(""))
 		Throw(TDelimiter);
@@ -54,7 +54,6 @@ FString ModuleParseState::GetExpectedMessage() { return "Expected a module."; }
 
 bool ModuleParseState::HasParameters() const
 {
-	//Log(parsedText + SPC + ModuleParameterKey[parsedText]);
 	return IsModuleValid() && ModuleParameterKey[parsedText] != "void"; 
 }
 bool ModuleParseState::IsModuleValid() const

@@ -2,10 +2,11 @@
 #include "Board/BoardCordinator.h"
 #include "Logger.h"
 
-int GetHalf(float n) { return floor(n / 2); }
+int GetHalf(const float n) { return floor(n / 2); }
 
-//todo;; make sure this works with multiple directions in a row
-FCoord* FTriCoord::operator+(EDirection direction)
+FTriCoord::FTriCoord(const float x, const float y, const float z, const bool isUp): FCoord(x, y, z), isUp{ isUp } {}
+//TODO:: make sure this works with multiple directions in a row
+FCoord* FTriCoord::operator+(const EDirection direction)
 {
 	switch (direction)
 	{
@@ -25,9 +26,9 @@ FCoord* FTriCoord::operator=(FCoord* other)
 
 	return this;
 }
-FCoord* FTriCoord::operator+=(EDirection dir)
+FCoord* FTriCoord::operator+=(const EDirection direction)
 {
-	auto cache = static_cast<FTriCoord*>(*this + dir);
+	const auto cache = static_cast<FTriCoord*>(*this + direction);
 	this->X		= cache->X;
 	this->Y		= cache->Y;
 	this->Z		= cache->Z;
