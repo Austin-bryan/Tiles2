@@ -33,14 +33,9 @@ FString FParameter::ToString() const
 // ---------------- ParameterParseState ---------------- //
 ParameterParseState::ParameterParseState(Parser& parser, TSharedPtr<ParseState> parent) : ParseState{parser, parent} { }
 
-FString ParameterParseState::Name() const
-{
-	return "Parameter State";
-}
+FString ParameterParseState::Name() const { return "Parameter State"; }
 void ParameterParseState::ParseExpectedTypes(const FString& parameterSeed, const bool waitForLeftParen)
 {
-	// const TSharedPtr<ModuleParseState> moduleState = StaticCastSharedPtr<ModuleParseState>(parent);
-	// FString parameterSeed = ModuleParameterKey[moduleState->ParsedModule()];
 	const auto seed = parameterSeed.Replace(*fstr(" "), *fstr(""));
 
 	TArray<FString> parameters;
@@ -53,18 +48,16 @@ void ParameterParseState::ParseExpectedTypes(const FString& parameterSeed, const
 			parser.Throw(parameter, "IVoid is not a parameter type.");
 			break;
 		}
-			 if (parameter == INumber) expectedParameters.Add(&typeid(int));
-		else if (parameter == IString) expectedParameters.Add(&typeid(FString));
+			 if (parameter == INumber) expectedParameters.Add(EParameter::Number);
+		else if (parameter == IString) expectedParameters.Add(EParameter::String);
 		else if (parameter == ICoord)
 			expectedParameters.Add(
 				parser.BoardShape() == EBoardShape::Square
-				? &typeid(FSquareCoord*)
-				: parser.BoardShape() == EBoardShape::Triangle
-				? &typeid(FTriCoord*)
-				: &typeid(FHexCoord*));
+				? EParameter::SqrCoord
+				: parser.BoardShape() == EBoardShape::Hex
+				? EParameter::HexCoord
+				: EParameter::TriCoord);
 	}
-	Log(fstr("Seed: ") + SPC + seed);
-	
 	if (!waitForLeftParen)
 		PushNextState();
 }
@@ -75,55 +68,38 @@ void ParameterParseState::PushNextState()
 		parser.Throw("Error: ", "Too many parameters given.");
 		return;
 	}
-	if (*expectedParameters[parameterIndex] == typeid(int))
+	if (expectedParameters[parameterIndex] == EParameter::Number)
 		PushState(EBoardParseState::Number);
-	else if (*expectedParameters[parameterIndex] == typeid(FString))
+	else if (expectedParameters[parameterIndex] == EParameter::String)
 		PushState(EBoardParseState::String);
-	/*TODO:: switch to enum or string here. Using typeid has no purpose
-	TODO     and is preventing this from being extracted into function */
-	else if (*expectedParameters[parameterIndex] == typeid(FSquareCoord*))
-	{
-		PushState(EBoardParseState::Parameter);
-		
-		const auto param = StaticCastSharedPtr<ParameterParseState>(CurrentState());
-		param->ParseExpectedTypes(ModuleParameterKey[ISqrCoord], true);
-		param->parameterType = &typeid(FSquareCoord*);
-	}
-	else if (*expectedParameters[parameterIndex] == typeid(FTriCoord*))
-	{
-		PushState(EBoardParseState::Parameter);
-		
-		const auto param = StaticCastSharedPtr<ParameterParseState>(CurrentState());
-		param->ParseExpectedTypes(ModuleParameterKey[ITriCoord], true);
-		param->parameterType = &typeid(FTriCoord*);
-	}
-	else if (*expectedParameters[parameterIndex] == typeid(FHexCoord*))
-	{
-		PushState(EBoardParseState::Parameter);
-		
-		const auto param = StaticCastSharedPtr<ParameterParseState>(CurrentState());
-		param->ParseExpectedTypes(ModuleParameterKey[IHexCoord], true);
-		param->parameterType = &typeid(FHexCoord*);
-	}
+	else if (expectedParameters[parameterIndex] == EParameter::SqrCoord)
+		AddCoordParameter(EParameter::SqrCoord, ISqrCoord);
+	else if (expectedParameters[parameterIndex] == EParameter::HexCoord)
+		AddCoordParameter(EParameter::HexCoord, IHexCoord);
+	else if (expectedParameters[parameterIndex] == EParameter::TriCoord)
+		AddCoordParameter(EParameter::TriCoord, ITriCoord);
 	parameterIndex++;
+}
+void ParameterParseState::AddCoordParameter(EParameter childCoord, const FString& coordKey) const
+{
+	PushState(EBoardParseState::Parameter);
+	
+	const auto param = StaticCastSharedPtr<ParameterParseState>(CurrentState());
+	param->ParseExpectedTypes(ModuleParameterKey[coordKey], true);
+	param->parameterType = childCoord;
 }
 void ParameterParseState::OnPushed() {}
 void ParameterParseState::ParseLeftParen() { PushNextState(); }
 void ParameterParseState::OnPopped()
 {
-	// for (auto& p : parsedParameters)
-	// 	Log(p, FColor::Green);
-
-	// If this is a non primative type
 	if (parameterType.has_value())
 	{
-		if (**parameterType == typeid(FSquareCoord*) ||
-			**parameterType == typeid(FHexCoord*) ||
-			**parameterType == typeid(FTriCoord*))
+		if (parameterType == EParameter::SqrCoord ||
+			parameterType == EParameter::HexCoord ||
+			parameterType == EParameter::TriCoord)
 			ConstructParameter<FCoord*>();
 	}
 }
-
 template <typename T>
 void ParameterParseState::ConstructParameter(){}
 
@@ -139,14 +115,11 @@ void ParameterParseState::ConstructParameter<FCoord*>()
 	parsedParameters.Empty();
 	parsedParameters.Add(coord);
 
-	for (const auto& p : parsedParameters)
-		Log(p.ToString(), FColor::Green);
+
 	StaticCastSharedPtr<ParameterParseState>(parent)->AddParameter(std::move(coord));
 }
-void ParameterParseState::ParseDelimiter()
-{
-	PushNextState();
-}
+
+void ParameterParseState::ParseDelimiter() { PushNextState(); }
 void ParameterParseState::ParseRightParen()
 {
 	if (parameterIndex < expectedParameters.Num())
@@ -157,13 +130,7 @@ void ParameterParseState::ParseRightParen()
 	}
 	PopState();
 }
-void ParameterParseState::AddParameter(FParameter&& parameter)
-{
-	for (auto& p : parsedParameters)
-		Log(p, FColor::Blue);
-	Log(parameter.ToString());
-	parsedParameters.Add(parameter);
-}
+void ParameterParseState::AddParameter(FParameter&& parameter) { parsedParameters.Add(parameter); }
 FString ParameterParseState::GetExpectedMessage()
 {
 	return "Invalid parameter syntax";
