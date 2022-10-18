@@ -30,5 +30,5 @@ enum class EBoardParseState
 };
 enum class EParameter
 {
-	Void, Number, String, Coord
+	Void, Number, String, Coord, SqrCoord, TriCoord, HexCoord
 };

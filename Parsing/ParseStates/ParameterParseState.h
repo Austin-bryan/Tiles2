@@ -48,13 +48,13 @@ public:
 	FString GetExpectedMessage() override;
 private:
 	void PushNextState();
-
 	template<typename T>
 	void ConstructParameter();
+	void AddCoordParameter(EParameter childCoord, const FString& coordKey) const;
 
-	std::optional<const type_info*> parameterType;
+	std::optional<EParameter> parameterType;
 	TArray<FParameter> parsedParameters;
-	TArray<const type_info*> expectedParameters;
+	TArray<EParameter> expectedParameters;
 	int parameterIndex = 0;
 };
 template <>
