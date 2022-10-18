@@ -54,7 +54,7 @@ FString ModuleParseState::GetExpectedMessage() { return "Expected a module."; }
 
 bool ModuleParseState::HasParameters() const
 {
-	Log(parsedText + SPC + ModuleParameterKey[parsedText]);
+	//Log(parsedText + SPC + ModuleParameterKey[parsedText]);
 	return IsModuleValid() && ModuleParameterKey[parsedText] != "void"; 
 }
 bool ModuleParseState::IsModuleValid() const

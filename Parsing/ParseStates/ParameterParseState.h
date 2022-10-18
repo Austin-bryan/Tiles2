@@ -4,7 +4,6 @@
 #include "CoreMinimal.h"
 #include "ParseState.h"
 #include "Coord.h"
-#include <any>
 #include <optional>
 
 struct FCoord;
@@ -15,7 +14,8 @@ struct FTriCoord;
 /**
  * 
  */
-struct FParameter {
+struct FParameter
+{
 	FParameter(const float f);
 	FParameter(const char* string);
 	FParameter(const FString string);

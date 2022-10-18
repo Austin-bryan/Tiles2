@@ -88,10 +88,12 @@ void ParameterParseState::AddCoordParameter(EParameter childCoord, const FString
 	param->ParseExpectedTypes(ModuleParameterKey[coordKey], true);
 	param->parameterType = childCoord;
 }
+
 void ParameterParseState::OnPushed() {}
 void ParameterParseState::ParseLeftParen() { PushNextState(); }
 void ParameterParseState::OnPopped()
 {
+	// Called if parameter is a complex/non-primative type
 	if (parameterType.has_value())
 	{
 		if (parameterType == EParameter::SqrCoord ||
@@ -99,6 +101,8 @@ void ParameterParseState::OnPopped()
 			parameterType == EParameter::TriCoord)
 			ConstructParameter<FCoord*>();
 	}
+	for (const auto& parameter : parsedParameters)
+		Log(parameter.ToString(), FColor::Green);
 }
 template <typename T>
 void ParameterParseState::ConstructParameter(){}

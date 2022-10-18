@@ -5,6 +5,8 @@
 #include "NumberParseState.h"
 #include "StringParseState.h"
 
+//#define printStack
+
 ParseStateStack::ParseStateStack(Parser& parser) : parser{ parser }
 {
 	PushState(EBoardParseState::Default);
@@ -23,10 +25,12 @@ void ParseStateStack::PushState(const EBoardParseState state)
 }
 void ParseStateStack::PrintStack(const FColor color) const
 {
+#ifdef printStack
 	FString text;
 	for(const auto& currentState : CurrentStates)
 		text += currentState->Name() + ", ";
 	Log(text, color);
+#endif
 }
 const TSharedPtr<ParseState>& ParseStateStack::CurrentState() const
 {
