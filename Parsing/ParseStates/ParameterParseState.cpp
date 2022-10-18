@@ -31,7 +31,7 @@ FString FParameter::ToString() const
 }
 
 // ---------------- ParameterParseState ---------------- //
-ParameterParseState::ParameterParseState(Parser& parser, TSharedPtr<ParseState> parent) : ParseState{parser, parent} { }
+ParameterParseState::ParameterParseState(Parser& parser, TSharedPtr<ParseState> parent) : ParameterRequesterParseState{parser, parent} { }
 
 FString ParameterParseState::Name() const { return "Parameter State"; }
 void ParameterParseState::ParseExpectedTypes(const FString& parameterSeed, const bool waitForLeftParen)
@@ -68,16 +68,15 @@ void ParameterParseState::PushNextState()
 		parser.Throw("Error: ", "Too many parameters given.");
 		return;
 	}
-	if (expectedParameters[parameterIndex] == EParameter::Number)
-		PushState(EBoardParseState::Number);
-	else if (expectedParameters[parameterIndex] == EParameter::String)
-		PushState(EBoardParseState::String);
-	else if (expectedParameters[parameterIndex] == EParameter::SqrCoord)
-		AddCoordParameter(EParameter::SqrCoord, ISqrCoord);
-	else if (expectedParameters[parameterIndex] == EParameter::HexCoord)
-		AddCoordParameter(EParameter::HexCoord, IHexCoord);
-	else if (expectedParameters[parameterIndex] == EParameter::TriCoord)
-		AddCoordParameter(EParameter::TriCoord, ITriCoord);
+	switch (expectedParameters[parameterIndex])
+	{
+	case EParameter::Number:   PushState(EBoardParseState::Number);break;
+	case EParameter::String:   PushState(EBoardParseState::String);break;
+	case EParameter::SqrCoord: AddCoordParameter(EParameter::SqrCoord, ISqrCoord); break;
+	case EParameter::TriCoord: AddCoordParameter(EParameter::HexCoord, IHexCoord); break;
+	case EParameter::HexCoord: AddCoordParameter(EParameter::TriCoord, ITriCoord); break;
+	default: Log("invalid expected parameter state.");
+	}
 	parameterIndex++;
 }
 void ParameterParseState::AddCoordParameter(EParameter childCoord, const FString& coordKey) const
@@ -101,16 +100,28 @@ void ParameterParseState::OnPopped()
 			parameterType == EParameter::TriCoord)
 			ConstructParameter<FCoord*>();
 	}
-	for (const auto& parameter : parsedParameters)
+	
+	const auto requester = StaticCastSharedPtr<ParameterRequesterParseState>(parent);
+	for (auto& parameter : parsedParameters)
+	{
 		Log(parameter.ToString(), FColor::Green);
+		requester->AddParameter(std::move(parameter));
+	}
+	requester->OnParametersFinished();
 }
+
 template <typename T>
 void ParameterParseState::ConstructParameter(){}
 
 template <>
 void ParameterParseState::ConstructParameter<FCoord*>()
 {
+	/*
+	 * FCoord* is a composite type, so this is a nested paramater.
+	 * After all numbers have been parsed, this creates coord
+	 */
 	auto coordMember = [this](const int index) { return parsedParameters[index].Get<float>(); };
+	
 	FCoord* coord = parser.BoardShape() == EBoardShape::Square
 		? new FSquareCoord(coordMember(0), coordMember(1))
 		: parser.BoardShape() == EBoardShape::Triangle
@@ -119,8 +130,8 @@ void ParameterParseState::ConstructParameter<FCoord*>()
 	parsedParameters.Empty();
 	parsedParameters.Add(coord);
 
-
-	StaticCastSharedPtr<ParameterParseState>(parent)->AddParameter(std::move(coord));
+	// this line should be generalized and used in OnPopped after has_value to pass on to parent
+	// StaticCastSharedPtr<ParameterRequesterParseState>(parent)->AddParameter(std::move(coord));
 }
 
 void ParameterParseState::ParseDelimiter() { PushNextState(); }
@@ -134,7 +145,7 @@ void ParameterParseState::ParseRightParen()
 	}
 	PopState();
 }
-void ParameterParseState::AddParameter(FParameter&& parameter) { parsedParameters.Add(parameter); }
+// void ParameterParseState::AddParameter(FParameter&& parameter) { parsedParameters.Add(parameter); }
 FString ParameterParseState::GetExpectedMessage()
 {
 	return "Invalid parameter syntax";

@@ -19,10 +19,10 @@ class TILES2_API Parser
 public:
 	Parser(ABoard* board, FString seed);
 	
-	void Throw(const char error,       FString&& expected);
-	void Throw(const char error,       FString&& expected, const TUniquePtr<ParseError>& errorThrower);
-	void Throw(const FString error,    FString&& expected);
-	void Throw(const FString error,    FString&& expected, const TUniquePtr<ParseError>& errorThrower);
+	void Throw(const char error,    FString&& expected);
+	void Throw(const char error,    FString&& expected, const TUniquePtr<ParseError>& errorThrower);
+	void Throw(const FString error, FString&& expected);
+	void Throw(const FString error, FString&& expected, const TUniquePtr<ParseError>& errorThrower);
 	void Parse(EBoardShape& shape, FCoord* coord, TMap<FCoord*, ATile*>& tiles);
 
 	EBoardShape BoardShape() const { return boardShape; }

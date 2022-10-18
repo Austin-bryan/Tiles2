@@ -1,11 +1,12 @@
 #pragma once
 #include "CoreMinimal.h"
+#include "ParameterRequesterParseState.h"
 #include "ParseState.h"
 
 /**
  *
  */
-class TILES2_API ModuleParseState : public ParseState
+class TILES2_API ModuleParseState : public ParameterRequesterParseState
 {
 	using onModuleFinished = void(ModuleParseState::*)(void);
 public:
@@ -18,6 +19,7 @@ public:
 	void FinishModuleState(const char c, bool shouldPop);
 	void ParseLeftParen() final;
 	FString Name() const override { return "Module State"; }
+	void OnParametersFinished() override;;
 	
 	const FString& ParsedModule() const { return parsedText; }
 	FString GetExpectedMessage() final;

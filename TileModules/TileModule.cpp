@@ -9,7 +9,7 @@ UTileModule::UTileModule()
 UTileModule::~UTileModule() {}
 
 template<class T>
-UTileModule* UTileModule::Create(ATile* tile)
+UTileModule* UTileModule::Create(ATile* tile, const TArray<FParameter>& parameters)
 {
 	//todo:= assert generic is right class
 	UTileModule* module = NewObject<UTileModule>(tile, T::StaticClass(), FName(T::StaticClass()->GetName()));
@@ -17,6 +17,8 @@ UTileModule* UTileModule::Create(ATile* tile)
 	module->RegisterComponent();
 	module->AttachToComponent(tile->GetRootComponent(), FAttachmentTransformRules::KeepWorldTransform);
 	module->CreationMethod = EComponentCreationMethod::Instance;
+	module->ApplyParameters(parameters);
+	
 	return module;
 }
 void UTileModule::BeginPlay()

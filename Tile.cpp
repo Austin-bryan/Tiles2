@@ -4,7 +4,6 @@
 #include "Materials/MaterialInstanceConstant.h"
 #include "Coord/TriCoord.h"
 #include "TileModules/TileModule.h"
-#include "TileModules/CamoModule.h"
 
 //todo:= cyan, black and pink colors dont work
 TMap<ETileColor, FString> ATile::TileColorStrings =

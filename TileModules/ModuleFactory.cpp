@@ -3,29 +3,30 @@
 #include "TileModule.h"
 #include "Enums.h"
 
+class UBandagedModule;
 class UCamoModule;
 
-UTileModule* ModuleFactory::Produce(const EModule module, ATile* modTile, const TArray<FParameter>* const parameters) 
+UTileModule* ModuleFactory::Produce(const EModule module, ATile* modTile, const TArray<FParameter>& parameters) 
 {
     switch(module)
     {
     // case EModule::Normal:         return nullptr;
-    // case EModule::Gap:            return UTileModule::Create<GapModuleModule>(modTile);
-    // case EModule::Wrap:           return UTileModule::Create<WrapModule>(modTile);
-    case EModule::Camo:           return UTileModule::Create<UCamoModule>(modTile);
-    // case EModule::TeleportWrap:   return UTileModule::Create<TeleportWrapModule>(modTile);
-    // case EModule::MirrorWrap:     return UTileModule::Create<MirrorWrapModule>(modTile);
-    // case EModule::CircuitWrap:    return UTileModule::Create<CircuitWrapModule>(modTile);
-    // case EModule::Link:           return UTileModule::Create<LinkModule>(modTile);
-    // case EModule::Rift:           return UTileModule::Create<RiftModule>(modTile);
-    // case EModule::Iron:           return UTileModule::Create<IronModule>(modTile);
-    // case EModule::Cloud:          return UTileModule::Create<CloudModule>(modTile);
-    // case EModule::Swap:           return UTileModule::Create<SwapModule>(modTile);
-    // case EModule::WrapWall:       return UTileModule::Create<WrapWallModule>(modTile);
-    // case EModule::NoSpawn:        return UTileModule::Create<NoSpawnModule>(modTile);
-    //case EModule::Rotator: return UTileModule::Create<RotatorModule>(modTile);
-    // case EModule::CorrectCounter: return UTileModule::Create<CorrectCounterModule>(modTile);
-    //case EModule::Bandaged: return UTileModule::Create<BandagedModule>(modTile);
+    // case EModule::Gap:            return UTileModule::Create<UGapModuleModule>(modTile, parameters);
+    // case EModule::Wrap:           return UTileModule::Create<UWrapModule>(modTile, parameters);
+    case EModule::Camo:           return UTileModule::Create<UCamoModule>(modTile, parameters);
+    // case EModule::TeleportWrap:   return UTileModule::Create<UTeleportWrapModule>(modTile, parameters);
+    // case EModule::MirrorWrap:     return UTileModule::Create<UMirrorWrapModule>(modTile, parameters);
+    // case EModule::CircuitWrap:    return UTileModule::Create<UCircuitWrapModule>(modTile, parameters);
+    // case EModule::Link:           return UTileModule::Create<ULinkModule>(modTile, parameters);
+    // case EModule::Rift:           return UTileModule::Create<URiftModule>(modTile, parameters);
+    // case EModule::Iron:           return UTileModule::Create<UIronModule>(modTile, parameters);
+    // case EModule::Cloud:          return UTileModule::Create<UCloudModule>(modTile, parameters);
+    // case EModule::Swap:           return UTileModule::Create<USwapModule>(modTile, parameters);
+    // case EModule::WrapWall:       return UTileModule::Create<UWrapWallModule>(modTile, parameters);
+    // case EModule::NoSpawn:        return UTileModule::Create<UNoSpawnModule>(modTile, parameters);
+    // case EModule::Rotator:        return UTileModule::Create<URotatorModule>(modTile, parameters);
+    // case EModule::CorrectCounter: return UTileModule::Create<UCorrectCounterModule>(modTile, parameters);
+    case EModule::Bandaged:       return UTileModule::Create<UBandagedModule>(modTile, parameters);
     default:                      return nullptr;
     }
 }

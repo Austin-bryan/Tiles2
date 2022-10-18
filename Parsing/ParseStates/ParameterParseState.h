@@ -1,10 +1,11 @@
 // ReSharper disable CppNonExplicitConvertingConstructor
 // ReSharper disable CppNonExplicitConversionOperator
 #pragma once
+#include <optional>
 #include "CoreMinimal.h"
 #include "ParseState.h"
 #include "Coord.h"
-#include <optional>
+#include "ParameterRequesterParseState.h"
 
 struct FCoord;
 struct FSquareCoord;
@@ -32,7 +33,8 @@ private:
 	TVariant<float, FString, FCoord*> variant;
 };
 
-class TILES2_API ParameterParseState final : public ParseState {
+class TILES2_API ParameterParseState final : public ParameterRequesterParseState
+{
 public:
 	explicit ParameterParseState(Parser& parser, TSharedPtr<ParseState> parent);
 
@@ -41,7 +43,7 @@ public:
 	void ParseDelimiter() override;
 	void ParseRightParen() override;
 	void ParseLeftParen() override;
-	void AddParameter(FParameter&& parameter);
+	// void AddParameter(FParameter&& parameter);
 	void ParseExpectedTypes(const FString& parameterSeed, const bool waitForLeftParen = false);
 	
 	FString Name() const override;
@@ -53,7 +55,6 @@ private:
 	void AddCoordParameter(EParameter childCoord, const FString& coordKey) const;
 
 	std::optional<EParameter> parameterType;
-	TArray<FParameter> parsedParameters;
 	TArray<EParameter> expectedParameters;
 	int parameterIndex = 0;
 };

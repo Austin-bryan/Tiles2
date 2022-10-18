@@ -12,5 +12,5 @@ class UTileModule;
 class TILES2_API ModuleFactory
 {
 public:
-    static UTileModule* Produce(const EModule module, ATile* modTile, const TArray<FParameter>* const parameters = nullptr);
+    static UTileModule* Produce(const EModule module, ATile* modTile, const TArray<FParameter>& parameters = TArray<FParameter>());
 };

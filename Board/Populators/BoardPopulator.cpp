@@ -19,7 +19,7 @@ ATile* BoardPopulator::CreateTile(FCoord* coord, TMap<FCoord*, ATile*>& tiles)
 	const auto forward = board->GetActorForwardVector();
 	const auto positionX = forward * GetOffsetX(coord) * GetSpaceX();
 	const auto positionZ = FVector(0, 0, GetOffsetZ(coord) * GetSpaceZ());
-	const auto location  = board->GetActorLocation() + positionX + positionZ;	
+	const auto location = board->GetActorLocation() + positionX + positionZ;	
 	const auto tile = board->GetWorld()->SpawnActor<ATile>(ATile::StaticClass(), location, FRotator::ZeroRotator);
 
 	tiles.Add(coord, tile);

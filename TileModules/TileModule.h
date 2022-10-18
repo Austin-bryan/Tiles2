@@ -4,6 +4,8 @@
 #include "Tile.h"
 #include "TileModule.generated.h"
 
+struct FParameter;
+
 /**
  * 
  */
@@ -17,9 +19,10 @@ public:
 
 	virtual void BeginPlay() override;
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
+	virtual void ApplyParameters(const TArray<FParameter>& parameters){}
+	
 	template<class T>
-	static UTileModule* Create(ATile* tile);
+	static UTileModule* Create(ATile* tile, const TArray<FParameter>& parameters);
 protected:
 	ATile* ModTile;
 };

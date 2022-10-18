@@ -6,17 +6,11 @@
 
 #include "ParameterParseState.h"
 
-ModuleParseState::ModuleParseState(Parser& parser, TSharedPtr<ParseState> parent) : ParseState(parser, parent) { isInDelimiter = false; }
+ModuleParseState::ModuleParseState(Parser& parser, TSharedPtr<ParseState> parent) : ParameterRequesterParseState(parser, parent) { isInDelimiter = false; }
 
 void ModuleParseState::ParseAlpha(char c) { parsedText += fstr(c); }
-void ModuleParseState::ParseDelimiter()
-{
-	FinishModuleState(TRightBrace, false);
-}
-void ModuleParseState::ParseRightBrace()
-{
-	FinishModuleState(TRightBrace, true);
-}
+void ModuleParseState::ParseDelimiter()  { FinishModuleState(TRightBrace, false); }
+void ModuleParseState::ParseRightBrace() { FinishModuleState(TRightBrace, true); }
 void ModuleParseState::FinishModuleState(const char c, bool shouldPop)
 {
 	if (parsedText == fstr(""))
@@ -48,6 +42,12 @@ void ModuleParseState::ParseLeftParen()
 		if (const auto parameterKey = ModuleParameterKey.Find(parsedText))
 			StaticCastSharedPtr<ParameterParseState>(CurrentState())->ParseExpectedTypes(*parameterKey);
 	}
+}
+void ModuleParseState::OnParametersFinished()
+{
+	for (const auto& parameter : parsedParameters)
+		Log(fstr("Module Param: ") + parameter.ToString(), FColor::Red);
+	ModuleFactory::Produce(TileModuleParseKey[parsedText], CurrentTile(), parsedParameters);
 }
 
 FString ModuleParseState::GetExpectedMessage() { return "Expected a module."; }
