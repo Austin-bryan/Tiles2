@@ -20,6 +20,7 @@ public:
 	TSharedPtr<ParseState> CreateState(const EBoardParseState state) const;
 
 	void PushState(EBoardParseState state);
+	void PrintStack(const FColor color) const;
 	void PopState();
 private:
 	TArray<TSharedPtr<ParseState>> CurrentStates;
