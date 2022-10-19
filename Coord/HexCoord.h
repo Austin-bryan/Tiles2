@@ -6,15 +6,14 @@
 struct TILES2_API FHexCoord : public FCoord
 {
 public:
+	friend class TSharedPtr<const FCoord>;
+
 	FHexCoord() : FCoord() {}
 	FHexCoord(const float x, const float y, const float z) : FCoord(x, y, z) {}
 
-	FCoord* operator+(EDirection direction) override;
-	FCoord* operator+=(EDirection direction) override;
-	FCoord* operator=(FCoord* other) override;
-	//FHexCoord& operator=(const FCoord other);
-	//FHexCoord& operator+=(const FCoord other);
-	//FHexCoord& operator+=(EDirection dir);
+	const FCoord* operator+ (EDirection direction) const override;
+	const FCoord* operator+=(EDirection direction) override;
+	const FCoord* operator= (const FCoord* other)  override;
 
 	FString ToString() const override;
 };

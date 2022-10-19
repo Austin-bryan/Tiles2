@@ -6,10 +6,8 @@
 #include "Tile.h"
 #include "TriCoord.h"
 
-void TriangleBoardPopulator::Populate(FCoord* size, FTiles& tiles)
+void TriangleBoardPopulator::Populate(const FCoordPtr size, Tiles& tiles)
 {
-	int triangleNumber = size->Largest() * (size->Largest() + 1) / 2 - 1;
-
 	/* size->X controls column loop, size->Z controls row loop, while size->Y doesn't control any loops
 	 * startCoord positions itself in the topleft most tile. 
 
@@ -26,30 +24,30 @@ void TriangleBoardPopulator::Populate(FCoord* size, FTiles& tiles)
 	 */
 	FTriCoord startCoord
 	{
-		ceil(size->X / 2) - size->X + 
-			(size->X > size->Z ? (size->X - size->Z) :
-			(size->Y > size->X && size->Y > size->Z) ? (size->Y - size->X) : 0),
-		ceil(size->Y / 2) - size->Y,
-		ceil(size->Z / 2) - size->Z,
+		ceil(size->X() / 2) - size->X() + 
+			  (size->X() > size->Z() ? (size->X() - size->Z()) :
+			  (size->Y() > size->X() && size->Y() > size->Z()) ? (size->Y() - size->X()) : 0),
+		ceil(size->Y() / 2) - size->Y(),
+		ceil(size->Z() / 2) - size->Z(),
 		true
 	};
 	FTriCoord coord	= startCoord;
 
-	for (int i = 0; i < size->Z; i++)
+	for (int i = 0; i < size->Z(); i++)
 		// Each loop goes through one row, left to right
 	{
-		while (coord.X >= -GetHalf(size->X))
+		while (coord.X() >= -GetHalf(size->X()))
 			// Starts from top right, ends bottom left
 		{
-			const auto limit = size->X - GetHalf(size->X) - 1;
+			const auto limit = size->X() - GetHalf(size->X()) - 1;
 
-			while (coord.X > limit)
+			while (coord.X() > limit)
 				coord += EDirection::Right;
-			if (coord.X > limit)
+			if (coord.X() > limit)
 				continue;
-			if (coord.Y > size->Y - GetHalf(size->Y) - 1)
+			if (coord.Y() > size->Y() - GetHalf(size->Y()) - 1)
 				break;
-			ATile* tile = CreateTile(new FTriCoord(coord.X, coord.Y, coord.Z, coord.isUp), tiles);
+			ATile* tile = CreateTile(MakeShared<FTriCoord>(coord.X(), coord.Y(), coord.Z(), coord.isUp), tiles);
 
 			// Rotate tile accordingly
 			if (!coord.GetIsUp())
@@ -76,10 +74,9 @@ void TriangleBoardPopulator::Populate(FCoord* size, FTiles& tiles)
 	FVector averagePos = UKismetMathLibrary::GetVectorArrayAverage(positions);
 	
 	APawn* pawn     = UGameplayStatics::GetPlayerPawn(board, 0);
-	float xDistance = pawn->GetActorLocation().X - averagePos.X;
 	averagePos.X    = pawn->GetActorLocation().X;
 	pawn->SetActorLocation(averagePos);
 }
 
-float TriangleBoardPopulator::GetOffsetX(FCoord* coord) const { return -coord->X + coord->Y; }
-float TriangleBoardPopulator::GetOffsetZ(FCoord* coord) const { return -coord->Z; }
+float TriangleBoardPopulator::GetOffsetX(const FCoordPtr coord) const { return -coord->X() + coord->Y(); }
+float TriangleBoardPopulator::GetOffsetZ(const FCoordPtr coord) const { return -coord->Z(); }

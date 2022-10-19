@@ -11,7 +11,7 @@
 FParameter::FParameter(const float f)	 	 { variant.Set<float>(f); }
 FParameter::FParameter(const char* string)   { variant.Set<FString>(string); }
 FParameter::FParameter(const FString string) { variant.Set<FString>(string); }
-FParameter::FParameter(FCoord* coord)		 { variant.Set<FCoord*>(coord); }
+FParameter::FParameter(const FCoordPtr coord){ variant.Set<FCoordPtr>(coord); }
 
 template <typename T>
 const T& FParameter::Get() const { return variant.Get<T>(); }
@@ -25,7 +25,7 @@ FString FParameter::ToString() const
 		return fstr(*number);
 	if (const auto& string = GetIf<FString>())
 		return *string;
-	if (const auto coord = GetIf<FCoord*>())
+	if (const auto coord = GetIf<FCoordPtr>())
 		return (*coord)->ToString();
 	return "Invalid type.";
 }
@@ -98,7 +98,7 @@ void ParameterParseState::OnPopped()
 		if (parameterType == EParameter::SqrCoord ||
 			parameterType == EParameter::HexCoord ||
 			parameterType == EParameter::TriCoord)
-			ConstructParameter<FCoord*>();
+			ConstructParameter<FCoordPtr>();
 	}
 	
 	const auto requester = StaticCastSharedPtr<ParameterRequesterParseState>(parent);
@@ -114,24 +114,23 @@ template <typename T>
 void ParameterParseState::ConstructParameter(){}
 
 template <>
-void ParameterParseState::ConstructParameter<FCoord*>()
+void ParameterParseState::ConstructParameter<FCoordPtr>()
 {
 	/*
 	 * FCoord* is a composite type, so this is a nested paramater.
 	 * After all numbers have been parsed, this creates coord
 	 */
 	auto coordMember = [this](const int index) { return parsedParameters[index].Get<float>(); };
-	
-	FCoord* coord = parser.BoardShape() == EBoardShape::Square
-		? new FSquareCoord(coordMember(0), coordMember(1))
-		: parser.BoardShape() == EBoardShape::Triangle
-		? static_cast<FCoord*>(new FTriCoord(coordMember(0), coordMember(1), coordMember(2), true))
-		: new FHexCoord(coordMember(0), coordMember(1), coordMember(2));
-	parsedParameters.Empty();
-	parsedParameters.Add(coord);
 
-	// this line should be generalized and used in OnPopped after has_value to pass on to parent
-	// StaticCastSharedPtr<ParameterRequesterParseState>(parent)->AddParameter(std::move(coord));
+	const FCoordPtr coord =
+ 		  parser.BoardShape() == EBoardShape::Square
+ 		? static_cast<FCoordPtr>(MakeShared<FSquareCoord>(coordMember(0), coordMember(1)))
+ 		: parser.BoardShape() == EBoardShape::Triangle
+ 		? static_cast<FCoordPtr>(MakeShared<FTriCoord>(coordMember(0), coordMember(1), coordMember(2), true))
+ 		: static_cast<FCoordPtr>(MakeShared<FHexCoord>(coordMember(0), coordMember(1), coordMember(2)));
+	
+	parsedParameters.Empty();
+	parsedParameters.Add(FParameter(coord));
 }
 
 void ParameterParseState::ParseDelimiter() { PushNextState(); }
@@ -145,7 +144,6 @@ void ParameterParseState::ParseRightParen()
 	}
 	PopState();
 }
-// void ParameterParseState::AddParameter(FParameter&& parameter) { parsedParameters.Add(parameter); }
 FString ParameterParseState::GetExpectedMessage()
 {
 	return "Invalid parameter syntax";

@@ -25,7 +25,7 @@ Parser::Parser(ABoard* board, FString seed) : board{ board }, seed{ seed }
 	stack      = new ParseStateStack(*this);
 }
 
-void Parser::Parse(EBoardShape& shape, FCoord* coord, FTiles& tiles)
+void Parser::Parse(EBoardShape& shape, FCoordPtr& coord, Tiles& tiles)
 {
 	FString parsedText;
 	SetupBoard(shape, coord);
@@ -73,7 +73,7 @@ void Parser::Parse(EBoardShape& shape, FCoord* coord, FTiles& tiles)
 			pos->Next();
 	}
 }
-void Parser::SetupBoard(EBoardShape& shape, FCoord*& coord)
+void Parser::SetupBoard(EBoardShape& shape, FCoordPtr& coord)
 {
 	// Sets board shape and coord if seed is correct
 	const FString boardShapeSeed = boardSeed.Left(3);
@@ -91,7 +91,7 @@ void Parser::SetupBoard(EBoardShape& shape, FCoord*& coord)
 	boardShape = shape;
 	ParseBoardSize(coord, shape);
 }
-void Parser::ParseBoardSize(FCoord*& coord, const EBoardShape& shape)
+void Parser::ParseBoardSize(FCoordPtr& coord, const EBoardShape& shape)
 {
 	FString dump;
 	FString coordSeed;

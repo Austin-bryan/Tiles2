@@ -1,4 +1,5 @@
 #include "Parsing/ParseError.h"
+#include "Logger.h"
 
 void ParseError::Throw(const TUniquePtr<LexerPosition>& position, const FString error, const FString& expected, const FString& state) const
 {

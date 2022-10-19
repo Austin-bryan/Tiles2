@@ -6,6 +6,7 @@
 #include "ParseState.h"
 #include "Coord.h"
 #include "ParameterRequesterParseState.h"
+#include "ForwardDeclares.h"
 
 struct FCoord;
 struct FSquareCoord;
@@ -17,10 +18,10 @@ struct FTriCoord;
  */
 struct FParameter
 {
-	FParameter(const float f);
-	FParameter(const char* string);
-	FParameter(const FString string);
-	FParameter(FCoord* coord);
+	explicit FParameter(const float f);
+	explicit FParameter(const char* string);
+	explicit FParameter(const FString string);
+	explicit FParameter(FCoordPtr coord);
 
 	template<typename T>
 	const T& Get() const;
@@ -30,7 +31,7 @@ struct FParameter
 
 	FString ToString() const;
 private:
-	TVariant<float, FString, FCoord*> variant;
+	TVariant<float, FString, FCoordPtr> variant;
 };
 
 class TILES2_API ParameterParseState final : public ParameterRequesterParseState
@@ -43,7 +44,6 @@ public:
 	void ParseDelimiter() override;
 	void ParseRightParen() override;
 	void ParseLeftParen() override;
-	// void AddParameter(FParameter&& parameter);
 	void ParseExpectedTypes(const FString& parameterSeed, const bool waitForLeftParen = false);
 	
 	FString Name() const override;
@@ -59,4 +59,4 @@ private:
 	int parameterIndex = 0;
 };
 template <>
-inline void ParameterParseState::ConstructParameter<FCoord*>();
+inline void ParameterParseState::ConstructParameter<FCoordPtr>();

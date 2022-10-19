@@ -10,10 +10,7 @@ public:
 	FSquareCoord(const float x, const float z) : FCoord(x, z) { }
 
 	FString ToString() const override;
-	FCoord* operator+(EDirection direction) override;
-	FCoord* operator+=(EDirection direction) override;
-	FCoord* operator=(FCoord* other) override;
-	//FHexCoord& operator=(const FCoord other);
-	//FHexCoord& operator+=(const FCoord other);
-	//FHexCoord& operator+=(EDirection dir);
+	const FCoord* operator+ (const EDirection direction) const override;
+	const FCoord* operator+=(const EDirection direction) override;
+	const FCoord* operator= (const FCoord* other) override;
 };

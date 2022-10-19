@@ -15,6 +15,6 @@ public:
 	~UBandagedModule();
 	void ApplyParameters(const TArray<FParameter>& parameters) override;
 
-	virtual void BeginPlay() override;
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	void BeginPlay() override;
+	void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 };

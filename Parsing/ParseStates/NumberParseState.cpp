@@ -53,7 +53,7 @@ void NumberParseState::ExitNumberState() const
     const float decimals = parsedDecimals / pow(10, digitCount);
     const float number   = sign * RoundToPlaces(parsedIntegers + decimals, digitCount);
 
-    StaticCastSharedPtr<ParameterParseState>(parent)->AddParameter(number);
+    StaticCastSharedPtr<ParameterParseState>(parent)->AddParameter(FParameter(number));
     PopState();
 }
 float NumberParseState::RoundToPlaces(const float f, const int decimalCount) const

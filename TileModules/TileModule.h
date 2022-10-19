@@ -17,8 +17,8 @@ public:
 	UTileModule();
 	~UTileModule();
 
-	virtual void BeginPlay() override;
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	void BeginPlay() override;
+	void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	virtual void ApplyParameters(const TArray<FParameter>& parameters){}
 	
 	template<class T>

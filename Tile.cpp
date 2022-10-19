@@ -28,15 +28,9 @@ ATile::ATile()
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	RootComponent = Mesh;
 
-	//OnClickEvent.BindUFunction(this, "OnClick");
 	Box = CreateDefaultSubobject<UBoxComponent>(TEXT("Box"));
 	Box->AttachToComponent(Mesh, FAttachmentTransformRules::KeepRelativeTransform);
-	//Box->OnClicked.Add(OnClickEvent);
 	Box->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	//Box->bHiddenInGame = false;
-
-	//auto m = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh2"));
-	//m->AttachToComponent(Mesh, FAttachmentTransformRules::KeepWorldTransform);
 
 	CoordText = CreateDefaultSubobject<UTextRenderComponent>(TEXT("Coord Text"));
 	if (!CoordText)
@@ -68,9 +62,10 @@ void ATile::Tick(float DeltaTime)
 	CoordText->SetText(FText::FromString(Coord->ToString()));
 #endif
 }
-void ATile::SetCoord(FCoord* coord)
+void ATile::SetCoord(const FCoordPtr coord)
 {
 	Coord = coord;
+	Log(coord->ToString());
 	CoordText->SetText(FText::FromString(coord->ToString()));
 }
 void ATile::SetShape(const EBoardShape boardShape) const

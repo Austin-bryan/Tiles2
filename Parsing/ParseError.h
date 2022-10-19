@@ -1,6 +1,5 @@
 #pragma once
 #include "CoreMinimal.h"
-#include "Logger.h"
 #include "Parsing/LexerPosition.h"
 
 /**

@@ -14,22 +14,15 @@ public:
 
 	bool GetIsUp() const { return isUp; }
 
-	//FCoord* operator+(const FCoord* other)  override;
-	//FCoord* operator-(const FCoord* other)  override;
-	FCoord* operator+(EDirection direction) override;
-	//FCoord* operator-(EDirection direction) override;
+	const FCoord* operator+ (EDirection direction) const override;
+	const FCoord* operator+=(EDirection direction) override;
+	const FCoord* operator= (const FCoord* other)  override;
 
-	//FCoord* operator+=(const FCoord* other)  override;
-	//FCoord* operator-=(const FCoord* other)  override;
-	FCoord* operator+=(EDirection direction) override;
-	//FCoord* operator-=(EDirection direction) override;
-
-	FCoord* operator=(FCoord* other) override;
 	FString ToString() const override
 	{
-		return  fstr("tri(") + FString::SanitizeFloat(X)
-		 + fstr(", ") + FString::SanitizeFloat(Y)
-		 + fstr(", ") + FString::SanitizeFloat(Z) + fstr(")");
+		return  fstr("tri(") + FString::SanitizeFloat(X())
+		 		+ fstr(", ") + FString::SanitizeFloat(Y())
+		 		+ fstr(", ") + FString::SanitizeFloat(Z()) + fstr(")");
 	}
 private:
 	bool isUp;

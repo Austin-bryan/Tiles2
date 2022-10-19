@@ -2,6 +2,7 @@
 #include "CoreMinimal.h"
 #include "ParseError.h"
 #include "LexerPosition.h"
+#include "ForwardDeclares.h"
 
 struct FCoord;
 enum class EBoardShape;
@@ -23,7 +24,7 @@ public:
 	void Throw(const char error,    FString&& expected, const TUniquePtr<ParseError>& errorThrower);
 	void Throw(const FString error, FString&& expected);
 	void Throw(const FString error, FString&& expected, const TUniquePtr<ParseError>& errorThrower);
-	void Parse(EBoardShape& shape, FCoord* coord, TMap<FCoord*, ATile*>& tiles);
+	void Parse(EBoardShape& shape, FCoordPtr& coord, Tiles& tiles);
 
 	EBoardShape BoardShape() const { return boardShape; }
 protected:
@@ -37,8 +38,8 @@ private:
 	EBoardShape boardShape;
 
 	TUniquePtr<ParseError> parseError;
-	void SetupBoard(EBoardShape& shape, FCoord*& coord);
-	void ParseBoardSize(FCoord*& coord, const EBoardShape& shape);
+	void SetupBoard(EBoardShape& shape, FCoordPtr& coord);
+	void ParseBoardSize(FCoordPtr& coord, const EBoardShape& shape);
 
 	bool shouldBreak = false;
 };

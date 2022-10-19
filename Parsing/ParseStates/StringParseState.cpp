@@ -24,7 +24,7 @@ void StringParseState::ParseQuotation()
              parser.Throw(fstr(TQuotation), "Empty strings are not allowed.");
         else
         {
-            StaticCastSharedPtr<ParameterParseState>(parent)->AddParameter(parsedText);
+            StaticCastSharedPtr<ParameterParseState>(parent)->AddParameter(FParameter(parsedText));
             PopState();
         }
     }

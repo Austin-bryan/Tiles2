@@ -3,7 +3,6 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Enums.h"
-#include "AssetDir.h"
 #include "Coord/Coord.h"
 #include "Components/TextRenderComponent.h"
 #include "Components/BoxComponent.h"
@@ -15,24 +14,22 @@ class TILES2_API ATile : public AActor
 	GENERATED_BODY()
 public:	
 	ATile();
-	virtual void Tick(float DeltaTime) override;
+	void Tick(float DeltaTime) override;
 	void SetShape(const EBoardShape) const;
 	void SetColor(const ETileColor color) const;
 
-	FCoord* GetCoord() const { return Coord; }
-	void SetCoord(FCoord* coord);
+	FCoordPtr GetCoord() const { return Coord; }
+	void SetCoord(FCoordPtr coord);
 	static TMap<ETileColor, FString> TileColorStrings;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadonly)
 		UTextRenderComponent* CoordText;
 protected:
-	virtual void BeginPlay() override;
-	FCoord* Coord;
+	void BeginPlay() override;
+	FCoordPtr Coord;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadonly)
 		UStaticMeshComponent* Mesh;
-	//UPROPERTY(VisibleAnywhere, BlueprintReadonly)
-		//UStaticMeshComponent* m;
 	UPROPERTY(EditAnywhere, BlueprintReadonly)
 		int rot;
 	UPROPERTY(VisibleAnywhere, BlueprintReadonly)

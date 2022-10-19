@@ -1,5 +1,6 @@
 #include "TileModules/BandagedModule.h"
 #include "ParameterParseState.h"
+#include "ForwardDeclares.h"
 
 UBandagedModule::~UBandagedModule() {}
 
@@ -7,13 +8,15 @@ void UBandagedModule::ApplyParameters(const TArray<FParameter>& parameters)
 {
 	Log("Apply: ");
 	for (const auto& parameter : parameters)
-		Log(parameter.ToString(), FColor::Purple);
-	
-	if (const float* number = parameters[0].GetIf<float>())
-		ModTile->SetActorScale3D(FVector3d(*number, *number, *number));
-	if (const FCoord* const* coord = parameters[0].GetIf<FCoord*>())
 	{
-		// ModTile->SetCoord(*coord);
+		Log(parameter.ToString(), FColor::Purple);
+		
+		if (const float* number = parameter.GetIf<float>())
+			ModTile->SetActorScale3D(FVector3d(*number, *number, *number));
+		else if (const FCoordPtr* coord = parameter.GetIf<FCoordPtr>())
+		{
+			ModTile->SetCoord(*coord);
+		}
 	}
 }
 

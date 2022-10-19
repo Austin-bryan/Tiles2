@@ -11,8 +11,7 @@ void LexerPosition::Next()
 	index++;
 	if (index < seed.Len())
 	{
-		auto currentChar = seed[index];
-		if (currentChar == TSeparator)
+		if (const auto currentChar = seed[index]; currentChar == TSeparator)
 			tile++;
 	}
 	else Log("Error: Index out of Bounds. LexerPosition.cpp Line 13"); 

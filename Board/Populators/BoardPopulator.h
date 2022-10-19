@@ -1,5 +1,6 @@
 #pragma once
 #include "CoreMinimal.h"
+#include "ForwardDeclares.h"
 
 enum class EBoardShape;
 class ABoard;
@@ -14,15 +15,15 @@ class TILES2_API BoardPopulator
 public:
 	virtual ~BoardPopulator() = default;
 	BoardPopulator(ABoard* const, const EBoardShape&);
-	virtual void Populate(FCoord*, TMap<FCoord*, ATile*>& tiles) {}
+	virtual void Populate(FCoordPtr, Tiles& tiles) {}
 protected:
 	ABoard* board;
 	EBoardShape boardShape;
 
 	virtual float GetSpaceX() const = 0;
 	virtual float GetSpaceZ() const = 0;
-	virtual float GetOffsetX(FCoord*) const = 0;
-	virtual float GetOffsetZ(FCoord*) const = 0;
+	virtual float GetOffsetX(FCoordPtr) const = 0;
+	virtual float GetOffsetZ(FCoordPtr) const = 0;
 
-	ATile* CreateTile(FCoord*, TMap<FCoord*, ATile*>& tiles) const;
+	ATile* CreateTile(FCoordPtr, Tiles& tiles) const;
 };
