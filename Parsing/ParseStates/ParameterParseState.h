@@ -9,7 +9,7 @@
 #include "ForwardDeclares.h"
 
 struct FCoord;
-struct FSquareCoord;
+struct FSqrCoord;
 struct FHexCoord;
 struct FTriCoord;
 

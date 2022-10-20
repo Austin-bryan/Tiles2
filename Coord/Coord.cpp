@@ -1,6 +1,6 @@
 #include "Coord/Coord.h"
 #include "ForwardDeclares.h"
-#include "SquareCoord.h"
+#include "SqrCoord.h"
 #include "TriCoord.h"
 #include "HexCoord.h"
 
@@ -10,7 +10,7 @@ FCoordPtr FCoord::Create(const EBoardShape shape, const float x, const float z, 
 	{
 	case EBoardShape::Triangle: return MakeShared<const FTriCoord>   (x, y, z, true);
 	case EBoardShape::Hex:      return MakeShared<const FHexCoord>   (x, y, z);
-	default:					return MakeShared<const FSquareCoord>(x, z);
+	default:					return MakeShared<const FSqrCoord>(x, z);
 	}
 }
 FCoord::FCoord()											: x{ 0 }, y{ 0 }, z{ 0 } {}

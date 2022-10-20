@@ -3,7 +3,7 @@
 #include "BoardPopulator.h"
 #include "Board/Populators/HexBoardPopulator.h"
 #include "Board/Populators/TriangleBoardPopulator.h"
-#include "Board/Populators/SquareBoardPopulator.h"
+#include "Board/Populators/SqrBoardPopulator.h"
 
 BoardPopulatorFactory::BoardPopulatorFactory() { }
 BoardPopulator* BoardPopulatorFactory::Create(ABoard* const board)
@@ -12,6 +12,6 @@ BoardPopulator* BoardPopulatorFactory::Create(ABoard* const board)
 	{
 	case EBoardShape::Hex:		return new HexBoardPopulator(board, shape);      
 	case EBoardShape::Triangle: return new TriangleBoardPopulator(board, shape); 
-	default:					return new SquareBoardPopulator(board, shape);   
+	default:					return new SqrBoardPopulator(board, shape);   
 	}
 }

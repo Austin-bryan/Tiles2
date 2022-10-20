@@ -4,7 +4,7 @@
 #include "Token.h"
 #include "Parser.h"
 #include "Logger.h"
-#include "SquareCoord.h"
+#include "SqrCoord.h"
 #include "TriCoord.h"
 #include "HexCoord.h"
 
@@ -124,7 +124,7 @@ void ParameterParseState::ConstructParameter<FCoordPtr>()
 
 	const FCoordPtr coord =
  		  parser.BoardShape() == EBoardShape::Square
- 		? static_cast<FCoordPtr>(MakeShared<FSquareCoord>(coordMember(0), coordMember(1)))
+ 		? static_cast<FCoordPtr>(MakeShared<FSqrCoord>(coordMember(0), coordMember(1)))
  		: parser.BoardShape() == EBoardShape::Triangle
  		? static_cast<FCoordPtr>(MakeShared<FTriCoord>(coordMember(0), coordMember(1), coordMember(2), true))
  		: static_cast<FCoordPtr>(MakeShared<FHexCoord>(coordMember(0), coordMember(1), coordMember(2)));

@@ -6,10 +6,10 @@
 struct FCoord;
 class ABoard;
 
-class TILES2_API SquareBoardPopulator final : public BoardPopulator
+class TILES2_API SqrBoardPopulator final : public BoardPopulator
 {
 public:
-	SquareBoardPopulator(ABoard* const board, const EBoardShape& shape) :
+	SqrBoardPopulator(ABoard* const board, const EBoardShape& shape) :
 		BoardPopulator(board, shape){ }
 	void Populate(FCoordPtr size, Tiles& tiles) override;
 };
