@@ -24,6 +24,11 @@ public:
 		 		+ fstr(", ") + FString::SanitizeFloat(Y())
 		 		+ fstr(", ") + FString::SanitizeFloat(Z()) + fstr(")");
 	}
+
+	float GetSpaceX()  const override;
+	float GetSpaceZ()  const override;
+	float GetOffsetX() const override;
+	float GetOffsetZ() const override;
 private:
 	bool isUp;
 };

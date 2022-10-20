@@ -25,18 +25,18 @@ Parser::Parser(ABoard* board, FString seed) : board{ board }, seed{ seed }
 	stack      = new ParseStateStack(*this);
 }
 
-void Parser::Parse(EBoardShape& shape, FCoordPtr& coord, Tiles& tiles)
+void Parser::Parse(EBoardShape& shape, FCoordPtr& size, Tiles& tiles)
 {
 	FString parsedText;
-	SetupBoard(shape, coord);
+	SetupBoard(shape, size);
 
-	if (coord == nullptr)
+	if (size == nullptr)
 	{
 		Log("Null coord @ Parser.cpp line 29");
 		return;
 	}
 	const auto populator = BoardPopulatorFactory::Create(board);
-	populator->Populate(coord, tiles);
+	populator->Populate(size, tiles);
 
 	TArray<ATile*> spawnedTiles;
 	tiles.GenerateValueArray(spawnedTiles);

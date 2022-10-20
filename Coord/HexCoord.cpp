@@ -19,6 +19,11 @@ const FCoord* FHexCoord::operator=(const FCoord* other)
 	x = other->X(), y = other->Y(), z = other->Z();
 	return this;
 }
+float FHexCoord::GetSpaceX()  const { return 45; }
+float FHexCoord::GetSpaceZ()  const { return 50; }
+float FHexCoord::GetOffsetX() const { return -x + y + z; }
+float FHexCoord::GetOffsetZ() const { return -z + y; }
+
 const FCoord* FHexCoord::operator+=(const EDirection direction)
 {
 	const auto cache = static_cast<const FHexCoord*>(*this + direction);

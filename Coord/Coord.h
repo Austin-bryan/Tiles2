@@ -23,9 +23,14 @@ struct TILES2_API FCoord
 	bool operator==(const FCoord& other) const { return x == other.x && y == other.y && z == other.z; }
 	bool operator!=(const FCoord& other) const { return !(*this == other); }
 
-	virtual const FCoord* operator+ (const EDirection direction) const { return new FCoord(0, 0, 0); }
-	virtual const FCoord* operator= (const FCoord* other)		       { return this; }
-	virtual const FCoord* operator+=(const EDirection direction)       { return this; }
+	virtual const FCoord* operator+ (const EDirection direction) const = 0;
+	virtual const FCoord* operator= (const FCoord* other)		       = 0;
+	virtual const FCoord* operator+=(const EDirection direction)       = 0;
+
+	virtual float GetSpaceX()  const = 0;
+	virtual float GetSpaceZ()  const = 0;
+	virtual float GetOffsetX() const = 0;
+	virtual float GetOffsetZ() const = 0;
 
 	// ReSharper disable once CppNonExplicitConversionOperator
 	operator FString() const { return ToString(); }

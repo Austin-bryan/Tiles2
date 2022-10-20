@@ -20,6 +20,8 @@ public:
 	FCoordPtr GetSize()			const { return Size; }
 	const Tiles& GetTiles()     const { return tiles; }
 	EBoardShape GetBoardShape() const { return Shape; }
+
+	FVector LocationOf(FCoordPtr coord) const;
 protected:
 	void BeginPlay() override;
 	EBoardShape Shape;

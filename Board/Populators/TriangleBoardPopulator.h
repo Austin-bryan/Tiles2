@@ -12,9 +12,4 @@ public:
 	TriangleBoardPopulator(ABoard* const board, const EBoardShape& shape) :
 		BoardPopulator(board, shape){ }
 	void Populate(FCoordPtr, Tiles& tiles) override;
-
-	float GetSpaceX() const override { return 67; }
-	float GetSpaceZ() const override { return 120; }
-	float GetOffsetX(FCoordPtr coord) const override;
-	float GetOffsetZ(FCoordPtr coord) const override;
 };

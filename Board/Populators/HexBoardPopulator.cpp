@@ -15,5 +15,3 @@ void HexBoardPopulator::Populate(const FCoordPtr size, Tiles& tiles)
 		if (x + y + z == 0)
 			CreateTile(MakeShared<FHexCoord>(x, y, z), tiles);
 }
-float HexBoardPopulator::GetOffsetX(const FCoordPtr coord) const { return -coord->X() + coord->Y() + coord->Z(); }
-float HexBoardPopulator::GetOffsetZ(const FCoordPtr coord) const { return -coord->Z() + coord->Y(); }

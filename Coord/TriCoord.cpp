@@ -42,6 +42,12 @@ const FCoord* FTriCoord::operator=(const FCoord* other)
 
 	return this;
 }
+
+float FTriCoord::GetSpaceX()  const { return 67; }
+float FTriCoord::GetSpaceZ()  const { return 120; }
+float FTriCoord::GetOffsetX() const { return -x + y; }
+float FTriCoord::GetOffsetZ() const { return -z; }
+
 const FCoord* FTriCoord::operator+=(const EDirection direction)
 {
 	const auto cache = static_cast<const FTriCoord*>(*this + direction);

@@ -14,16 +14,12 @@ BoardPopulator::BoardPopulator(ABoard* const board, const EBoardShape& boardShap
 	controller->bEnableClickEvents     = true;
 	controller->bEnableMouseOverEvents = true;
 }
-ATile* BoardPopulator::CreateTile(FCoordPtr coord, Tiles& tiles) const
+ATile* BoardPopulator::CreateTile(const FCoordPtr coord, Tiles& tiles) const
 {
-	const auto forward		  = board->GetActorForwardVector();
-	const auto positionX = forward * GetOffsetX(coord) * GetSpaceX();
-	const auto positionZ			  = FVector(0, 0, GetOffsetZ(coord) * GetSpaceZ());
-	const auto location  = board->GetActorLocation() + positionX + positionZ;	
-	const auto tile					  = board->GetWorld()->SpawnActor<ATile>(ATile::StaticClass(), location, FRotator::ZeroRotator);
-
+	const auto tile = board->GetWorld()->SpawnActor<ATile>(ATile::StaticClass(), board->LocationOf(coord), FRotator(0, 90, 0));
 	tiles.Add(coord, tile);
 	tile->SetShape(boardShape);
 	tile->SetCoord(coord);
+	
 	return tile;
 }

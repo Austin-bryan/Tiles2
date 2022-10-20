@@ -1,4 +1,6 @@
 #include "Board/Board.h"
+
+#include "Coord.h"
 #include "Parser.h"
 
 ABoard::ABoard()
@@ -6,6 +8,15 @@ ABoard::ABoard()
 	PrimaryActorTick.bCanEverTick = true;
 	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 }
+
+FVector ABoard::LocationOf(const FCoordPtr coord) const
+{
+	const auto forward = GetActorForwardVector();
+	const auto positionZ      = FVector(0, 0, coord->GetOffsetZ() * coord->GetSpaceZ());
+	const auto positionX = forward * coord->GetOffsetX() * coord->GetSpaceX();
+	return GetActorLocation() + positionX + positionZ;
+}
+
 void ABoard::BeginPlay()
 {
 	Super::BeginPlay();

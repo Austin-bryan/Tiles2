@@ -14,6 +14,11 @@ public:
 	const FCoord* operator+ (EDirection direction) const override;
 	const FCoord* operator+=(EDirection direction) override;
 	const FCoord* operator= (const FCoord* other)  override;
-
+	
+	float GetSpaceX()  const override;
+	float GetSpaceZ()  const override;
+	float GetOffsetX() const override;
+	float GetOffsetZ() const override;
+	
 	FString ToString() const override;
 };

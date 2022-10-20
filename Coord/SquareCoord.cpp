@@ -12,11 +12,18 @@ const FCoord* FSquareCoord::operator+(const EDirection direction) const
 	default: return this;
 	}
 }
+
+float FSquareCoord::GetSpaceX()  const { return 110; }
+float FSquareCoord::GetSpaceZ()  const { return 110; }
+float FSquareCoord::GetOffsetX() const { return -x; }
+float FSquareCoord::GetOffsetZ() const { return -z; }
+
 const FCoord* FSquareCoord::operator=(const FCoord* other)
 {
 	x = other->X(), z = other->Z();
 	return this;
 }
+
 const FCoord* FSquareCoord::operator+=(const EDirection direction)
 {
 	const auto cache = static_cast<const FSquareCoord*>(*this + direction);

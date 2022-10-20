@@ -1,8 +1,6 @@
 #include "TriangleBoardPopulator.h"
 #include "Board.h"
 #include "Enums.h"
-#include "Kismet/KismetMathLibrary.h"
-#include "Kismet/GameplayStatics.h"
 #include "Tile.h"
 #include "TriCoord.h"
 
@@ -52,8 +50,8 @@ void TriangleBoardPopulator::Populate(const FCoordPtr size, Tiles& tiles)
 			// Rotate tile accordingly
 			if (!coord.GetIsUp())
 			{
-				tile->AddActorWorldRotation(FRotator(0, 0, 60));
-				tile->AddActorWorldOffset(FVector(0, 0, GetSpaceZ() / 3));
+				tile->AddActorWorldRotation(FRotator(60, 0, 0));
+				tile->AddActorWorldOffset(FVector(0, 0, coord.GetSpaceZ() / 3));
 			}
 			coord += EDirection::Right;
 		}
@@ -64,19 +62,16 @@ void TriangleBoardPopulator::Populate(const FCoordPtr size, Tiles& tiles)
 	}
 
 	// Positions the camera to be centered
-	// todo:= add cam zoom out
-	TArray<FVector> positions;
-
-	TArray<ATile*> tileValue;
-	tiles.GenerateValueArray(tileValue);
-	for (int i = 0; i < tiles.Num(); i++)
-		positions.Add(tileValue[i]->GetActorLocation());
-	FVector averagePos = UKismetMathLibrary::GetVectorArrayAverage(positions);
-	
-	APawn* pawn     = UGameplayStatics::GetPlayerPawn(board, 0);
-	averagePos.X    = pawn->GetActorLocation().X;
-	pawn->SetActorLocation(averagePos);
+	// todo:: add cam zoom out
+	// TArray<FVector> positions;
+	// TArray<ATile*> tileValue;
+	//
+	// tiles.GenerateValueArray(tileValue);
+	// for (int i = 0; i < tiles.Num(); i++)
+	// 	positions.Add(tileValue[i]->GetActorLocation());
+	// FVector averagePos = UKismetMathLibrary::GetVectorArrayAverage(positions);
+	//
+	// APawn* pawn  = UGameplayStatics::GetPlayerPawn(board, 0);
+	// averagePos.X = pawn->GetActorLocation().X;
+	// pawn->SetActorLocation(averagePos);
 }
-
-float TriangleBoardPopulator::GetOffsetX(const FCoordPtr coord) const { return -coord->X() + coord->Y(); }
-float TriangleBoardPopulator::GetOffsetZ(const FCoordPtr coord) const { return -coord->Z(); }

@@ -1,6 +1,10 @@
 #include "SquareBoardPopulator.h"
 #include "Coord/SquareCoord.h"
 
+// todo:: move get offset to coord
+// todo\ have get location be a virtual coord method
+// todo\ coord position can be acquired directly from coord
+// todo\ setting player coord will automatically set player position
 void SquareBoardPopulator::Populate(const FCoordPtr size, Tiles& tiles) 
 {
 	const float posX = size->X() / 2;
@@ -13,6 +17,3 @@ void SquareBoardPopulator::Populate(const FCoordPtr size, Tiles& tiles)
 		CreateTile(coord, tiles);
 	}
 }
-
-float SquareBoardPopulator::GetOffsetX(const FCoordPtr coord) const { return -coord->X(); }
-float SquareBoardPopulator::GetOffsetZ(const FCoordPtr coord) const { return -coord->Z(); }

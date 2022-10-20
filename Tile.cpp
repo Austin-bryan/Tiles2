@@ -37,8 +37,8 @@ ATile::ATile()
 		return;
 	CoordText->SetText(FText::FromString(TEXT("swag")));
 	CoordText->AttachToComponent(Mesh, FAttachmentTransformRules::KeepRelativeTransform);
-	CoordText->SetRelativeLocation(FVector::ZeroVector - GetActorForwardVector() * 17);
-	CoordText->SetWorldRotation(FRotator(0, GetActorRotation().Yaw, 0));
+	CoordText->SetRelativeLocation(FVector::ZeroVector + GetActorForwardVector() * 17);
+	CoordText->SetRelativeRotation(FRotator(0, 0, 0));
 	CoordText->HorizontalAlignment = EHorizTextAligment::EHTA_Center;
 	CoordText->SetWorldSize(18);
 }
@@ -49,16 +49,12 @@ void ATile::SetColor(const ETileColor color) const
 	const auto mat = Cast<UMaterialInstanceConstant>(StaticLoadObject(UMaterialInstanceConstant::StaticClass(), nullptr, *path));
 	Mesh->SetMaterial(0, mat);
 }
-void ATile::BeginPlay() 
+void ATile::BeginPlay() { Super::BeginPlay(); }
+void ATile::Tick(const float DeltaTime)
 {
-	Super::BeginPlay(); 
-}
-void ATile::Tick(float DeltaTime) 
-{	
-	Super::Tick(DeltaTime); 
-
+	Super::Tick(DeltaTime);
 #ifdef UE_BUILD_DEBUG
-	CoordText->SetWorldRotation(FRotator(0, 180, 0));
+	CoordText->SetWorldRotation(FRotator(0, 90, 0));
 	CoordText->SetText(FText::FromString(Coord->ToString()));
 #endif
 }

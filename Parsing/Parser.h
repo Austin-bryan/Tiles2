@@ -24,7 +24,7 @@ public:
 	void Throw(const char error,    FString&& expected, const TUniquePtr<ParseError>& errorThrower);
 	void Throw(const FString error, FString&& expected);
 	void Throw(const FString error, FString&& expected, const TUniquePtr<ParseError>& errorThrower);
-	void Parse(EBoardShape& shape, FCoordPtr& coord, Tiles& tiles);
+	void Parse(EBoardShape& shape, FCoordPtr& size, Tiles& tiles);
 
 	EBoardShape BoardShape() const { return boardShape; }
 protected:

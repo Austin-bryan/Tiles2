@@ -12,9 +12,4 @@ public:
 	SquareBoardPopulator(ABoard* const board, const EBoardShape& shape) :
 		BoardPopulator(board, shape){ }
 	void Populate(FCoordPtr size, Tiles& tiles) override;
-	
-	float GetSpaceX() const override { return 110; }
-	float GetSpaceZ() const override { return 110; }
-	float GetOffsetX(FCoordPtr coord) const override;
-	float GetOffsetZ(FCoordPtr coord) const override;
 };

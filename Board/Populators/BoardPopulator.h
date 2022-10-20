@@ -19,11 +19,5 @@ public:
 protected:
 	ABoard* board;
 	EBoardShape boardShape;
-
-	virtual float GetSpaceX() const = 0;
-	virtual float GetSpaceZ() const = 0;
-	virtual float GetOffsetX(FCoordPtr) const = 0;
-	virtual float GetOffsetZ(FCoordPtr) const = 0;
-
 	ATile* CreateTile(FCoordPtr, Tiles& tiles) const;
 };
