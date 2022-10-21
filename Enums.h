@@ -32,3 +32,19 @@ enum class EParameter
 {
 	Void, Number, String, Coord, SqrCoord, TriCoord, HexCoord
 };
+
+inline TMap<ETileColor, FString> TileColorStrings =
+{
+	{ ETileColor::None,    FString("None") },
+	{ ETileColor::White,   FString("White") },
+	{ ETileColor::Red,     FString("Red") },
+	{ ETileColor::Orange,  FString("Orange") },
+	{ ETileColor::Yellow,  FString("Yellow") },
+	{ ETileColor::Green,   FString("Green") },
+	{ ETileColor::Cyan,    FString("Cyan") },
+	{ ETileColor::Blue,    FString("Blue") },
+	{ ETileColor::Purple,  FString("Purple") },
+	{ ETileColor::Pink,    FString("Pink") },
+	{ ETileColor::Magenta, FString("Magenta") },
+	{ ETileColor::Black,   FString("Black") }
+};

@@ -1,4 +1,6 @@
 #include "Coord/TriCoord.h"
+#include "Logger.h"
+#include "Enums.h"
 
 int GetHalf(const float n) { return floor(n / 2); }
 
@@ -41,6 +43,13 @@ const FCoord* FTriCoord::operator=(const FCoord* other)
 	isUp = static_cast<const FTriCoord*>(other)->isUp;
 
 	return this;
+}
+
+FString FTriCoord::ToString() const
+{
+	return  fstr("tri(") + FString::SanitizeFloat(X())
+		+ fstr(", ") + FString::SanitizeFloat(Y())
+		+ fstr(", ") + FString::SanitizeFloat(Z()) + fstr(")");
 }
 
 float FTriCoord::GetSpaceX()  const { return 67; }

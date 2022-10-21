@@ -1,8 +1,9 @@
 #include "Coord/Coord.h"
-#include "ForwardDeclares.h"
 #include "SqrCoord.h"
 #include "TriCoord.h"
 #include "HexCoord.h"
+#include "ForwardDeclares.h"
+#include "Logger.h"
 
 FCoordPtr FCoord::Create(const EBoardShape shape, const float x, const float z, const float y)
 {

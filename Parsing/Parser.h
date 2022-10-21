@@ -1,7 +1,5 @@
 #pragma once
 #include "CoreMinimal.h"
-#include "ParseError.h"
-#include "LexerPosition.h"
 #include "ForwardDeclares.h"
 
 struct FCoord;

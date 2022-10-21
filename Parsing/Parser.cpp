@@ -2,16 +2,17 @@
 
 #include <string>
 #include "Board.h"
+#include "BoardPopulator.h"
+#include "BoardPopulatorFactory.h"
+#include "Coord.h"
 #include "Enums.h"
 #include "LexerPosition.h"
 #include "Logger.h"
+#include "ParseError.h"
+#include "ParseState.h"
+#include "ParseStateStack.h"
 #include "Tile.h"
 #include "Token.h"
-#include "Board/Populators/BoardPopulatorFactory.h"
-#include "ParseStates/ParseStateStack.h"
-#include "Parsing/ParseError.h"
-#include "Parsing/ParseStates/ParseState.h"
-#include "Populators/BoardPopulator.h"
 
 ATile* Parser::CurrentTile;
 Parser::Parser(ABoard* board, FString seed) : board{ board }, seed{ seed }

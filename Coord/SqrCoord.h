@@ -1,7 +1,8 @@
 #pragma once
 #include "CoreMinimal.h"
-#include "Enums.h"
 #include "Coord/Coord.h"
+
+enum class EDirection;
 
 struct TILES2_API FSqrCoord : public FCoord
 {

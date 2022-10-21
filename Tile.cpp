@@ -2,26 +2,11 @@
 #include "AssetDir.h"
 #include "Board.h"
 #include "Logger.h"
+#include "Enums.h"
 #include "Materials/MaterialInstanceConstant.h"
-#include "Coord/TriCoord.h"
+#include "Components/TextRenderComponent.h"
+#include "Components/BoxComponent.h"
 #include "TileModules/TileModule.h"
-
-//todo:= cyan, black and pink colors dont work
-TMap<ETileColor, FString> ATile::TileColorStrings =
-{
-	{ ETileColor::None,    FString("None") },
-	{ ETileColor::White,   FString("White") },
-	{ ETileColor::Red,     FString("Red") },
-	{ ETileColor::Orange,  FString("Orange") },
-	{ ETileColor::Yellow,  FString("Yellow") },
-	{ ETileColor::Green,   FString("Green") },
-	{ ETileColor::Cyan,    FString("Cyan") },
-	{ ETileColor::Blue,    FString("Blue") },
-	{ ETileColor::Purple,  FString("Purple") },
-	{ ETileColor::Pink,    FString("Pink") },
-	{ ETileColor::Magenta, FString("Magenta") },
-	{ ETileColor::Black,   FString("Black") }
-};
 
 ATile::ATile()
 {
@@ -46,7 +31,7 @@ ATile::ATile()
 
 void ATile::SetColor(const ETileColor color) const
 {
-	const FString path = fstr("MaterialInstanceConstant'/Game/Materials/TileColors/MI_") + ATile::TileColorStrings[color] + fstr("Tile.MI_") + ATile::TileColorStrings[color] + fstr("Tile'");
+	const FString path = fstr("MaterialInstanceConstant'/Game/Materials/TileColors/MI_") + TileColorStrings[color] + fstr("Tile.MI_") + TileColorStrings[color] + fstr("Tile'");
 	const auto mat = Cast<UMaterialInstanceConstant>(StaticLoadObject(UMaterialInstanceConstant::StaticClass(), nullptr, *path));
 	Mesh->SetMaterial(0, mat);
 }

@@ -14,9 +14,10 @@ public class Tiles2 : ModuleRules
 		{
 			"Coord",
 			"Board",
-			"Board/BoardPopulators",
+			"Board/Populators",
 			"Parsing",
 			"Parsing/ParseStates",
+			"P"
 		});
 
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" });
