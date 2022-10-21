@@ -25,6 +25,7 @@ void Path(const int n, const float time = defaultTime, const FColor color = FCol
 
 inline FString operator"" _f(const unsigned long long int i) { return FString::FromInt(i); }
 inline FString operator"" _f(const char* s, std::size_t) { return FString(s); }
+inline FString operator"" _f(const long double f) { return FString::SanitizeFloat(f); }
 inline FString operator"" _f(const char c)
 {
     const std::string s(1, c);
