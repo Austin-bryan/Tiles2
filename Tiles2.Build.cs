@@ -17,12 +17,12 @@ public class Tiles2 : ModuleRules
 			"Board/Populators",
 			"Parsing",
 			"Parsing/ParseStates",
-			"P"
+			"Helper",
+			"Tile"
 		});
 
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" });
 		PrivateDependencyModuleNames.AddRange(new string[] { "RD", "RD" });
-
 
 		// Uncomment if you are using Slate UI
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
