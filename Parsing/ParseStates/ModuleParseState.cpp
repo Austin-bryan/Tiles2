@@ -27,7 +27,8 @@ void ModuleParseState::FinishModuleState(const char c, const bool shouldPop)
 		else ModuleFactory::Produce(TileModuleParseKey[parsedText], CurrentTile());
 
 		if (shouldPop)
-			PopState();
+			 PopState();
+		else parsedText = "";
 	}
 }
 void ModuleParseState::ParseLeftParen()

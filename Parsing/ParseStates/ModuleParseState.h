@@ -16,10 +16,11 @@ public:
 	void ParseAlpha(char c) final;
 	void ParseDelimiter() final;
 	void ParseRightBrace() final;
-	void FinishModuleState(const char c, const bool shouldPop);
 	void ParseLeftParen() final;
-	FString Name() const override { return "Module State"; }
+	
+	void FinishModuleState(const char c, const bool shouldPop);
 	void OnParametersFinished() override;;
+	FString Name() const override { return "Module State"; }
 	
 	const FString& ParsedModule() const { return parsedText; }
 	FString GetExpectedMessage() final;
