@@ -8,6 +8,8 @@
 #include "Components/BoxComponent.h"
 #include "Tile.generated.h"
 
+class ABoard;
+
 UCLASS()
 class TILES2_API ATile : public AActor
 {
@@ -17,6 +19,7 @@ public:
 	void Tick(float DeltaTime) override;
 	void SetShape(const EBoardShape) const;
 	void SetColor(const ETileColor color) const;
+	void SetBoard(const ABoard* board);
 
 	FCoordPtr GetCoord() const { return Coord; }
 	void SetCoord(FCoordPtr coord);
@@ -27,6 +30,7 @@ public:
 protected:
 	void BeginPlay() override;
 	FCoordPtr Coord;
+	const ABoard* DesignatedBoard;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadonly)
 		UStaticMeshComponent* Mesh;

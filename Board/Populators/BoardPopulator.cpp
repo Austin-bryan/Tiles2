@@ -19,6 +19,7 @@ ATile* BoardPopulator::CreateTile(const FCoordPtr coord, Tiles& tiles) const
 	const auto tile = board->GetWorld()->SpawnActor<ATile>(ATile::StaticClass(), board->LocationOf(coord), FRotator(0, 90, 0));
 	tiles.Add(coord, tile);
 	tile->SetShape(boardShape);
+	tile->SetBoard(board);
 	tile->SetCoord(coord);
 	
 	return tile;

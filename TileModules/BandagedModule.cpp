@@ -6,7 +6,6 @@ UBandagedModule::~UBandagedModule() {}
 
 void UBandagedModule::ApplyParameters(const TArray<FParameter>& parameters)
 {
-	Log("Apply: ");
 	for (const auto& parameter : parameters)
 	{
 		Log(parameter.ToString(), FColor::Purple);
@@ -14,15 +13,12 @@ void UBandagedModule::ApplyParameters(const TArray<FParameter>& parameters)
 		if (const float* number = parameter.GetIf<float>())
 			ModTile->SetActorScale3D(FVector3d(*number, *number, *number));
 		else if (const FCoordPtr* coord = parameter.GetIf<FCoordPtr>())
-		{
 			ModTile->SetCoord(*coord);
-		}
 	}
 }
 
 void UBandagedModule::BeginPlay() 
 {
-	Log("Begin");
 	Super::BeginPlay();
 	const auto mesh = Cast<UStaticMeshComponent>(ModTile->FindComponentByClass<UStaticMeshComponent>());
 	const auto mat = mesh->GetMaterial(0);

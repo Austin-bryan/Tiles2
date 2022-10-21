@@ -1,5 +1,6 @@
 #include "Tile.h"
 #include "AssetDir.h"
+#include "Board.h"
 #include "Logger.h"
 #include "Materials/MaterialInstanceConstant.h"
 #include "Coord/TriCoord.h"
@@ -49,6 +50,12 @@ void ATile::SetColor(const ETileColor color) const
 	const auto mat = Cast<UMaterialInstanceConstant>(StaticLoadObject(UMaterialInstanceConstant::StaticClass(), nullptr, *path));
 	Mesh->SetMaterial(0, mat);
 }
+
+void ATile::SetBoard(const ABoard* board)
+{
+	if (DesignatedBoard == nullptr)
+		DesignatedBoard = board;
+}
 void ATile::BeginPlay() { Super::BeginPlay(); }
 void ATile::Tick(const float DeltaTime)
 {
@@ -61,8 +68,8 @@ void ATile::Tick(const float DeltaTime)
 void ATile::SetCoord(const FCoordPtr coord)
 {
 	Coord = coord;
-	Log(coord->ToString());
 	CoordText->SetText(FText::FromString(coord->ToString()));
+	SetActorLocation(DesignatedBoard->LocationOf(coord));
 }
 void ATile::SetShape(const EBoardShape boardShape) const
 {
