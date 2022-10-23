@@ -38,3 +38,12 @@ struct TILES2_API FCoord
 protected:
 	float x, y, z;
 };
+
+inline FCoordPtr operator+(const FCoordPtr coord, const  EDirection direction)
+{
+	return FCoordPtr(*coord + direction);
+}
+inline FCoordPtr operator+=(FCoordPtr& coord, const EDirection direction)
+{
+	return coord = coord + direction;
+}
