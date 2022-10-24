@@ -1,9 +1,8 @@
+#include "Parsing/ParseStates/ModuleParseState.h"
 #include "Enums.h"
 #include "Parser.h"
 #include "Token.h"
 #include "TileModules/ModuleFactory.h"
-#include "Parsing/ParseStates/ModuleParseState.h"
-
 #include "ParameterParseState.h"
 
 ModuleParseState::ModuleParseState(Parser& parser, const TSharedPtr<ParseState> parent) : ParameterRequesterParseState(parser, parent) { isInDelimiter = false; }

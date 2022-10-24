@@ -16,21 +16,25 @@ class TILES2_API ATile : public AActor
 {
 	GENERATED_BODY()
 public:	
+	static void ResetTileCount() { tileCount = 0; }
+	
 	ATile();
-	void Tick(float DeltaTime) override;
+	void Tick    (float DeltaTime) override;
 	void SetShape(const EBoardShape) const;
 	void SetColor(const ETileColor color) const;
-	void SetBoard(const ABoard* board);
-
-	FCoordPtr GetCoord() const { return Coord; }
+	void SetBoard(const ABoard* newBoard);
 	void SetCoord(FCoordPtr coord);
+
+	int ID()			  const { return id; }
+	ABoard const& Board() const { return *board; }
+	FCoordPtr GetCoord()  const { return Coord; }
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadonly)
 		UTextRenderComponent* CoordText;
 protected:
 	void BeginPlay() override;
 	FCoordPtr Coord;
-	const ABoard* DesignatedBoard;
+	const ABoard* board;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadonly)
 		UStaticMeshComponent* Mesh;
@@ -39,4 +43,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadonly)
 		UBoxComponent* Box;
 	void NotifyActorOnClicked(FKey buttonPressed) override;
+private:
+	static int tileCount;
+	int id;
 };

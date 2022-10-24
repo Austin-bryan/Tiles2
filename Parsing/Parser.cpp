@@ -29,6 +29,8 @@ Parser::Parser(ABoard* board, FString seed) : board{ board }, seed{ seed }
 void Parser::Parse(EBoardShape& shape, FCoordPtr& size, Tiles& tiles)
 {
 	FString parsedText;
+	ATile::ResetTileCount();
+	
 	SetupBoard(shape, size);
 
 	if (size == nullptr)
@@ -40,7 +42,12 @@ void Parser::Parse(EBoardShape& shape, FCoordPtr& size, Tiles& tiles)
 	populator->Populate(size, tiles);
 
 	TArray<ATile*> spawnedTiles;
-	tiles.GenerateValueArray(spawnedTiles);
+	for (const auto& [first, second] : tiles)
+		spawnedTiles.Add(second);
+	spawnedTiles.Sort([](const ATile& a, const ATile& b) -> bool
+	{
+		return a.ID() < b.ID();
+	});
 	
 	if (spawnedTiles.Num() < 1)
 	{
@@ -138,6 +145,7 @@ void Parser::ParseBoardSize(FCoordPtr& coord, const EBoardShape& shape)
 	coord = FCoord::Create(shape, coordMembers[0], coordMembers[1], coordMembers[2]);
 	pos->Reset();
 }
+
 void Parser::Throw(const char    error, FString&& expected)
 {
 	Throw(error, std::move(expected), parseError);

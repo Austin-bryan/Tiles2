@@ -8,7 +8,6 @@ ABoard::ABoard()
 	PrimaryActorTick.bCanEverTick = true;
 	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 }
-
 FVector ABoard::LocationOf(const FCoordPtr coord) const
 {
 	const auto forward = GetActorForwardVector();

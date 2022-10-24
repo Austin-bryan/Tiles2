@@ -62,7 +62,7 @@ const TMap<FString, FString> ModuleParameterKey = TMap<FString, FString>
 		{ ICircuitWrap, IVoid },
 		{ IRotator,	   IString }, { ICorrectCounter,format({INumber, INumber}) },
 		{ IMirrorWrap,  IVoid },   { ITeleportWrap,  format({INumber, IString, INumber, INumber})},
-        { IBandaged, format({INumber, ICoord, IString}) },
+        { IBandaged, format({ICoord, ICoord}) },
 		{ ISqrCoord, format({INumber, INumber}) },
 		{ ITriCoord, format({INumber, INumber, INumber}) },
 		{ IHexCoord, format({INumber, INumber, INumber}) },

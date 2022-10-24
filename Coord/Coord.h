@@ -23,6 +23,9 @@ struct TILES2_API FCoord
 	bool operator==(const FCoord& other) const { return x == other.x && y == other.y && z == other.z; }
 	bool operator!=(const FCoord& other) const { return !(*this == other); }
 
+	//todo:: impliment ineqluaities for all coords
+	virtual bool operator<(const FCoord& other) const { return false; }
+
 	virtual const FCoord* operator+ (const EDirection direction) const = 0;
 	virtual const FCoord* operator= (const FCoord* other)		       = 0;
 	virtual const FCoord* operator+=(const EDirection direction)       = 0;
@@ -38,7 +41,25 @@ struct TILES2_API FCoord
 protected:
 	float x, y, z;
 };
-
+// #include <map>
+// template<>
+// struct std::less<FSqrCoordPtr>
+// {
+// 	bool operator() (const FCoordPtr& lhs, const FCoordPtr& rhs)
+// 	{
+// 		// TMap
+// 		return *lhs < *rhs;
+// 	}
+// };
+ 
+// inline bool operator ==(const FCoordPtr lhs, const FCoordPtr rhs)
+// {
+// 	return *lhs == *rhs;
+// }
+// inline bool operator !=(const FCoordPtr lhs, const FCoordPtr rhs)
+// {
+// 	return *lhs != *rhs;
+// }
 inline FCoordPtr operator+(const FCoordPtr coord, const  EDirection direction)
 {
 	return FCoordPtr(*coord + direction);
