@@ -10,6 +10,7 @@ using FCoordPtr    = TSharedPtr<const FCoord>;
 using FSqrCoordPtr = TSharedPtr<const FSqrCoord>;
 using FHexCoordPtr = TSharedPtr<const FHexCoord>;
 using FTriCoordPtr = TSharedPtr<const FTriCoord>;
+
 struct CoordMembers
 {
     float X, Y, Z;
