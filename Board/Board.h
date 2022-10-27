@@ -18,11 +18,11 @@ public:
 	ABoard();
 	void Tick(float DeltaTime) override;
 	
-	ATile*& At(const FCoordPtr index) { return tiles[index]; }
+	ATile*&       At(const FCoordPtr index)       { return tiles[index]; }
 	ATile* const& At(const FCoordPtr index) const { return tiles[index]; }
 
 	const Tiles& GetTiles()     const { return tiles; }
-	FCoordPtr GetSize()			const { return Size; }
+	FCoordPtr GetSize()			const { return Size;  }
 	EBoardShape GetBoardShape() const { return Shape; }
 
 	FVector LocationOf(FCoordPtr coord) const;

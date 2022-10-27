@@ -1,6 +1,5 @@
 #pragma once
 #include "TilesMap.h"
-
 #include "Coord.h"
 
 ATile*&       Tiles::operator[](const FCoordPtr index)       { return map[FCoord::GetMembers(index)]; }
@@ -22,5 +21,5 @@ TArray<ATile*> Tiles::Values() const
 void Tiles::Add(const FCoordPtr coord, ATile* tile) { map.Add(FCoord::GetMembers(coord), tile); }
 bool Tiles::Contains(const FCoordPtr coord) const
 {
-    return map.Contains(CoordMembers(coord->X(), coord->Y(), coord->Z()));
+    return map.Contains(FCoord::GetMembers(coord));
 }

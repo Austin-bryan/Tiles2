@@ -23,7 +23,7 @@ struct TILES2_API FCoord
 	bool operator==(const FCoord& other) const { return x == other.x && y == other.y && z == other.z; }
 	bool operator!=(const FCoord& other) const { return !(*this == other); }
 
-	//todo:: impliment ineqluaities for all coords
+	//todo:: remove
 	virtual bool operator<(const FCoord& other) const { return false; }
 
 	virtual const FCoord* operator+ (const EDirection direction) const = 0;
@@ -35,39 +35,17 @@ struct TILES2_API FCoord
 	virtual float GetOffsetX() const = 0;
 	virtual float GetOffsetZ() const = 0;
 
+	// Tuple 'CoordMembers' is used as FCoord is abstract
 	static CoordMembers GetMembers(const FCoordPtr coord)
 	{
 		return CoordMembers(coord->X(), coord->Y(), coord->Z());
 	}
-
 	// ReSharper disable once CppNonExplicitConversionOperator
 	operator FString() const { return ToString(); }
-
 protected:
 	float x, y, z;
 };
 
-
-
-// #include <map>
-// template<>
-// struct std::less<FSqrCoordPtr>
-// {
-// 	bool operator() (const FCoordPtr& lhs, const FCoordPtr& rhs)
-// 	{
-// 		// TMap
-// 		return *lhs < *rhs;
-// 	}
-// };
- 
-// inline bool operator ==(const FCoordPtr lhs, const FCoordPtr rhs)
-// {
-// 	return *lhs == *rhs;
-// }
-// inline bool operator !=(const FCoordPtr lhs, const FCoordPtr rhs)
-// {
-// 	return *lhs != *rhs;
-// }
 inline FCoordPtr operator+(const FCoordPtr coord, const  EDirection direction)
 {
 	return FCoordPtr(*coord + direction);

@@ -3,16 +3,8 @@
 #include "ParameterParseState.h"
 #include "ForwardDeclares.h"
 #include "HexCoord.h"
-#include "SqrCoord.h"
 #include "TilesMap.h"
 
-/*
- * todo:: Create facade class for TMap<FCoordPtr, ATile*>
- * todo: allow retriving of FCoordPtr by value, not by ref
- * todo: forward basic functionality to underlying type
- * todo: replace Tiles in the include to TilesMap
- * todo: have methods for returning keys or values like in c#
- */
 void UBandagedModule::ApplyParameters(const TArray<FParameter>& parameters)
 {
 	const Tiles& tiles  = ModTile->Board().GetTiles();
@@ -23,15 +15,8 @@ void UBandagedModule::ApplyParameters(const TArray<FParameter>& parameters)
 	do
 	{
 		coord += EDirection::Right;
-		if (!ModTile->Board().GetTiles().Contains(coord))
-			return;
-		if (ModTile)
-		{
-			if (ModTile->Board().At(coord))
-			{
-				ModTile->Board().At(coord)->Destroy();
-			}
-		}
+		if (tiles.Contains(coord))
+			tiles[coord]->Destroy();
 	}
 	while (coord->X() <= max->X());
 }
