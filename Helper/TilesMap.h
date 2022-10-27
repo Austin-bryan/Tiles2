@@ -1,7 +1,8 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "ForwardDeclares.h"
-struct FCoord;
+#include "Coord.h"
+#include "Tile.h"
 
 /**
  * Uses FCoord as the key as opposed to FCoordPtr for ease of use.
@@ -16,12 +17,12 @@ public:
     void Add(FCoordPtr coord, ATile* tile);
     bool Contains(FCoordPtr coord) const;
     
-    int Num() const { return map.Num(); }
+    int Num()      const { return map.Num(); }
     bool IsEmpty() const { return map.IsEmpty(); }
-
+    
     TArray<ATile*> Values() const;
     TArray<FCoordPtr> Keys() const;
 private:
-    TMap<CoordMembers, ATile*> map;
-    TMap<CoordMembers, FCoordPtr> sliceMap;
+    TMap<FCoord, ATile*> map;
+    TMap<FCoord, FCoordPtr> sliceMap;
 };

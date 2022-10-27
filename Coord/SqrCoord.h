@@ -1,11 +1,14 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "Coord/Coord.h"
+#include "SqrCoord.generated.h"
 
 enum class EDirection;
 
+USTRUCT()
 struct TILES2_API FSqrCoord : public FCoord
 {
+	GENERATED_BODY()
 public:
 	FSqrCoord() : FCoord() {}
 	FSqrCoord(const float x, const float z) : FCoord(x, z) { }
@@ -25,24 +28,3 @@ public:
 	float GetOffsetX() const override;
 	float GetOffsetZ() const override;
 };
-
-/*
-
--1,-1, 	0,-1,  1,-1
--1, 0, 	0, 0,  1, 0
--1, 1, 	0, 1,  1, 1
-
-is less if (other.x > x || other.y > y);
-
-x * y
- 1     0     -1
- 0     0      1 
--1     1      1
-
-goal:
- 0     1      2
- 3	   4      5
- 6     7      8
-
-
-*/

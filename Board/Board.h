@@ -2,11 +2,10 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Enums.h"
-#include "ForwardDeclares.h"
 #include "TilesMap.h"
+#include "ForwardDeclares.h"
 #include "Board.generated.h"
 
-struct FCoord;
 class ATile;
 
 UCLASS()
@@ -25,8 +24,8 @@ public:
 	FCoordPtr GetSize()			const { return Size;  }
 	EBoardShape GetBoardShape() const { return Shape; }
 	FVector LocationOf(FCoordPtr coord) const;
-	CoordMembers MinBounds() const;
-	CoordMembers MaxBounds() const;
+	FCoord MinBounds() const;
+	FCoord MaxBounds() const;
 protected:
 	void BeginPlay() override;
 	EBoardShape Shape;

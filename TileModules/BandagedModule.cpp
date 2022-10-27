@@ -1,4 +1,5 @@
 #include "Board.h"
+#include "Coord.h"
 #include "HexCoord.h"
 #include "SqrCoord.h"
 #include "TilesMap.h"
@@ -15,20 +16,35 @@ void UBandagedModule::ApplyParameters(const TArray<FParameter>& parameters)
 	const FCoordPtr max  = parameters[parameters.Num() - 1].Get<FCoordPtr>();
 	FCoordPtr currCoord  = min;
 	FCoordPtr layerStart = min;
-	
+
 	float scaleX = 1;
+
+	// float lengthX = 
+	
 	do
 	{
 		currCoord += EDirection::Right;
 			
-		if (currCoord->X() > ModTile->Board()->MaxBounds().X)
+		if (currCoord->X() > ModTile->Board()->MaxBounds().X())
 		{
 			layerStart += EDirection::Down;
-			if (layerStart->Z() > ModTile->Board()->MaxBounds().Z) 
+			if (layerStart->Z() > ModTile->Board()->MaxBounds().Z()) 
 				return;
 			currCoord = layerStart;
 		}
-		
+
+		if (!tiles.Contains(currCoord))
+		{
+			const auto& keys = tiles.Keys();
+
+			// Log("count: "_f + fstr(keys.Num()) + SPC + fstr(tiles.Num()));
+			for (int i = 0; i < keys.Num(); i++)
+			{
+				// Log(keys[i]->ToString() + " does not equal "_f + currCoord->ToString());
+			}
+			// Log("no contain: "_f + currCoord->ToString());
+			return;
+		}
 		tiles[currCoord]->Destroy();
 		tiles[currCoord] = ModTile;
 		

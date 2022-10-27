@@ -1,8 +1,7 @@
 #include "Board/Board.h"
-#include "Coord.h"
 #include "MathUtil.h"
 #include "Parser.h"
-
+#include "Coord.h"
 
 ABoard::ABoard()
 {
@@ -27,12 +26,12 @@ float ABoard::GetCenteredPosition(const float coord) { return coord / 2; }
 
 //todo:: ensure this works with other boardshapes
 float GetMax(const float n) { return FMathf::Abs(n) * 2; }
-CoordMembers ABoard::MinBounds() const
+FCoord ABoard::MinBounds() const
 {
-	return CoordMembers(0, 0, 0);
+	return FCoord(0, 0, 0);
 }
-CoordMembers ABoard::MaxBounds() const
+FCoord ABoard::MaxBounds() const
 {
-	return CoordMembers(GetMax(Size->X()), GetMax(Size->Y()), GetMax(Size->Z()));
+	return FCoord(GetMax(Size->X()), GetMax(Size->Y()), GetMax(Size->Z()));
 }
 void ABoard::Tick(const float deltaTime) { Super::Tick(deltaTime); }

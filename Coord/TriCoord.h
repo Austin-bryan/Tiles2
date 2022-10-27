@@ -1,15 +1,20 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "Coord/Coord.h"
+#include "TriCoord.generated.h"
 
 enum class EDirection;
 class TriangleBoardPopulator;
 
+USTRUCT()
 struct TILES2_API FTriCoord : public FCoord
 {
+	GENERATED_BODY()
+	
 	friend class TriangleBoardPopulator;
 public:
-	explicit FTriCoord(const bool isUp) : FCoord(), isUp {isUp} {}
+	FTriCoord();
+	explicit FTriCoord(const bool isUp);
 	FTriCoord(const float x, const float y, const float z, const bool isUp);
 
 	bool GetIsUp() const { return isUp; }

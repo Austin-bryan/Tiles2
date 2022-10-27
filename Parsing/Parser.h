@@ -2,8 +2,8 @@
 #include "CoreMinimal.h"
 #include "ForwardDeclares.h"
 #include "TilesMap.h"
+#include "Coord.h"
 
-struct FCoord;
 enum class EBoardShape;
 class ABoard;
 class ATile;

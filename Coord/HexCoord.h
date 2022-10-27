@@ -2,9 +2,12 @@
 #include "CoreMinimal.h"
 #include "Enums.h"
 #include "Coord/Coord.h"
+#include "HexCoord.generated.h"
 
+USTRUCT()
 struct TILES2_API FHexCoord : public FCoord
 {
+	GENERATED_BODY()
 public:
 	friend class TSharedPtr<const FCoord>;
 

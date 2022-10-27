@@ -42,13 +42,6 @@ void Parser::Parse(EBoardShape& shape, FCoordPtr& size, Tiles& tiles)
 	populator->Populate(size, tiles);
 
 	TArray<ATile*> spawnedTiles = tiles.Values();
-	// for (const auto& [first, second] : tiles)
-	// 	spawnedTiles.Add(second);
-	// spawnedTiles.Sort([](const ATile& a, const ATile& b) -> bool
-	// {
-	// 	return a.ID() < b.ID();
-	// });
-	//
 	if (spawnedTiles.Num() < 1)
 	{
 		Log("no tiles");

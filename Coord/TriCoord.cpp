@@ -4,6 +4,8 @@
 
 int GetHalf(const float n) { return floor(n / 2); }
 
+FTriCoord::FTriCoord(): isUp{ false } { }
+FTriCoord::FTriCoord(const bool isUp): FCoord(), isUp {isUp} {}
 FTriCoord::FTriCoord(const float x, const float y, const float z, const bool isUp): FCoord(x, y, z), isUp{ isUp } {}
 //TODO:: make sure this works with multiple directions in a row
 const FCoord* FTriCoord::operator+(const EDirection direction) const

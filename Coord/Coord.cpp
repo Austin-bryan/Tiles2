@@ -17,6 +17,7 @@ FCoordPtr FCoord::Create(const EBoardShape shape, const float x, const float z, 
 FCoord::FCoord()											: x{ 0 }, y{ 0 }, z{ 0 } {}
 FCoord::FCoord(const float x, const float z)				: x{ x }, y{ 0 }, z{ z } {}
 FCoord::FCoord(const float x, const float y, const float z) : x{ x }, y{ y }, z{ z } {}
+FCoord::FCoord(const FCoord& other): x{ other.x }, y{ other.y }, z{ other.z } { }
 
 float FCoord::Largest() const
 {
