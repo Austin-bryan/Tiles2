@@ -10,3 +10,4 @@ using FCoordPtr    = TSharedPtr<const FCoord>;
 using FSqrCoordPtr = TSharedPtr<const FSqrCoord>;
 using FHexCoordPtr = TSharedPtr<const FHexCoord>;
 using FTriCoordPtr = TSharedPtr<const FTriCoord>;
+using CoordMembers = TTuple<float, float, float>;
