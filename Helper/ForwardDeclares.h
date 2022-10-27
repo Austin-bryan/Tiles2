@@ -10,4 +10,4 @@ using FCoordPtr    = TSharedPtr<const FCoord>;
 using FSqrCoordPtr = TSharedPtr<const FSqrCoord>;
 using FHexCoordPtr = TSharedPtr<const FHexCoord>;
 using FTriCoordPtr = TSharedPtr<const FTriCoord>;
-using Tiles        = TMap<FCoordPtr, ATile*>;
+using CoordMembers = TTuple<float, float, float>;

@@ -1,6 +1,7 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "ForwardDeclares.h"
+#include "TilesMap.h"
 
 enum class EBoardShape;
 class ABoard;

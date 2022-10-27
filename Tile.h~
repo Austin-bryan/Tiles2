@@ -2,13 +2,14 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Enums.h"
-#include "Coord/Coord.h"
-#include "Components/TextRenderComponent.h"
-#include "Components/BoxComponent.h"
+#include "ForwardDeclares.h"
 #include "Tile.generated.h"
 
+class UBoxComponent;
+class UTextRenderComponent;
 class ABoard;
+enum class EBoardShape;
+enum class ETileColor;
 
 UCLASS()
 class TILES2_API ATile : public AActor
@@ -23,7 +24,6 @@ public:
 
 	FCoordPtr GetCoord() const { return Coord; }
 	void SetCoord(FCoordPtr coord);
-	static TMap<ETileColor, FString> TileColorStrings;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadonly)
 		UTextRenderComponent* CoordText;

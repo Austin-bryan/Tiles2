@@ -1,9 +1,9 @@
 #pragma once
 #include "CoreMinimal.h"
-#include "Enums.h"
-#include "Logger.h"
 #include "Coord/Coord.h"
-#include "Board/Populators/TriangleBoardPopulator.h"
+
+enum class EDirection;
+class TriangleBoardPopulator;
 
 struct TILES2_API FTriCoord : public FCoord
 {
@@ -18,12 +18,7 @@ public:
 	const FCoord* operator+=(EDirection direction) override;
 	const FCoord* operator= (const FCoord* other)  override;
 
-	FString ToString() const override
-	{
-		return  fstr("tri(") + FString::SanitizeFloat(X())
-		 		+ fstr(", ") + FString::SanitizeFloat(Y())
-		 		+ fstr(", ") + FString::SanitizeFloat(Z()) + fstr(")");
-	}
+	FString ToString() const override;
 
 	float GetSpaceX()  const override;
 	float GetSpaceZ()  const override;

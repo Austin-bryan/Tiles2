@@ -1,5 +1,4 @@
 #include "Board/Board.h"
-
 #include "Coord.h"
 #include "Parser.h"
 
@@ -8,7 +7,6 @@ ABoard::ABoard()
 	PrimaryActorTick.bCanEverTick = true;
 	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 }
-
 FVector ABoard::LocationOf(const FCoordPtr coord) const
 {
 	const auto forward = GetActorForwardVector();
@@ -24,4 +22,4 @@ void ABoard::BeginPlay()
 	parser.Parse(Shape, Size, tiles);
 }
 float ABoard::GetCenteredPosition(const float coord) { return coord / 2; }
-void ABoard::Tick(float deltaTime) { Super::Tick(deltaTime); }
+void ABoard::Tick(const float deltaTime) { Super::Tick(deltaTime); }

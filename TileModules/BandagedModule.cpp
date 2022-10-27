@@ -1,33 +1,28 @@
 #include "TileModules/BandagedModule.h"
+#include "Board.h"
 #include "ParameterParseState.h"
 #include "ForwardDeclares.h"
-
-UBandagedModule::~UBandagedModule() {}
+#include "HexCoord.h"
+#include "TilesMap.h"
 
 void UBandagedModule::ApplyParameters(const TArray<FParameter>& parameters)
 {
-	for (const auto& parameter : parameters)
+	const Tiles& tiles  = ModTile->Board().GetTiles();
+	const FCoordPtr min = parameters[0].Get<FCoordPtr>();
+	const FCoordPtr max = parameters[parameters.Num() - 1].Get<FCoordPtr>();
+	FCoordPtr coord     = min;
+
+	do
 	{
-		Log(parameter.ToString(), FColor::Purple);
-		
-		if (const float* number = parameter.GetIf<float>())
-			ModTile->SetActorScale3D(FVector3d(*number, *number, *number));
-		else if (const FCoordPtr* coord = parameter.GetIf<FCoordPtr>())
-			ModTile->SetCoord(*coord);
+		coord += EDirection::Right;
+		if (tiles.Contains(coord))
+			tiles[coord]->Destroy();
 	}
+	while (coord->X() <= max->X());
 }
 
-void UBandagedModule::BeginPlay() 
-{
-	Super::BeginPlay();
-	const auto mesh = Cast<UStaticMeshComponent>(ModTile->FindComponentByClass<UStaticMeshComponent>());
-	const auto mat = mesh->GetMaterial(0);
-	const auto dynamicMat = UMaterialInstanceDynamic::Create(mat, ModTile);
-
-	dynamicMat->SetScalarParameterValue("ShowCamo", 1);
-	mesh->SetMaterial(0, dynamicMat);
-}
-void UBandagedModule::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+void UBandagedModule::BeginPlay() { Super::BeginPlay(); }
+void UBandagedModule::TickComponent(const float DeltaTime, const ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }

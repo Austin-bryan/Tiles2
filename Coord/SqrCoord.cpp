@@ -1,5 +1,6 @@
 #include "Coord/SqrCoord.h"
 #include "Logger.h"
+#include "Enums.h"
 
 const FCoord* FSqrCoord::operator+(const EDirection direction) const
 {

@@ -23,6 +23,15 @@ void NullCheck(const void* object, FColor color = defaultColor, float time = def
 
 void Path(const int n, const float time = defaultTime, const FColor color = FColor::Cyan);
 
+inline FString operator"" _f(const unsigned long long int i) { return FString::FromInt(i); }
+inline FString operator"" _f(const char* s, std::size_t) { return FString(s); }
+inline FString operator"" _f(const long double f) { return FString::SanitizeFloat(f); }
+inline FString operator"" _f(const char c)
+{
+    const std::string s(1, c);
+    return FString(s.c_str()); 
+}
+
 FString fstr(const float f);
 FString fstr(const int i);
 FString fstr(const char* c);

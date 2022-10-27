@@ -29,12 +29,11 @@ void Path(const int n, const float time, const FColor color)
 	Log(FString("Path: ") + FString::FromInt(n), color, time);
 }
 FString fstr(const char* c) { return FString(c); }
-FString fstr(const float f)       { return FString::SanitizeFloat(f); }
-FString fstr(const int i)         { return FString::FromInt(i); }
-FString fstr(const bool b)        { return b ? FString("true") : FString("false"); }
+FString fstr(const float f) { return FString::SanitizeFloat(f); }
+FString fstr(const int i)   { return FString::FromInt(i); }
+FString fstr(const bool b)  { return b ? FString("true") : FString("false"); }
 FString fstr(const char c)		
 {
-	//return FString(tocstr(c));
-	std::string s(1, c);
+	const std::string s(1, c);
 	return FString(s.c_str()); 
 }

@@ -12,7 +12,7 @@ class TILES2_API UBandagedModule : public UTileModule
 	GENERATED_BODY()
 public:
 	UBandagedModule() : UTileModule(){}
-	~UBandagedModule();
+	~UBandagedModule(){}
 	void ApplyParameters(const TArray<FParameter>& parameters) override;
 
 	void BeginPlay() override;

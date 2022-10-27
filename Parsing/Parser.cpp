@@ -2,16 +2,17 @@
 
 #include <string>
 #include "Board.h"
+#include "BoardPopulator.h"
+#include "BoardPopulatorFactory.h"
+#include "Coord.h"
 #include "Enums.h"
 #include "LexerPosition.h"
 #include "Logger.h"
+#include "ParseError.h"
+#include "ParseState.h"
+#include "ParseStateStack.h"
 #include "Tile.h"
 #include "Token.h"
-#include "Board/Populators/BoardPopulatorFactory.h"
-#include "ParseStates/ParseStateStack.h"
-#include "Parsing/ParseError.h"
-#include "Parsing/ParseStates/ParseState.h"
-#include "Populators/BoardPopulator.h"
 
 ATile* Parser::CurrentTile;
 Parser::Parser(ABoard* board, FString seed) : board{ board }, seed{ seed }
@@ -28,6 +29,8 @@ Parser::Parser(ABoard* board, FString seed) : board{ board }, seed{ seed }
 void Parser::Parse(EBoardShape& shape, FCoordPtr& size, Tiles& tiles)
 {
 	FString parsedText;
+	ATile::ResetTileCount();
+	
 	SetupBoard(shape, size);
 
 	if (size == nullptr)
@@ -38,9 +41,14 @@ void Parser::Parse(EBoardShape& shape, FCoordPtr& size, Tiles& tiles)
 	const auto populator = BoardPopulatorFactory::Create(board);
 	populator->Populate(size, tiles);
 
-	TArray<ATile*> spawnedTiles;
-	tiles.GenerateValueArray(spawnedTiles);
-	
+	TArray<ATile*> spawnedTiles = tiles.Values();
+	// for (const auto& [first, second] : tiles)
+	// 	spawnedTiles.Add(second);
+	// spawnedTiles.Sort([](const ATile& a, const ATile& b) -> bool
+	// {
+	// 	return a.ID() < b.ID();
+	// });
+	//
 	if (spawnedTiles.Num() < 1)
 	{
 		Log("no tiles");
@@ -137,6 +145,7 @@ void Parser::ParseBoardSize(FCoordPtr& coord, const EBoardShape& shape)
 	coord = FCoord::Create(shape, coordMembers[0], coordMembers[1], coordMembers[2]);
 	pos->Reset();
 }
+
 void Parser::Throw(const char    error, FString&& expected)
 {
 	Throw(error, std::move(expected), parseError);
