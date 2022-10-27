@@ -1,24 +1,47 @@
-#include "TileModules/BandagedModule.h"
 #include "Board.h"
-#include "ParameterParseState.h"
-#include "ForwardDeclares.h"
 #include "HexCoord.h"
+#include "SqrCoord.h"
 #include "TilesMap.h"
+#include "ForwardDeclares.h"
+#include "ParameterParseState.h"
+#include "TileModules/BandagedModule.h"
+
+float average(const float a, const float b) { return (a + b) / 2; }
 
 void UBandagedModule::ApplyParameters(const TArray<FParameter>& parameters)
 {
-	const Tiles& tiles  = ModTile->Board().GetTiles();
-	const FCoordPtr min = parameters[0].Get<FCoordPtr>();
-	const FCoordPtr max = parameters[parameters.Num() - 1].Get<FCoordPtr>();
-	FCoordPtr coord     = min;
-
+	Tiles& tiles		 = ModTile->Board()->GetTiles();
+	const FCoordPtr min  = parameters[0].Get<FCoordPtr>();
+	const FCoordPtr max  = parameters[parameters.Num() - 1].Get<FCoordPtr>();
+	FCoordPtr currCoord  = min;
+	FCoordPtr layerStart = min;
+	
+	float scaleX = 1;
 	do
 	{
-		coord += EDirection::Right;
-		if (tiles.Contains(coord))
-			tiles[coord]->Destroy();
+		currCoord += EDirection::Right;
+			
+		if (currCoord->X() > ModTile->Board()->MaxBounds().X)
+		{
+			layerStart += EDirection::Down;
+			if (layerStart->Z() > ModTile->Board()->MaxBounds().Z) 
+				return;
+			currCoord = layerStart;
+		}
+		
+		tiles[currCoord]->Destroy();
+		tiles[currCoord] = ModTile;
+		
+		scaleX++;
+		ModTile->SetActorScale3D(FVector(1, scaleX, 1));
+		ModTile->SetCoord(
+			MakeShared<FSqrCoord>(
+				average(min->X(), max->X()),
+				average(min->Z(), max->Z())
+			)
+		);
 	}
-	while (coord->X() <= max->X());
+	while (currCoord->X() <= max->X());
 }
 
 void UBandagedModule::BeginPlay() { Super::BeginPlay(); }

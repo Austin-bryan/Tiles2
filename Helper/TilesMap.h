@@ -16,12 +16,18 @@ public:
     void Add(FCoordPtr coord, ATile* tile);
     bool Contains(FCoordPtr coord) const;
     
-    int Num() const { return map.Num(); }
+    int Num()      const { return map.Num(); }
     bool IsEmpty() const { return map.IsEmpty(); }
 
     TArray<ATile*> Values() const;
-    TArray<FCoordPtr> Keys() const;
+    // TArray<FCoordPtr> Keys() const;
 private:
-    TMap<CoordMembers, ATile*> map;
-    TMap<CoordMembers, FCoordPtr> sliceMap;
+    TArray<TArray<TArray<ATile*>>> map;
+
+    USTRUCT()
+    struct FInner
+    {
+        TArray<ATile*> Array;
+        ATile* operator[]a      
+    };
 };

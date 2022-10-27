@@ -42,7 +42,7 @@ void ATile::SetColor(const ETileColor color) const
 	const auto mat = Cast<UMaterialInstanceConstant>(StaticLoadObject(UMaterialInstanceConstant::StaticClass(), nullptr, *path));
 	Mesh->SetMaterial(0, mat);
 }
-void ATile::SetBoard(const ABoard* newBoard)
+void ATile::SetBoard(ABoard* newBoard)
 {
 	if (board == nullptr)
 		board = newBoard;

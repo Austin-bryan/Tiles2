@@ -22,11 +22,11 @@ public:
 	void Tick    (float DeltaTime) override;
 	void SetShape(const EBoardShape) const;
 	void SetColor(const ETileColor color) const;
-	void SetBoard(const ABoard* newBoard);
+	void SetBoard(ABoard* newBoard);
 	void SetCoord(FCoordPtr coord);
 
 	int ID()			  const { return id; }
-	ABoard const& Board() const { return *board; }
+	ABoard* Board()			    { return board; }
 	FCoordPtr GetCoord()  const { return Coord; }
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadonly)
@@ -34,12 +34,10 @@ public:
 protected:
 	void BeginPlay() override;
 	FCoordPtr Coord;
-	const ABoard* board;
+	ABoard* board;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadonly)
 		UStaticMeshComponent* Mesh;
-	UPROPERTY(EditAnywhere, BlueprintReadonly)
-		int rot;
 	UPROPERTY(VisibleAnywhere, BlueprintReadonly)
 		UBoxComponent* Box;
 	void NotifyActorOnClicked(FKey buttonPressed) override;

@@ -9,23 +9,24 @@
 struct FCoord;
 class ATile;
 
-//todo:: tiles should be private map that is passed by reference to populator and gettiles returns const reference to prevent permuatiion	
 UCLASS()
 class TILES2_API ABoard : public AActor
 {
 	GENERATED_BODY()
 public:	
 	ABoard();
-	void Tick(float DeltaTime) override;
+	void Tick(float deltaTime) override;
 	
 	ATile*&       At(const FCoordPtr index)       { return tiles[index]; }
 	ATile* const& At(const FCoordPtr index) const { return tiles[index]; }
 
-	const Tiles& GetTiles()     const { return tiles; }
+	Tiles& GetTiles() { return tiles; }
+
 	FCoordPtr GetSize()			const { return Size;  }
 	EBoardShape GetBoardShape() const { return Shape; }
-
 	FVector LocationOf(FCoordPtr coord) const;
+	CoordMembers MinBounds() const;
+	CoordMembers MaxBounds() const;
 protected:
 	void BeginPlay() override;
 	EBoardShape Shape;
@@ -34,14 +35,9 @@ protected:
 		FString BoardSeed;
 	UPROPERTY(VisibleAnywhere, BlueprintReadonly)
 		USceneComponent* Root;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float X;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float Y;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float Z;
 	FCoordPtr Size;
 private:
 	static float GetCenteredPosition(const float coord);
+
 	Tiles tiles;
 };
