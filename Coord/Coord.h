@@ -35,6 +35,8 @@ struct TILES2_API FCoord
 	//todo:: remove
 	virtual bool operator<(const FCoord& other) const { return false; }
 
+	static FCoordPtr Distance(const FCoordPtr a, const FCoordPtr b);
+
 	virtual const FCoord* operator+ (const EDirection direction) const { return nullptr; }
 	virtual const FCoord* operator= (const FCoord* other)		       { return nullptr; }
 	virtual const FCoord* operator+=(const EDirection direction)       { return nullptr; }

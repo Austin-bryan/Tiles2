@@ -25,6 +25,19 @@ float FCoord::Largest() const
 		? x > z ? x : z
 		: y > z ? y : z;
 }
+
+FCoordPtr FCoord::Distance(const FCoordPtr a, const FCoordPtr b) {
+	auto dist = [](const float af, const float bf)
+	{
+		return std::abs(af - bf);	
+	};
+		
+	return MakeShared<FCoord>(
+		dist(a->X(), b->X()),
+		dist(a->Y(), b->Y()),
+		dist(a->Z(), b->Z()));
+}
+
 FString FCoord::ToString() const
 {
 	return fstr("(")  + FString::SanitizeFloat(X()) 

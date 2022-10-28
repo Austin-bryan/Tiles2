@@ -17,45 +17,42 @@ void UBandagedModule::ApplyParameters(const TArray<FParameter>& parameters)
 	FCoordPtr currCoord  = min;
 	FCoordPtr layerStart = min;
 
-	float scaleX = 1;
+	const FCoordPtr distance = FCoord::Distance(min, max);
+	float traveledX = 1, traveledZ = 1;
 
-	// float lengthX = 
-	
 	do
 	{
 		currCoord += EDirection::Right;
-			
-		if (currCoord->X() > ModTile->Board()->MaxBounds().X())
+
+		// Check if over extending X layer
+		if (traveledX > distance->X())
 		{
 			layerStart += EDirection::Down;
-			if (layerStart->Z() > ModTile->Board()->MaxBounds().Z()) 
+
+			// Check of over extending Y layer
+			if (traveledZ > distance->Z()) 
 				return;
 			currCoord = layerStart;
+			traveledX = 0;
+			traveledZ++;
 		}
 
 		if (!tiles.Contains(currCoord))
 		{
-			const auto& keys = tiles.Keys();
-
-			// Log("count: "_f + fstr(keys.Num()) + SPC + fstr(tiles.Num()));
-			for (int i = 0; i < keys.Num(); i++)
-			{
-				// Log(keys[i]->ToString() + " does not equal "_f + currCoord->ToString());
-			}
-			// Log("no contain: "_f + currCoord->ToString());
+			Log("invalid");
 			return;
 		}
+		// Destroy existing tiles and substitute
 		tiles[currCoord]->Destroy();
 		tiles[currCoord] = ModTile;
-		
-		scaleX++;
-		ModTile->SetActorScale3D(FVector(1, scaleX, 1));
+
+		ModTile->SetActorScale3D(FVector(1, distance->X() + 1, distance->Z() + 1));
 		ModTile->SetCoord(
 			MakeShared<FSqrCoord>(
 				average(min->X(), max->X()),
 				average(min->Z(), max->Z())
-			)
-		);
+			));
+		traveledX++;
 	}
 	while (currCoord->X() <= max->X());
 }
