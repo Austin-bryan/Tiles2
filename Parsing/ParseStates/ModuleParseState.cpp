@@ -8,8 +8,8 @@
 ModuleParseState::ModuleParseState(Parser& parser, const TSharedPtr<ParseState> parent) : ParameterRequesterParseState(parser, parent) { isInDelimiter = false; }
 
 void ModuleParseState::ParseAlpha(char c) { parsedText += fstr(c); }
-void ModuleParseState::ParseDelimiter()  { FinishModuleState(TRightBrace, false); }
-void ModuleParseState::ParseRightBrace() { FinishModuleState(TRightBrace, true); }
+void ModuleParseState::ParseDelimiter()   { FinishModuleState(TRightBrace, false); }
+void ModuleParseState::ParseRightBrace()  { FinishModuleState(TRightBrace, true); }
 void ModuleParseState::FinishModuleState(const char c, const bool shouldPop)
 {
 	if (parsedText == fstr(""))
@@ -47,7 +47,6 @@ void ModuleParseState::OnParametersFinished()
 {
 	ModuleFactory::Produce(TileModuleParseKey[parsedText], CurrentTile(), parsedParameters);
 }
-
 FString ModuleParseState::GetExpectedMessage() { return "Expected a module."; }
 
 bool ModuleParseState::HasParameters() const

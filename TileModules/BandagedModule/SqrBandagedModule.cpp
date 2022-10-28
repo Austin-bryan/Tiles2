@@ -38,9 +38,12 @@ void USqrBandagedModule::ApplyParameters(const TArray<FParameter>& parameters)
 		x = 0;
 	}
 	ModTile->SetActorScale3D(FVector(1, distance->X() + 1, distance->Z() + 1));
-	ModTile->SetCoord(
-		MakeShared<FSqrCoord>(
+	ModTile->SetCoord
+	(
+		MakeShared<FSqrCoord>
+		(
 			Average(min->X(), max->X()),
 			Average(min->Z(), max->Z())
-		));
+		)
+	);
 }

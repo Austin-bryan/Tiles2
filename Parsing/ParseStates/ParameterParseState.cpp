@@ -40,14 +40,15 @@ void ParameterParseState::ParseExpectedTypes(const FString& parameterSeed, const
 
 	TArray<FString> parameters;
 	seed.ParseIntoArray(parameters, *fstr(","));
-	
+
+	// todo:: make parameter key into a class that can be swapped out depending on board shape
+	// todo: ICoord is just one type, but its arguments are defined differently depending on board shape
+	// todo: Likewise with Bandaged, it gets a different number of ICoords
+	// todo: this parameter class should have parameters to be passed in, one of which is board shape
+	// todo: this will allow similar behavior for other modules that might be based off of other things,
+	// todo: such as the game mode, for example
 	for (const auto& parameter : parameters)
 	{
-		if (parameter == IVoid)
-		{
-			parser.Throw(parameter, "IVoid is not a parameter type.");
-			break;
-		}
 			 if (parameter == INumber) expectedParameters.Add(EParameter::Number);
 		else if (parameter == IString) expectedParameters.Add(EParameter::String);
 		else if (parameter == ICoord)
@@ -57,6 +58,11 @@ void ParameterParseState::ParseExpectedTypes(const FString& parameterSeed, const
 				: parser.BoardShape() == EBoardShape::Hex
 				? EParameter::HexCoord
 				: EParameter::TriCoord);
+		else if (parameter == IVoid)
+		{
+			parser.Throw(parameter, "IVoid is not a parameter type.");
+			break;
+		}
 	}
 	if (!waitForLeftParen)
 		PushNextState();
