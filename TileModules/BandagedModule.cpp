@@ -36,12 +36,12 @@ void UBandagedModule::ApplyParameters(const TArray<FParameter>& parameters)
 			traveledX = 0;
 			traveledZ++;
 		}
-
 		if (!tiles.Contains(currCoord))
 		{
 			Log("invalid");
 			return;
 		}
+		
 		// Destroy existing tiles and substitute
 		tiles[currCoord]->Destroy();
 		tiles[currCoord] = ModTile;
