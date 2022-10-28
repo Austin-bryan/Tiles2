@@ -28,8 +28,6 @@ struct TILES2_API FCoord
 
 	bool operator==(const FCoord& other) const
 	{
-		// Log(ToString() + ";     " + other.ToString());
-		// Log(fstr(x == other.x && y == other.y && z == other.z), FColor::Red);
 		return x == other.x && y == other.y && z == other.z;
 	}
 	bool operator!=(const FCoord& other) const { return !(*this == other); }
@@ -46,11 +44,6 @@ struct TILES2_API FCoord
 	virtual float GetOffsetX() const { return 0; }
 	virtual float GetOffsetZ() const { return 0; }
 
-	// Tuple 'CoordMembers' is used as FCoord is abstract
-	// static CoordMembers GetMembers(const FCoordPtr coord)
-	// {
-	// 	return CoordMembers(coord->X(), coord->Y(), coord->Z());
-	// }
 	// ReSharper disable once CppNonExplicitConversionOperator
 	operator FString() const { return ToString(); }
 protected:
