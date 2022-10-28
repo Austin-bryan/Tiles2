@@ -18,7 +18,7 @@ void UHexBandagedModule::ApplyParameters(const TArray<FParameter>& parameters)
 
 	// First layer needs to keep one tile, so this skips it	
 	int x = 1;
-	currCoord += EDirection::Down;
+	currCoord += EDirection::DownRight;
 	
 	for (int z = 0; z <= distance->Z(); z++)
 	{
@@ -32,9 +32,9 @@ void UHexBandagedModule::ApplyParameters(const TArray<FParameter>& parameters)
 			
 			tiles[currCoord]->Destroy();
 			tiles[currCoord] = ModTile;
-			currCoord += EDirection::Down;
+			currCoord += EDirection::DownRight;
 		}
-		layerStart += EDirection::DownRight;
+		layerStart += EDirection::Down;
 		currCoord = layerStart;
 		x = 0;
 	}
