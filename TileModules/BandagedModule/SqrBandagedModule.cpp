@@ -9,46 +9,38 @@ void USqrBandagedModule::ApplyParameters(const TArray<FParameter>& parameters)
 {
 	Tiles& tiles		 = ModTile->Board()->GetTiles();
 	const FCoordPtr min  = parameters[0].Get<FCoordPtr>();
-	const FCoordPtr max  = parameters[parameters.Num() - 1].Get<FCoordPtr>();
+	const FCoordPtr max  = parameters[1].Get<FCoordPtr>();
 	FCoordPtr currCoord  = min;
 	FCoordPtr layerStart = min;
 
 	const FCoordPtr distance = FCoord::Distance(min, max);
-	float traveledX = 1, traveledZ = 1;
 
-	do
+	// First layer needs to keep one tile, so this skips it	
+	int x = 1;
+	currCoord += EDirection::Right;
+	
+	for (int z = 0; z <= distance->Z(); z++)
 	{
-		currCoord += EDirection::Right;
-
-		// Check if over extending X layer
-		if (traveledX > distance->X())
+		for (; x <= distance->X(); x++)
 		{
-			layerStart += EDirection::Down;
-
-			// Check of over extending Y layer
-			if (traveledZ > distance->Z()) 
+			if (!tiles.Contains(currCoord))
+			{
+				Log("tile out of bounds");
 				return;
-			currCoord = layerStart;
-			traveledX = 0;
-			traveledZ++;
+			}
+			
+			tiles[currCoord]->Destroy();
+			tiles[currCoord] = ModTile;
+			currCoord += EDirection::Right;
 		}
-		if (!tiles.Contains(currCoord))
-		{
-			Log("invalid");
-			return;
-		}
-		
-		// Destroy existing tiles and substitute
-		tiles[currCoord]->Destroy();
-		tiles[currCoord] = ModTile;
-
-		ModTile->SetActorScale3D(FVector(1, distance->X() + 1, distance->Z() + 1));
-		ModTile->SetCoord(
-			MakeShared<FSqrCoord>(
-				Average(min->X(), max->X()),
-				Average(min->Z(), max->Z())
-			));
-		traveledX++;
+		layerStart += EDirection::Down;
+		currCoord = layerStart;
+		x = 0;
 	}
-	while (currCoord->X() <= max->X());
+	ModTile->SetActorScale3D(FVector(1, distance->X() + 1, distance->Z() + 1));
+	ModTile->SetCoord(
+		MakeShared<FSqrCoord>(
+			Average(min->X(), max->X()),
+			Average(min->Z(), max->Z())
+		));
 }

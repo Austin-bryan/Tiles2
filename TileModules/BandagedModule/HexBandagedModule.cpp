@@ -9,7 +9,8 @@ void UHexBandagedModule::ApplyParameters(const TArray<FParameter>& parameters)
 {
 	Tiles& tiles		 = ModTile->Board()->GetTiles();
 	const FCoordPtr min  = parameters[0].Get<FCoordPtr>();
-	const FCoordPtr max  = parameters[parameters.Num() - 1].Get<FCoordPtr>();
+	const FCoordPtr mid  = parameters[1].Get<FCoordPtr>();
+	const FCoordPtr max  = parameters[2].Get<FCoordPtr>();
 	FCoordPtr currCoord  = min;
 	FCoordPtr layerStart = min;
 
