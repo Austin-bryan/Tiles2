@@ -1,7 +1,6 @@
 #include "Board/Populators/BoardPopulator.h"
 #include "Kismet/GameplayStatics.h"
-#include "Coord/Coord.h"
-#include "Board/Board.h"
+#include "Board.h"
 #include "Tile.h"
 #include "Enums.h"
 

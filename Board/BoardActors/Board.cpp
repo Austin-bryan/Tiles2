@@ -1,7 +1,8 @@
-#include "Board/Board.h"
+#include "Board.h"
 #include "MathUtil.h"
 #include "Parser.h"
 #include "Coord.h"
+#include "GameFramework/Actor.h"
 
 ABoard::ABoard()
 {

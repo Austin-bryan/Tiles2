@@ -1,12 +1,12 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Enums.h"
 #include "TilesMap.h"
 #include "ForwardDeclares.h"
 #include "Board.generated.h"
 
 class ATile;
+enum class EBoardShape;
 
 UCLASS()
 class TILES2_API ABoard : public AActor
@@ -37,6 +37,5 @@ protected:
 	FCoordPtr Size;
 private:
 	static float GetCenteredPosition(const float coord);
-
 	Tiles tiles;
 };

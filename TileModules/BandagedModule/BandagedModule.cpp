@@ -1,9 +1,4 @@
 #include "BandagedModule.h"
-#include "Board.h"
-#include "CoordHeaders.h"
-#include "TilesMap.h"
-#include "ForwardDeclares.h"
-#include "ParameterParseState.h"
 
 float UBandagedModule::Average(const float a, const float b) { return (a + b) / 2; }
 

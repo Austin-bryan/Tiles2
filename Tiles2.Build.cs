@@ -20,6 +20,7 @@ public class Tiles2 : ModuleRules
 			"Helper",
 			"Tile",
 			"TileModules",
+			"Board/BoardActors",
 			"TileModules/BandagedModule"
 		});
 
