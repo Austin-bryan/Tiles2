@@ -45,8 +45,6 @@ void ModuleParseState::ParseLeftParen()
 }
 void ModuleParseState::OnParametersFinished()
 {
-	for (const auto& parameter : parsedParameters)
-		Log(fstr("Module Param: ") + parameter.ToString(), FColor::Red);
 	ModuleFactory::Produce(TileModuleParseKey[parsedText], CurrentTile(), parsedParameters);
 }
 

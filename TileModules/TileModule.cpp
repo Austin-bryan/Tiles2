@@ -24,9 +24,8 @@ UTileModule* UTileModule::Create(ATile* tile, const TArray<FParameter>& paramete
 void UTileModule::BeginPlay()
 {
 	Super::BeginPlay();
-	Log("Begin");
 }
-void UTileModule::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+void UTileModule::TickComponent(const float DeltaTime, const ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }

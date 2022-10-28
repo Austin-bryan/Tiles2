@@ -103,10 +103,7 @@ void ParameterParseState::OnPopped()
 	
 	const auto requester = StaticCastSharedPtr<ParameterRequesterParseState>(parent);
 	for (auto& parameter : parsedParameters)
-	{
-		Log(parameter.ToString(), FColor::Green);
 		requester->AddParameter(std::move(parameter));
-	}
 	requester->OnParametersFinished();
 }
 
