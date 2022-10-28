@@ -13,6 +13,9 @@
 #include "ParseStateStack.h"
 #include "Tile.h"
 #include "Token.h"
+#include "ParameterKey.h"
+
+ParameterKey Parser::parameterKey;
 
 ATile* Parser::CurrentTile;
 Parser::Parser(ABoard* board, FString seed) : board{ board }, seed{ seed }
@@ -32,6 +35,7 @@ void Parser::Parse(EBoardShape& shape, FCoordPtr& size, Tiles& tiles)
 	ATile::ResetTileCount();
 	
 	SetupBoard(shape, size);
+	parameterKey = ParameterKey(shape);
 
 	if (size == nullptr)
 	{

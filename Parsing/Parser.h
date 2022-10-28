@@ -10,6 +10,7 @@ class ATile;
 class LexerPosition;
 class ParseError;
 class ParseStateStack;
+class ParameterKey;
 /**
  * Categorizes seed text into tokens
  */
@@ -25,10 +26,13 @@ public:
 	void Throw(const FString error, FString&& expected, const TUniquePtr<ParseError>& errorThrower);
 	void Parse(EBoardShape& shape, FCoordPtr& size, Tiles& tiles);
 
+	ParameterKey& GetParameterKey() const { return parameterKey; }
 	EBoardShape BoardShape() const { return boardShape; }
 protected:
 	static ATile* CurrentTile;
 private:
+	static ParameterKey parameterKey;
+	
 	ABoard* board;
 	FString boardSeed, seed, tileSeed;
 	char currentChar;

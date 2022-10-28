@@ -8,6 +8,9 @@
 void USqrBandagedModule::ApplyParameters(const TArray<FParameter>& parameters)
 {
 	Tiles& tiles		 = ModTile->Board()->GetTiles();
+
+	if (!parameters[0].GetIf<FCoordPtr>())
+		return;
 	const FCoordPtr min  = parameters[0].Get<FCoordPtr>();
 	const FCoordPtr max  = parameters[1].Get<FCoordPtr>();
 	FCoordPtr currCoord  = min;

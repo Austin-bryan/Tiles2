@@ -4,6 +4,7 @@
 #include "Token.h"
 #include "TileModules/ModuleFactory.h"
 #include "ParameterParseState.h"
+#include "ParameterKey.h"
 
 ModuleParseState::ModuleParseState(Parser& parser, const TSharedPtr<ParseState> parent) : ParameterRequesterParseState(parser, parent) { isInDelimiter = false; }
 
@@ -39,7 +40,7 @@ void ModuleParseState::ParseLeftParen()
 		hasFinishedParameters = true;
 		PushState(EBoardParseState::Parameter);
 
-		if (const auto parameterKey = ModuleParameterKey.Find(parsedText))
+		if (const auto parameterKey = parser.GetParameterKey().Find(parsedText))
 			StaticCastSharedPtr<ParameterParseState>(CurrentState())->ParseExpectedTypes(*parameterKey);
 	}
 }
@@ -51,11 +52,11 @@ FString ModuleParseState::GetExpectedMessage() { return "Expected a module."; }
 
 bool ModuleParseState::HasParameters() const
 {
-	return IsModuleValid() && ModuleParameterKey[parsedText] != "void"; 
+	return IsModuleValid() && parser.GetParameterKey()[parsedText] != "void"; 
 }
 bool ModuleParseState::IsModuleValid() const
 {
-	if (ModuleParameterKey.Contains(parsedText))
+	if (parser.GetParameterKey().Contains(parsedText))
 		return true;
 	parser.Throw(parsedText, "Invalid module identifier");
 	return false;

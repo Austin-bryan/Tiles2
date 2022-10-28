@@ -12,8 +12,6 @@
 	Gear (sqr based) Swiping a layer automatically swipes adjanct layers in opposite direction
 */	
 
-FString format(const std::initializer_list<FString> args);
-
 constexpr char TLeftBrace   = '{', TRightBrace = '}';
 constexpr char TLeftParen   = '(', TRightParen = ')';
 constexpr char TLeftAngle   = '<', TRightAngle = '>';
@@ -27,9 +25,6 @@ const FString INormal   = "",  IRift ="rft", IWrap = "z",   ICircuitWrap = "cir"
 const FString INoSpawn  = "#", ILink ="lnk", ISwap = "swp", IRotator	 = "rot", ICorrectCounter = "cnt";
 const FString IGap      = "x", IIron ="irn", ICamo = "cmo", IMirrorWrap  = "mir", ITeleportWrap   = "tel";
 const FString IVoid     = "void", IString = "string", INumber = "number", ICoord = "coord";
-const FString ISqrCoord = "sqrCoord";
-const FString IHexCoord = "hexCoord";
-const FString ITriCoord = "triCoord";
 const FString TSqrBoard = "sqr";
 const FString THexBoard = "hex";
 const FString TTriBoard = "tri";
@@ -53,34 +48,7 @@ const TMap<FString, EModule> TileModuleParseKey = TMap<FString, EModule>
 	{ IRotator,	   EModule::Rotator },     { ICorrectCounter, EModule::CorrectCounter },
 	{ IMirrorWrap,  EModule::MirrorWrap },  { ITeleportWrap,   EModule::TeleportWrap },
 };
-const TMap<FString, FString> ModuleParameterKey = TMap<FString, FString>
-{
-		{ INormal,  IVoid }, { IRift, IVoid }, { IWrap,  IVoid },
-		{ INoSpawn, IVoid }, { ILink, IVoid }, { ISwap,  IVoid },
-		{ IGap,	   IVoid }, { IIron, IVoid }, { ICloud, IVoid },
-	    { ICamo,    IVoid },
-		{ ICircuitWrap, IVoid },
-		{ IRotator,	   IString }, { ICorrectCounter,format({INumber, INumber}) },
-		{ IMirrorWrap,  IVoid },   { ITeleportWrap,  format({INumber, IString, INumber, INumber})},
-        { IBandaged, format({ICoord, ICoord}) },
-		{ ISqrCoord, format({INumber, INumber}) },
-		{ ITriCoord, format({INumber, INumber, INumber}) },
-		{ IHexCoord, format({INumber, INumber, INumber}) },
-};
-inline FString format(const std::initializer_list<FString> args)
-{
-	FString result;
-	
-	int i = 0;
-	for (auto& s : args)
-	{
-		result += s;
-		if (i < args.size() - 1)
-			result += fstr(", ");
-		i++;
-	}
-	return result;
-}
+
 /*
  	Iron - Infnite number of swipes, but once swiped into correct position it nails itself down and becomes a wraptile
 		Notes:
