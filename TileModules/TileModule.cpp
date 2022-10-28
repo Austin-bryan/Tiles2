@@ -1,6 +1,4 @@
 #include "TileModules/TileModule.h"
-#include "Components/StaticMeshComponent.h"
-#include "AssetDir.h"
 
 UTileModule::UTileModule()
 {

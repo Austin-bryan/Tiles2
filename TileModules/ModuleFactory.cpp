@@ -1,7 +1,11 @@
-#include "TileModules/ModuleFactory.h"
-#include "Parsing/ParseStates/ParameterParseState.h"
+#include "ModuleFactory.h"
+
+#include "Board.h"
 #include "TileModule.h"
 #include "Enums.h"
+#include "SqrBandagedModule.h"
+#include "HexBandagedModule.h"
+#include "ParameterParseState.h"
 
 class UBandagedModule;
 class UCamoModule;
@@ -26,7 +30,19 @@ UTileModule* ModuleFactory::Produce(const EModule module, ATile* modTile, const 
     // case EModule::NoSpawn:        return UTileModule::Create<UNoSpawnModule>(modTile, parameters);
     // case EModule::Rotator:        return UTileModule::Create<URotatorModule>(modTile, parameters);
     // case EModule::CorrectCounter: return UTileModule::Create<UCorrectCounterModule>(modTile, parameters);
-    case EModule::Bandaged:       return UTileModule::Create<UBandagedModule>(modTile, parameters);
-    default:                      return nullptr;
+    case EModule::Bandaged:
+    {
+        switch(modTile->Board()->GetBoardShape())
+        {
+        case EBoardShape::Square: 
+            return UTileModule::Create<USqrBandagedModule>(modTile, parameters);
+        case EBoardShape::Hex:
+            return UTileModule::Create<UHexBandagedModule>(modTile, parameters);
+        case EBoardShape::Triangle: break;
+            return UTileModule::Create<USqrBandagedModule>(modTile, parameters);
+        default: throw std::invalid_argument("Board shape ill defined.");
+        }
+    }
+    default: return nullptr;
     }
 }

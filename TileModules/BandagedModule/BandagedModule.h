@@ -13,8 +13,8 @@ class TILES2_API UBandagedModule : public UTileModule
 public:
 	UBandagedModule() : UTileModule(){}
 	~UBandagedModule(){}
-	void ApplyParameters(const TArray<FParameter>& parameters) override;
-
-	void BeginPlay() override;
-	void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	// void ApplyParameters(const TArray<FParameter>& parameters) override;
+protected:
+	float Average(const float a, const float b);
 };
+

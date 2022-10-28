@@ -1,15 +1,11 @@
+#include "HexBandagedModule.h"
 #include "Board.h"
-#include "Coord.h"
-#include "HexCoord.h"
-#include "SqrCoord.h"
+#include "CoordHeaders.h"
 #include "TilesMap.h"
 #include "ForwardDeclares.h"
 #include "ParameterParseState.h"
-#include "TileModules/BandagedModule.h"
 
-float average(const float a, const float b) { return (a + b) / 2; }
-
-void UBandagedModule::ApplyParameters(const TArray<FParameter>& parameters)
+void UHexBandagedModule::ApplyParameters(const TArray<FParameter>& parameters)
 {
 	Tiles& tiles		 = ModTile->Board()->GetTiles();
 	const FCoordPtr min  = parameters[0].Get<FCoordPtr>();
@@ -49,16 +45,10 @@ void UBandagedModule::ApplyParameters(const TArray<FParameter>& parameters)
 		ModTile->SetActorScale3D(FVector(1, distance->X() + 1, distance->Z() + 1));
 		ModTile->SetCoord(
 			MakeShared<FSqrCoord>(
-				average(min->X(), max->X()),
-				average(min->Z(), max->Z())
+				Average(min->X(), max->X()),
+				Average(min->Z(), max->Z())
 			));
 		traveledX++;
 	}
 	while (currCoord->X() <= max->X());
-}
-
-void UBandagedModule::BeginPlay() { Super::BeginPlay(); }
-void UBandagedModule::TickComponent(const float DeltaTime, const ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }

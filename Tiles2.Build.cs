@@ -18,7 +18,9 @@ public class Tiles2 : ModuleRules
 			"Parsing",
 			"Parsing/ParseStates",
 			"Helper",
-			"Tile"
+			"Tile",
+			"TileModules",
+			"TileModules/BandagedModule"
 		});
 
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" });
