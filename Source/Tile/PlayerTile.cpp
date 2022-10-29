@@ -3,5 +3,5 @@
 
 APlayerTile::APlayerTile(): ATile()
 {
-    Log("Player Tile");
+    // Log("Player Tile");
 }

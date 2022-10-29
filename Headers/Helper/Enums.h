@@ -13,10 +13,21 @@ enum class EDirection
 	Up, Down, Left, Right,
 	UpLeft, UpRight, DownLeft, DownRight
 };
-enum class ETileColor
+UENUM(BlueprintType)
+enum class ETileColor : uint8
 {
-	None, White, Red, Orange, Yellow, Green, 
-	Cyan, Blue, Purple, Pink, Magenta, Black
+	None    UMETA(DisplayName = "None"),
+	White   UMETA(DisplayName = "White"),
+	Red     UMETA(DisplayName = "Red"),
+	Orange  UMETA(DisplayName = "Orange"),
+	Yellow  UMETA(DisplayName = "Yellow"),
+	Green   UMETA(DisplayName = "Green"), 
+	Cyan    UMETA(DisplayName = "Cyan"),
+	Blue    UMETA(DisplayName = "Blue"),
+	Purple  UMETA(DisplayName = "Purple"),
+	Pink    UMETA(DisplayName = "Pink"),
+	Magenta UMETA(DisplayName = "Magenta"),
+	Black   UMETA(DisplayName = "Black")
 };
 enum class EModule
 {
@@ -48,3 +59,12 @@ inline TMap<ETileColor, FString> TileColorStrings =
 	{ ETileColor::Magenta, FString("Magenta") },
 	{ ETileColor::Black,   FString("Black") }
 };
+
+inline bool operator==(ETileColor lhs, ETileColor rhs)
+{
+	return static_cast<int>(lhs) == static_cast<int>(rhs);
+}
+inline bool operator!=(ETileColor lhs, ETileColor rhs)
+{
+	return !(lhs == rhs);
+}

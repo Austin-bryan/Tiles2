@@ -8,7 +8,7 @@ class UBoxComponent;
 class UTextRenderComponent;
 class ABoard;
 enum class EBoardShape;
-enum class ETileColor;
+enum class ETileColor : uint8;
 
 UCLASS()
 class TILES2_API ATile : public AActor
