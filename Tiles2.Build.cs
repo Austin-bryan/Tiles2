@@ -12,16 +12,27 @@ public class Tiles2 : ModuleRules
 
 		PrivateIncludePaths.AddRange(new string[]
 		{
-			"Coord",
-			"Board",
-			"Board/Populators",
-			"Parsing",
-			"Parsing/ParseStates",
-			"Helper",
-			"Tile",
-			"TileModules",
-			"Board/BoardActors",
-			"TileModules/BandagedModule"
+			"Headers/Coord",
+			"Headers/Board",
+			"Headers/Board/Populators",
+			"Headers/Parsing",
+			"Headers/Parsing/ParseStates",
+			"Headers/Helper",
+			"Headers/Tile",
+			"Headers/TileModules",
+			"Headers/Board/BoardActors",
+			"Headers/TileModules/BandagedModule",
+			
+			"Source/Coord",
+			"Source/Board",
+			"Source/Board/Populators",
+			"Source/Parsing",
+			"Source/Parsing/ParseStates",
+			"Source/Helper",
+			"Source/Tile",
+			"Source/TileModules",
+			"Source/Board/BoardActors",
+			"Source/TileModules/BandagedModule"
 		});
 
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" });
