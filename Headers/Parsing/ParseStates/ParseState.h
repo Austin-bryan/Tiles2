@@ -5,6 +5,12 @@
 
 class Parser;
 class ATile;
+
+enum class EBoardParseState
+{
+	Default, Module, Parameter, Number, String, Coord, Last
+};
+
 /**
  * 
  */

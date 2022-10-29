@@ -1,3 +1,18 @@
-tri (5, 5, 5) | w/ b/b/b/ g/g/g/g/g/ y/y/y/y/y/y/y/ r/r/r/r/r/r/r/r/r;
-sqr (5, 5)    | w/w/w/w/w/ b/b/b/b/b/ g/g/g/g/g/ y/y/y/y/y/ r/r/r/r/r;
-hex (5, 5, 5) | w/w/w/ b/b/b/b/ g/g/g/g/g/ y/y/y/y/ r/r/r;
+sqr (3, 3) | b{cmo, bnd((-1, -1), (1, -1))}/b/b/ g/g/g/ r/r/r;
+sqr (3, 3) | b{cmo, bnd((-1, -1), (-1, 1))}/b/b/ g/g/g/ r/r/r;
+sqr (3, 3) | b{bnd((-1, -1), (1, 0))}/b/b/ g/g/g/ r/r/r;
+
+sqr (5, 5) | r/r/r/r/r/ o/o/o/o/o/ g/g/g/g/g/ b/b/b/b/b/ c/c/c/c/c;
+sqr (4, 4) | r/r/r/r/ g/g/g/g/ b/b/b/b/ c/c/c/c;
+sqr (3, 4) | n/n/n/ g/g/g/ b/b/b/ c/c/c;
+sqr (4, 3) | r/o/y/g/ g/c/b/p/ n/k/w/r;
+sqr (3, 4) | r/o/y/ g/c/b/ p/n/k/ w/m/r;
+
+hex (5, 5, 5) | r/r/r/ b/b/b/b/ g/g/g{bnd((0, 1, -1), (0, -1, 1))}/g/g/ n/n/n/n/ k/k/k;
+hex (5, 5, 5) | r/r/r/ b/b/b/b/ g/g/g{bnd((0, 1, -1), (0, -1, 1), (0, -1, 1))}/g/g/ n/n/n/n/ k/k/k;
+
+hex (7, 7, 7) | r/r/r/r/ b/b/b/b/b/ g/g/g/g/g/g/ n/n/n/n/n/n{bnd((2, 0, -2), (3, -1, -2), (0, 2, -2))}/n/ k/k/k/k/k/k/ p/p/p/p/p/ c/c/c/c;
+hex (7, 7, 7) | r/r/r/r/ b/b/b/b/b/ g/g/g/g/g/g/ n/n/n/n/n/n{bnd((0, 2, -2), (3, -1, -2), (2, -2, 0))}/n/ k/k/k/k/k/k/ p/p/p/p/p/ c/c/c/c;
+hex (7, 7, 7) | r/r/r/r/ b/b/b/b/b/ g/g/g/g/g/g/ n/n/n/n/n/n{bnd((0, 2, -2), (3, -1, -2), (-2, 0, 2))}/n/ k/k/k/k/k/k/ p/p/p/p/p/ c/c/c/c;
+hex (7, 7, 7) | r/r/r/r/ b/b/b/b/b/ g/g/g/g/g/g/ n/n/n/n/n/n{bnd((0, 2, -2), (3, -1, -2), (-2, 2, 0))}/n/ k/k/k/k/k/k/ p/p/p/p/p/ c/c/c/c;
+hex (7, 7, 7) | r/r/r/r/ b/b/b/b/b/ g/g/g/g/g/g/ n/n/n/n/n/n{bnd((0, 2, -2), (3, -1, -2), (-2, 1, 1))}/n/ k/k/k/k/k/k/ p/p/p/p/p/ c/c/c/c;

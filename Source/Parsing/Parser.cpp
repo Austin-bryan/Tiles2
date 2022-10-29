@@ -14,6 +14,7 @@
 #include "Tile.h"
 #include "Token.h"
 #include "ParameterKey.h"
+#include "TileColor.h"
 
 ParameterKey Parser::parameterKey;
 

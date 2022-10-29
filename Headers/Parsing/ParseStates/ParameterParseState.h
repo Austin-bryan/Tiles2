@@ -13,6 +13,11 @@ struct FSqrCoord;
 struct FHexCoord;
 struct FTriCoord;
 
+enum class EParameter
+{
+	Void, Number, String, Coord, SqrCoord, TriCoord, HexCoord
+};
+
 /**
  * 
  */

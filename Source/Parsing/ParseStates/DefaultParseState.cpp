@@ -2,6 +2,7 @@
 #include "Token.h"
 #include "Parser.h"
 #include "Tile.h"
+#include "TileColor.h"
 
 DefaultParseState::DefaultParseState(Parser& parser, const TSharedPtr<ParseState> parent) : ParseState(parser, parent){ }
 DefaultParseState::~DefaultParseState() { }

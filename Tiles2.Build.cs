@@ -22,6 +22,7 @@ public class Tiles2 : ModuleRules
 			"Headers/TileModules",
 			"Headers/Board/BoardActors",
 			"Headers/TileModules/BandagedModule",
+			"Headers/Enums",
 			
 			"Source/Coord",
 			"Source/Board",
@@ -32,7 +33,8 @@ public class Tiles2 : ModuleRules
 			"Source/Tile",
 			"Source/TileModules",
 			"Source/Board/BoardActors",
-			"Source/TileModules/BandagedModule"
+			"Source/TileModules/BandagedModule",
+			"Source/Enums",
 		});
 
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" });
