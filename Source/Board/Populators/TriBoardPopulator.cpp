@@ -1,10 +1,10 @@
-#include "TriangleBoardPopulator.h"
+#include "TriBoardPopulator.h"
 #include "Board.h"
 #include "Enums.h"
 #include "Tile.h"
 #include "TriCoord.h"
 
-void TriangleBoardPopulator::Populate(const FCoordPtr size, Tiles& tiles)
+void TriBoardPopulator::Populate(const FCoordPtr size, Tiles& tiles)
 {
 	/* size->X controls column loop, size->Z controls row loop, while size->Y doesn't control any loops
 	 * startCoord positions itself in the topleft most tile. 

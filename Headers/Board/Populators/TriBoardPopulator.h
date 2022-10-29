@@ -6,10 +6,9 @@
 class ATile;
 class ABoard;
 
-class TILES2_API TriangleBoardPopulator : public BoardPopulator
+class TILES2_API TriBoardPopulator : public BoardPopulator
 {
 public:
-	TriangleBoardPopulator(ABoard* const board, const EBoardShape& shape) :
-		BoardPopulator(board, shape){ }
+	explicit TriBoardPopulator(ABoard* const board) : BoardPopulator(board){ }
 	void Populate(FCoordPtr, Tiles& tiles) override;
 };

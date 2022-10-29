@@ -7,4 +7,6 @@ UCLASS()
 class TILES2_API APlayerTile : public ATile
 {
 	GENERATED_BODY()
+public:
+	APlayerTile();
 };

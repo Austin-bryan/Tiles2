@@ -4,14 +4,14 @@
 #include "TriCoord.generated.h"
 
 enum class EDirection;
-class TriangleBoardPopulator;
+class TriBoardPopulator;
 
 USTRUCT()
 struct TILES2_API FTriCoord : public FCoord
 {
 	GENERATED_BODY()
 	
-	friend class TriangleBoardPopulator;
+	friend class TriBoardPopulator;
 public:
 	FTriCoord();
 	explicit FTriCoord(const bool isUp);

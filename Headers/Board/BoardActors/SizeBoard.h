@@ -10,5 +10,5 @@ UCLASS()
 class TILES2_API ASizeBoard : public ABoard
 {
 	GENERATED_BODY()
-
+	UClass* TileClass() const override;
 };

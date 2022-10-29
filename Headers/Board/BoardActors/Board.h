@@ -26,6 +26,8 @@ public:
 	FVector LocationOf(FCoordPtr coord) const;
 	FCoord MinBounds() const;
 	FCoord MaxBounds() const;
+	
+	virtual UClass* TileClass() const { return nullptr; }
 protected:
 	void BeginPlay() override;
 	EBoardShape Shape;
