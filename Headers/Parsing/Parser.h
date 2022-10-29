@@ -28,6 +28,8 @@ public:
 
 	ParameterKey& GetParameterKey() const { return parameterKey; }
 	EBoardShape BoardShape() const { return boardShape; }
+	TMap<char, ETileColor> TileColorParseKey;
+	
 protected:
 	static ATile* CurrentTile;
 private:
@@ -39,6 +41,7 @@ private:
 	TUniquePtr<LexerPosition> pos;
 	ParseStateStack* stack;
 	EBoardShape boardShape;
+
 
 	TUniquePtr<ParseError> parseError;
 	void SetupBoard(EBoardShape& shape, FCoordPtr& coord);

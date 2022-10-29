@@ -27,6 +27,14 @@ Parser::Parser(ABoard* board, FString seed) : board{ board }, seed{ seed }
 	parseError = MakeUnique<ParseError>(tileSeed);
 	pos        = MakeUnique<LexerPosition>(tileSeed);
 	stack      = new ParseStateStack(*this);
+
+	TileColorParseKey = TMap<char, ETileColor>
+	{
+		{ 'w', ETileColor::White },   { 'r', ETileColor::Red },   { 'o', ETileColor::Orange },
+		{ 'y', ETileColor::Yellow },  { 'g', ETileColor::Green }, { 'c', ETileColor::Cyan },
+		{ 'b', ETileColor::Blue },    { 'p', ETileColor::Purple },{ 'n', ETileColor::Pink },
+		{ 'm', ETileColor::Magenta }, { 'k', ETileColor::Black }
+	};
 }
 
 void Parser::Parse(EBoardShape& shape, FCoordPtr& size, Tiles& tiles)

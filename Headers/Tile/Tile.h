@@ -20,7 +20,7 @@ public:
 	ATile();
 	void Tick    (float DeltaTime) override;
 	void SetShape(const EBoardShape) const;
-	void SetColor(const ETileColor color) const;
+	void SetColor(const ETileColor color);
 	void SetBoard(ABoard* newBoard);
 	void SetCoord(FCoordPtr coord);
 

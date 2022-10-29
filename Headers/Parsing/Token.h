@@ -1,8 +1,6 @@
 #pragma once
-#include <initializer_list>
 #include "CoreMinimal.h"
 #include "Enums.h"
-#include "Logger.h"
 
 /*
 	Board Modes:
@@ -21,25 +19,19 @@ constexpr char TAlpha       = 'A', TDigit      = 'D';
 constexpr char TSemiColon   = ';', TQuotation  = '\"';
 constexpr char TNegation	= '-';
 
-const FString INormal   = "",  IRift ="rft", IWrap = "z",   ICircuitWrap = "cir", IBandaged       = "bnd", ICloud = "cld";
-const FString INoSpawn  = "#", ILink ="lnk", ISwap = "swp", IRotator	 = "rot", ICorrectCounter = "cnt";
-const FString IGap      = "x", IIron ="irn", ICamo = "cmo", IMirrorWrap  = "mir", ITeleportWrap   = "tel";
+const FString INormal   = "",  IRift = "rft", IWrap = "z",   ICircuitWrap = "cir", IBandaged       = "bnd", ICloud = "cld";
+const FString INoSpawn  = "#", ILink = "lnk", ISwap = "swp", IRotator	  = "rot", ICorrectCounter = "cnt";
+const FString IGap      = "x", IIron = "irn", ICamo = "cmo", IMirrorWrap  = "mir", ITeleportWrap   = "tel";
 const FString IVoid     = "void", IString = "string", INumber = "number", ICoord = "coord";
 const FString TSqrBoard = "sqr";
 const FString THexBoard = "hex";
 const FString TTriBoard = "tri";
 
 // ReSharper disable once StringLiteralTypo
-const FString Colors	= "wroygcpnmk";
-const FString Tokens	= "{}()<>,.|/\"-;";
-const TMap<char, ETileColor>  TileColorParseKey = TMap<char, ETileColor>
-{
-	{ 'w', ETileColor::White },   { 'r', ETileColor::Red },   { 'o', ETileColor::Orange },
-	{ 'y', ETileColor::Yellow },  { 'g', ETileColor::Green }, { 'c', ETileColor::Cyan },
-	{ 'b', ETileColor::Blue },    { 'p', ETileColor::Purple },{ 'n', ETileColor::Pink },
-	{ 'm', ETileColor::Magenta }, { 'k', ETileColor::Black }
-};
-const TMap<FString, EModule> TileModuleParseKey = TMap<FString, EModule>
+const FString Colors = "wroygcpnmk";
+const FString Tokens = "{}()<>,.|/\"-;";
+
+const auto TileModuleParseKey = TMap<FString, EModule>
 {
 	{ INormal,      EModule::Normal  },     { IRift,	       EModule::Rift },     { IWrap,  EModule::Wrap },
 	{ ICircuitWrap, EModule::CircuitWrap }, { IBandaged,	   EModule::Bandaged }, { ICamo,  EModule::Camo },

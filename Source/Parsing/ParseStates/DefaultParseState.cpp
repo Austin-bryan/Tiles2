@@ -7,11 +7,13 @@ DefaultParseState::DefaultParseState(Parser& parser, const TSharedPtr<ParseState
 DefaultParseState::~DefaultParseState() { }
 void DefaultParseState::ParseAlpha(const char c)
 {
-	if (TileColorParseKey.Contains(c))
+	char x = 'r';
+	
+	if (parser.TileColorParseKey.Contains(c))
 	{
 		if (currentColor == ETileColor::None)
 		{
-			currentColor = TileColorParseKey[c];
+			currentColor = parser.TileColorParseKey[c];
 			CurrentTile()->SetColor(currentColor);
 		}
 		else parser.Throw(c, "/");

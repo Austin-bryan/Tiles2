@@ -36,11 +36,16 @@ ATile::ATile()
 }
 
 void ATile::BeginPlay() { Super::BeginPlay(); }
-void ATile::SetColor(const ETileColor color) const
+void ATile::SetColor(const ETileColor color)
 {
-	const FString path = fstr("MaterialInstanceConstant'/Game/Materials/TileColors/MI_") + TileColorStrings[color] + fstr("Tile.MI_") + TileColorStrings[color] + fstr("Tile'");
-	const auto mat = Cast<UMaterialInstanceConstant>(StaticLoadObject(UMaterialInstanceConstant::StaticClass(), nullptr, *path));
-	Mesh->SetMaterial(0, mat);
+	const FString path = "MaterialInstanceConstant'/Game/Materials/TileColors/MI_TileColor.MI_TileColor'"_f;
+	const auto mat = Cast<UMaterialInstanceConstant>(
+		StaticLoadObject(UMaterialInstanceConstant::StaticClass(), nullptr, *path));
+	const FMaterialParameterInfo info("Color");
+	const auto instance = UMaterialInstanceDynamic::Create(mat, this);
+
+	instance->SetVectorParameterValue(FName("Color"), UColorCast::TileColorToLinearColor(color));
+	Mesh->SetMaterial(0, instance);
 }
 void ATile::SetBoard(ABoard* newBoard)
 {
