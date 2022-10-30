@@ -1,14 +1,13 @@
 #include "Logger.h"
 #include <string>
-#include "ParseStates/ParameterParseState.h"
+#include "ParameterParseState.h"
 
 void Log(const int n,      const FColor color, const float time) { Log(FString::FromInt(n), color, time); }
 void Log(const float f,    const FColor color, const float time) { Log(FString::SanitizeFloat(f), color, time); }
-void LogBool(const bool b, const FColor color, const float time) { Log(fstr(b), color, time); }
+void Log(const FString s,  const FColor color, const float time) { GEngine->AddOnScreenDebugMessage(-1, time, color, s); } 	
 void Log(const FVector v,  const FColor color, const float time) { Log(v.ToString(), color, time); }
 void Log(const FRotator r, const FColor color, const float time) { Log(r.ToString(), color, time); }
-
-void Log(const FParameter& parameter, const  FColor color, const  float time) { Log(parameter.ToString(), color, time); }
+void Log(const FParameter& parameter, const FColor color, const  float time) { Log(parameter.ToString(), color, time); }
 
 void NullCheck(const void* object, const FColor color, const float time)
 {

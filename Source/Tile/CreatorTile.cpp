@@ -1,12 +1,7 @@
 #include "CreatorTile.h"
-#include "Logger.h"
 
 TArray<ACreatorTile*> ACreatorTile::SelectedTiles;
-
-ACreatorTile::ACreatorTile(): ATile()
-{
-    
-}
+ACreatorTile::ACreatorTile(): ATile() { }
 
 void ACreatorTile::Tick(const float deltaSeconds)
 {
@@ -17,13 +12,23 @@ void ACreatorTile::Tick(const float deltaSeconds)
 }
 void ACreatorTile::NotifyActorOnClicked(FKey ButtonPressed)
 {
-    animPress.Toggle();
-    isSelected = !isSelected;
-    activeAnimation = &animPress;
-
     if (isSelected)
-         SelectedTiles.Add(this);
-    else SelectedTiles.Remove(this);
+         Deselect();
+    else Select();
+}
+void ACreatorTile::Select()
+{
+    isSelected = true;
+    animPress.PlayForwards();
+    activeAnimation = &animPress;
+    SelectedTiles.Add(this);
+}
+void ACreatorTile::Deselect()
+{
+    isSelected = false;
+    animPress.PlayReverse();
+    activeAnimation = &animPress;
+    SelectedTiles.Remove(this);
 }
 
 void ACreatorTile::NotifyActorBeginCursorOver()
@@ -40,3 +45,5 @@ void ACreatorTile::NotifyActorEndCursorOver()
     animHover.PlayReverse();
     activeAnimation = &animHover;
 }
+
+

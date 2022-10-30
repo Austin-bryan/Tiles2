@@ -16,6 +16,9 @@ public:
 	void NotifyActorOnClicked(FKey ButtonPressed) override;
 	void NotifyActorBeginCursorOver() override;
 	void NotifyActorEndCursorOver() override;
+
+	void Select();
+	void Deselect();
 private:
 	bool isSelected, isPlayingSelectAnim;
 	FVector targetScale, startScale;
@@ -23,5 +26,5 @@ private:
 
 	ActorAnimator* activeAnimation;
 	ActorAnimator animPress = ActorAnimator(this, FVector::One(), FVector(0.85f), EAnimMode::Scale, 8);
-	ActorAnimator animHover = ActorAnimator(this, FVector::One(),  FVector(1.05f), EAnimMode::Scale, 8);
+	ActorAnimator animHover = ActorAnimator(this, FVector::One(), FVector(1.05f), EAnimMode::Scale, 8);
 };

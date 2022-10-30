@@ -11,14 +11,14 @@ struct FParameter;
 constexpr float defaultTime = 600.0f;
 const FColor defaultColor = FColor::Cyan;
 
-void Log(const int,      const FColor color = defaultColor, const float time = defaultTime);
-void Log(const float,    const FColor color = defaultColor, const float time = defaultTime);
-void Log(const FVector,  const FColor color = defaultColor, const float time = defaultTime);
-void Log(const FString,  const FColor color = defaultColor, const float time = defaultTime);	
-void Log(const FRotator, const FColor color = defaultColor, const float time = defaultTime);
-void Log(const FParameter&, const FColor color = defaultColor, const float time = defaultTime);
-void LogBool(bool, const FColor color = defaultColor, const float time = defaultTime);
-void NullCheck(FString&& label, const void* object, const FColor color = defaultColor, const float time = defaultTime);
+void Log(int,         FColor color = defaultColor, float time = defaultTime);
+void Log(float,       FColor color = defaultColor, float time = defaultTime);
+void Log(FVector,     FColor color = defaultColor, float time = defaultTime);
+void Log(FString,     FColor color = defaultColor, float time = defaultTime);	
+void Log(FRotator,    FColor color = defaultColor, float time = defaultTime);
+void Log(FParameter&, FColor color = defaultColor, float time = defaultTime);
+
+void NullCheck(FString&& label, const void* object, FColor color = defaultColor, float time = defaultTime);
 void NullCheck(const void* object, FColor color = defaultColor, float time = defaultTime);
 
 void Path(const int n, const float time = defaultTime, const FColor color = FColor::Cyan);
