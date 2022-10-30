@@ -37,3 +37,10 @@ FString fstr(const int i);
 FString fstr(const char* c);
 FString fstr(const bool b);
 FString fstr(const char c);
+
+inline FString operator+(const FString& lhs, const int rhs)     ;
+inline FString operator+(const FString& lhs, const float rhs)   ;
+inline FString operator+(const FString& lhs, const char* rhs)   ;
+inline FString operator+(const FString& lhs, const bool rhs)    ;
+inline FString operator+(const FString& lhs, const char rhs)    ;
+inline FString operator+(const FString& lhs, const FVector rhs) ;

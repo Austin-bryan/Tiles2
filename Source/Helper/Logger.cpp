@@ -2,10 +2,6 @@
 #include <string>
 #include "ParseStates/ParameterParseState.h"
 
-void Log(const FString string, const FColor color, const float time)
-{
-	GEngine->AddOnScreenDebugMessage(-1, time, color, string);
-}
 void Log(const int n,      const FColor color, const float time) { Log(FString::FromInt(n), color, time); }
 void Log(const float f,    const FColor color, const float time) { Log(FString::SanitizeFloat(f), color, time); }
 void LogBool(const bool b, const FColor color, const float time) { Log(fstr(b), color, time); }
@@ -37,3 +33,10 @@ FString fstr(const char c)
 	const std::string s(1, c);
 	return FString(s.c_str()); 
 }
+
+inline FString operator+(const FString& lhs, const int rhs)     { return lhs + fstr(rhs); }
+inline FString operator+(const FString& lhs, const float rhs)   { return lhs + fstr(rhs); }
+inline FString operator+(const FString& lhs, const char* rhs)   { return lhs + fstr(rhs); }
+inline FString operator+(const FString& lhs, const bool rhs)    { return lhs + fstr(rhs); }
+inline FString operator+(const FString& lhs, const char rhs)    { return lhs + fstr(rhs); }
+inline FString operator+(const FString& lhs, const FVector rhs) { return lhs + rhs.ToString(); }

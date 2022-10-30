@@ -4,6 +4,7 @@
 #include "ForwardDeclares.h"
 #include "Tile.generated.h"
 
+class UMaterialInstanceConstant;
 class UBoxComponent;
 class UTextRenderComponent;
 class ABoard;
@@ -24,8 +25,8 @@ public:
 	void SetBoard(ABoard* newBoard);
 	void SetCoord(FCoordPtr coord);
 
-	int ID()			  const { return id; }
 	ABoard* Board()			    { return board; }
+	int ID()			  const { return id; }
 	FCoordPtr GetCoord()  const { return Coord; }
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadonly)
@@ -43,4 +44,5 @@ protected:
 private:
 	static int tileCount;
 	int id;
+	UMaterialInstanceConstant* mat;
 };

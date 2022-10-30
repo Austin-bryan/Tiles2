@@ -35,6 +35,9 @@ class UColorCast : public UBlueprintFunctionLibrary
 public:
 	UFUNCTION(BlueprintPure, meta=( DisplayName = "To Linear Color", CompactNodeTitle = "•"), Category = "TilesEnums")
 	static FLinearColor TileColorToLinearColor(const ETileColor color);
+
+	UFUNCTION(BlueprintCallable, meta=( DisplayName = "Color Creator Tiles"), Category = "Creator Board")
+	static void ColorCreatorTiles(ETileColor color);
 };
 bool operator==(ETileColor lhs, ETileColor rhs);
 bool operator!=(const ETileColor lhs, const ETileColor rhs);

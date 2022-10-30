@@ -12,6 +12,7 @@ public class Tiles2 : ModuleRules
 
 		PrivateIncludePaths.AddRange(new string[]
 		{
+			"Headers",
 			"Headers/Coord",
 			"Headers/Board",
 			"Headers/Board/Populators",
@@ -24,6 +25,7 @@ public class Tiles2 : ModuleRules
 			"Headers/TileModules/BandagedModule",
 			"Headers/Enums",
 			
+			"Source",
 			"Source/Coord",
 			"Source/Board",
 			"Source/Board/Populators",

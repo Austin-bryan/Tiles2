@@ -8,6 +8,7 @@
 #include "Components/BoxComponent.h"
 #include "TileModule.h"
 #include "Coord.h"
+#include "TileColor.h"
 
 int ATile::tileCount = 0;
 
@@ -39,7 +40,9 @@ void ATile::BeginPlay() { Super::BeginPlay(); }
 void ATile::SetColor(const ETileColor color)
 {
 	const FString path = "MaterialInstanceConstant'/Game/Materials/TileColors/MI_TileColor.MI_TileColor'"_f;
-	const auto mat = Cast<UMaterialInstanceConstant>(
+
+	if (mat == nullptr)
+		mat = Cast<UMaterialInstanceConstant>(
 		StaticLoadObject(UMaterialInstanceConstant::StaticClass(), nullptr, *path));
 	const FMaterialParameterInfo info("Color");
 	const auto instance = UMaterialInstanceDynamic::Create(mat, this);

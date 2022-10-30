@@ -1,4 +1,5 @@
 #include "TileColor.h"
+#include "CreatorTile.h"
 
 FLinearColor UColorCast::TileColorToLinearColor(const ETileColor color)
 {
@@ -19,6 +20,13 @@ FLinearColor UColorCast::TileColorToLinearColor(const ETileColor color)
     default: throw std::invalid_argument("Invalid tile color enum.");
     }
 }
+
+void UColorCast::ColorCreatorTiles(const ETileColor color)
+{
+    for (const auto& selectedTile : ACreatorTile::SelectedTiles)
+        selectedTile->SetColor(color);
+}
+
 bool operator==(ETileColor lhs, ETileColor rhs)
 {
     return static_cast<int>(lhs) == static_cast<int>(rhs);
