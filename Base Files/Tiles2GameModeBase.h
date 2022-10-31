@@ -10,4 +10,5 @@ UCLASS()
 class TILES2_API ATiles2GameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
+    void Tick(float DeltaSeconds) override;
 };

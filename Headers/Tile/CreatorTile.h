@@ -25,6 +25,6 @@ private:
 	float selectAlpha;
 
 	ActorAnimator* activeAnimation;
-	ActorAnimator animPress = ActorAnimator(this, FVector::One(), FVector(0.85f), EAnimMode::Scale, 8);
+	ActorAnimator animPress = ActorAnimator(this, FVector::One(), FVector(0.75f), EAnimMode::Scale, 8);
 	ActorAnimator animHover = ActorAnimator(this, FVector::One(), FVector(1.05f), EAnimMode::Scale, 8);
 };
