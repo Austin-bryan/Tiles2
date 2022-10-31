@@ -18,6 +18,44 @@ void ACreatorBoard::DrawCircle(const FVector& Base, const FVector& X,const FVect
     }
     lineBatchComponent->MarkRenderStateDirty();
 }
+void ACreatorBoard::DrawBox(FVector worldPosition)
+{
+    worldPosition.Y = firstClick->Y;
+
+    TArray verts
+    {
+        *firstClick,   FVector(firstClick->X,   firstClick->Y, worldPosition.Z),
+        worldPosition, FVector(worldPosition.X, firstClick->Y, firstClick->Z),
+    };
+    for (auto& vert : verts)
+    {
+        vert.Y = GetActorLocation().Y + 1;
+        vert = GetActorTransform().TransformPosition(
+             GetActorTransform().InverseTransformPosition(vert) * scale);
+    }
+    TArray<FBatchedLine> lines;
+    for (int i = 0; i < verts.Num(); i++) 
+        lines.Add(FBatchedLine(verts[i], verts[(i + 1) % verts.Num()],
+            FColor::Red, 0, thickness, 0));
+
+    lineBatchComponent->DrawLines(lines);
+    TInterval<float> intervalZ, intervalX;
+    
+    auto SetMinMax = [](const float f1, const float f2, TInterval<float>& interval) {
+        interval = f1 > f2 ? TInterval(f2, f1) : TInterval(f1, f2); };
+    SetMinMax(verts[0].Z, verts[2].Z, intervalZ);
+    SetMinMax(verts[0].X, verts[2].X, intervalX);
+
+    for (const auto& tile : tiles.Values())
+    {
+        const auto creatorTile = static_cast<ACreatorTile*>(tile);
+
+        if (const auto loc = creatorTile->GetActorLocation();
+            intervalZ.Contains(loc.Z) && intervalX.Contains(loc.X))
+                creatorTile->Select();
+        else creatorTile->Deselect();
+    }
+}
 
 ACreatorBoard::ACreatorBoard()
 {
@@ -29,80 +67,25 @@ void ACreatorBoard::Tick(const float DeltaSeconds)
     lineBatchComponent->Flush();
     Super::Tick(DeltaSeconds);
 
-    APlayerController* controller;
-
-    float posX, posY;
-    controller = GetWorld()->GetFirstPlayerController();
-    controller->GetMousePosition(posX, posY);
+    const auto controller = GetWorld()->GetFirstPlayerController();
+    auto GetScreenToWorld = [this, controller]
+    {
+        float posX, posY;
+        FVector _, worldPosition;
+        
+        controller->GetMousePosition(posX, posY);
+        controller->DeprojectScreenPositionToWorld(posX, posY, worldPosition, _);
+        return worldPosition;
+    };
 
     if (firstClick.IsSet())
     {
-        if (!controller->IsInputKeyDown(EKeys::LeftMouseButton))
-        {
-            firstClick.Reset();
-            return;
-        }
-    }
-    else
-    {
         if (controller->IsInputKeyDown(EKeys::LeftMouseButton))
-        {
-            UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetMousePosition(posX, posY);
-            if (FVector worldDirection, worldPosition;
-                    controller->DeprojectScreenPositionToWorld(posX, posY, worldPosition, worldDirection))
-                        firstClick = worldPosition;
-        }
-        return;
+             DrawBox(GetScreenToWorld());
+        else firstClick.Reset();
     }
-
-    if (FVector worldDirection, worldPosition;
-        controller->DeprojectScreenPositionToWorld(posX, posY, worldPosition, worldDirection))
-    {
-        worldPosition.Y = firstClick->Y;
-        TArray<FVector> verts
-        {
-            *firstClick,
-            FVector(firstClick->X, firstClick->Y, worldPosition.Z),
-            worldPosition,
-            FVector(worldPosition.X, firstClick->Y, firstClick->Z),
-        };
-        for (auto& vert : verts)
-        {
-            vert.Y = GetActorLocation().Y + 1;
-            vert = GetActorTransform().InverseTransformPosition(vert);
-            vert *= scale;
-            vert = GetActorTransform().TransformPosition(vert);
-        }
-        
-        const auto line1 = FBatchedLine(verts[0], verts[1], FColor::Red, 0, thickness, 0);
-        const auto line2 = FBatchedLine(verts[1], verts[2], FColor::Red, 0, thickness, 0);
-        const auto line3 = FBatchedLine(verts[2], verts[3], FColor::Red, 0, thickness, 0);
-        const auto line4 = FBatchedLine(verts[3], verts[0], FColor::Red, 0, thickness, 0);
-
-        TArray<FBatchedLine> lines { line1, line2, line3, line4 };
-        lineBatchComponent->DrawLines(lines);
-
-        float minZ, maxZ, minX, maxX;
-
-        if (verts[0].Z > verts[2].Z)
-             maxZ = verts[0].Z, minZ = verts[2].Z;
-        else minZ = verts[0].Z, maxZ = verts[2].Z;
-        
-        if (verts[0].X > verts[2].X)
-             maxX = verts[0].X, minX = verts[2].X;
-        else minX = verts[0].X, maxX = verts[2].X;
-
-        for (auto& tile : tiles.Values())
-        {
-            auto creatorTile = static_cast<ACreatorTile*>(tile);
-            // ReSharper disable once CppTooWideScopeInitStatement
-            const auto loc = creatorTile->GetActorLocation();
-
-            if (loc.Z > minZ && loc.Z < maxZ
-             && loc.X > minX && loc.X < maxX)
-                 creatorTile->Select();
-            else creatorTile->Deselect();
-        }
-    }
+    else if (controller->IsInputKeyDown(EKeys::LeftMouseButton))
+        firstClick = GetScreenToWorld();
 }
 UClass* ACreatorBoard::TileClass() const { return ACreatorTile::StaticClass(); }
+//119

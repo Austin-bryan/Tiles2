@@ -55,6 +55,16 @@ void ATile::SetColor(const ETileColor color)
 		instance = UMaterialInstanceDynamic::Create(mat, this);
 	}
 	instance->SetVectorParameterValue(FName("Color"), UColorCast::TileColorToLinearColor(color));
+	if (instance == nullptr)
+	{
+		Log("null instance");
+		return;
+	}
+	if (Mesh == nullptr)
+	{
+		Log("null mesh");
+		return;
+	}
 	Mesh->SetMaterial(0, instance);
 }
 void ATile::SetBoard(ABoard* newBoard)
