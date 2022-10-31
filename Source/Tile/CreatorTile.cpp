@@ -20,10 +20,20 @@ void ACreatorTile::NotifyActorOnClicked(FKey ButtonPressed)
          Deselect();
     else Select();
 }
-void ACreatorTile::Select()
+// todo:: this bool should be whether or not we're dragging
+// todo: allow shift select when individually clicking but not dragging
+// todo:: allow shift select and override select for dragging
+void ACreatorTile::Select(const bool shouldDeselect)
 {
     if (isSelected)
         return;
+
+    if (shouldDeselect)
+    {
+        const auto selected = SelectedTiles;
+        for (const auto& tile : selected)
+            static_cast<ACreatorTile*>(tile)->Deselect();
+    }
     isSelected = true;
     animPress.PlayForwards();
     activeAnimation = &animPress;

@@ -13,7 +13,7 @@ class TILES2_API ACreatorBoard : public ABoard
 	void Tick(float DeltaSeconds) override;
 	UClass* TileClass() const override;
 	void DrawCircle(const FVector& Base, const FVector& X, const FVector& Y, FColor Color, float Radius, int32 NumSides, uint8 DepthPriority);
-	void DrawBox(FVector worldPosition);
+	void DrawBox(FVector worldPosition, bool shouldDeselect);
 	ACreatorBoard();
 	~ACreatorBoard();
 protected:

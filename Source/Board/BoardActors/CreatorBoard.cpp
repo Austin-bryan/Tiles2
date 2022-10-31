@@ -18,8 +18,10 @@ void ACreatorBoard::DrawCircle(const FVector& Base, const FVector& X,const FVect
     }
     lineBatchComponent->MarkRenderStateDirty();
 }
-void ACreatorBoard::DrawBox(FVector worldPosition)
+void ACreatorBoard::DrawBox(FVector worldPosition, bool shouldDeselect)
 {
+// todo:: seperate this functino into the draw method and select method
+// todo:: generalize this function to allow for triangle selet, pentagon select, and circular select
     worldPosition.Y = firstClick->Y;
 
     TArray verts
@@ -52,8 +54,8 @@ void ACreatorBoard::DrawBox(FVector worldPosition)
 
         if (const auto loc = creatorTile->GetActorLocation();
             intervalZ.Contains(loc.Z) && intervalX.Contains(loc.X))
-                creatorTile->Select();
-        else creatorTile->Deselect();
+                creatorTile->Select(false);
+        else if (shouldDeslect) creatorTile->Deselect();
     }
 }
 
@@ -61,7 +63,6 @@ ACreatorBoard::ACreatorBoard()
 {
     lineBatchComponent = CreateDefaultSubobject<ULineBatchComponent>(FName("Line Component"));
 }
-
 ACreatorBoard::~ACreatorBoard()
 {
     ACreatorTile::EmptySelectedTiles();
@@ -85,8 +86,10 @@ void ACreatorBoard::Tick(const float DeltaSeconds)
 
     if (firstClick.IsSet())
     {
+        if (FVector::Distance(GetScreenToWorld(), *firstClick) < 0.25f)
+            return;
         if (controller->IsInputKeyDown(EKeys::LeftMouseButton))
-             DrawBox(GetScreenToWorld());
+             DrawBox(GetScreenToWorld(), !controller->IsInputKeyDown(EKeys::LeftShift));
         else firstClick.Reset();
     }
     else if (controller->IsInputKeyDown(EKeys::LeftMouseButton))
