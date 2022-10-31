@@ -54,18 +54,17 @@ void ACreatorBoard::Tick(const float DeltaSeconds)
         }
         return;
     }
-    FVector p1 = firstClick.GetValue();
 
     if (FVector worldDirection, worldPosition;
         controller->DeprojectScreenPositionToWorld(posX, posY, worldPosition, worldDirection))
     {
-        worldPosition.Y = p1.Y;
+        worldPosition.Y = firstClick->Y;
         TArray<FVector> verts
         {
-            p1,
-            FVector(p1.X, p1.Y, worldPosition.Z),
+            *firstClick,
+            FVector(firstClick->X, firstClick->Y, worldPosition.Z),
             worldPosition,
-            FVector(worldPosition.X, p1.Y, p1.Z),
+            FVector(worldPosition.X, firstClick->Y, firstClick->Z),
         };
         for (auto& vert : verts)
         {
