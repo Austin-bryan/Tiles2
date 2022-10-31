@@ -1,5 +1,7 @@
 #include "CreatorBoard.h"
 #include "CreatorTile.h"
+#include "DragSelect.h"
+#include "SquareSelect.h"
 #include "Components/LineBatchComponent.h"
 #include "GameFramework/HUD.h"
 #include "Kismet/GameplayStatics.h"
@@ -62,6 +64,7 @@ void ACreatorBoard::DrawBox(FVector worldPosition, bool shouldDeselect)
 ACreatorBoard::ACreatorBoard()
 {
     lineBatchComponent = CreateDefaultSubobject<ULineBatchComponent>(FName("Line Component"));
+    dragSelect = CreateDefaultSubobject<USquareSelect>(FName("Drag Select"));
 }
 ACreatorBoard::~ACreatorBoard()
 {

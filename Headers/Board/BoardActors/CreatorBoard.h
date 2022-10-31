@@ -3,6 +3,7 @@
 #include "Board.h"
 #include "CreatorBoard.generated.h"
 
+class UDragSelect;
 class ATile;
 enum class EBoardShape;
 
@@ -26,5 +27,8 @@ protected:
 	UPROPERTY(EditAnywhere)
 	float scale = 57;
 
+	UPROPERTY()
+	UDragSelect* dragSelect;
+private:
 	TOptional<FVector> firstClick;
 };
