@@ -18,7 +18,7 @@ public:
 	void NotifyActorBeginCursorOver() override;
 	void NotifyActorEndCursorOver() override;
 
-	void Select(bool shouldDeselect = true);
+	void Select(bool isDragSelecting = false);
 	void Deselect();
 private:
 	bool isSelected, isPlayingSelectAnim;

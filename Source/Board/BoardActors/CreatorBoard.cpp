@@ -54,8 +54,8 @@ void ACreatorBoard::DrawBox(FVector worldPosition, bool shouldDeselect)
 
         if (const auto loc = creatorTile->GetActorLocation();
             intervalZ.Contains(loc.Z) && intervalX.Contains(loc.X))
-                creatorTile->Select(false);
-        else if (shouldDeslect) creatorTile->Deselect();
+                creatorTile->Select(true);
+        else if (shouldDeselect) creatorTile->Deselect();
     }
 }
 
