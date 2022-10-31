@@ -29,44 +29,59 @@ void ACreatorBoard::Tick(const float DeltaSeconds)
     lineBatchComponent->Flush();
     Super::Tick(DeltaSeconds);
 
-    float posX, posY;
-    UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetMousePosition(posX, posY);
-    FVector position(posX, 0, posY);
-    //
-    APlayerController* controller = GetWorld()->GetFirstPlayerController();
+    APlayerController* controller;
 
-    FVector p1(-122, 780, 9185);
+    float posX, posY;
+    controller = GetWorld()->GetFirstPlayerController();
+    controller->GetMousePosition(posX, posY);
+
+    if (firstClick.IsSet())
+    {
+        if (!controller->IsInputKeyDown(EKeys::LeftMouseButton))
+        {
+            firstClick.Reset();
+            return;
+        }
+    }
+    else
+    {
+        if (controller->IsInputKeyDown(EKeys::LeftMouseButton))
+        {
+            UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetMousePosition(posX, posY);
+            if (FVector worldDirection, worldPosition;
+                    controller->DeprojectScreenPositionToWorld(posX, posY, worldPosition, worldDirection))
+                        firstClick = worldPosition;
+        }
+        return;
+    }
+    FVector p1 = firstClick.GetValue();
 
     if (FVector worldDirection, worldPosition;
         controller->DeprojectScreenPositionToWorld(posX, posY, worldPosition, worldDirection))
     {
-        // worldPosition.Y = GetActorLocation().Y;
-        // worldPosition = worldPosition - FVector::UnitX() * 100 + FVector::UnitZ() * 100;
-        //const auto vert1 = worldPosition - FVector::UnitX() * 100 + FVector::UnitZ() * 100;
-        const auto vert1 = p1;
-        // const auto vert2 = FVector(p1.X, p1.Y, position.Z);
-        const auto vert2 = FVector(p1.X, p1.Y, worldPosition.Z);
-        // const auto vert3 = position;
-        const auto vert3 = worldPosition;
-        //const auto vert4 = FVector(position.X, p1.Y, p1.Z);
-        const auto vert4 = FVector(worldPosition.X, p1.Y, p1.Z);
-        // const auto vert2 = GetActorLocation() + FVector::UnitY() * 50 + FVector::UnitX() * 100 + FVector::UnitZ() * 100;
-        // const auto vert3 = GetActorLocation() + FVector::UnitY() * 50 + FVector::UnitX() * 100 - FVector::UnitZ() * 100;
-        // const auto vert4 = GetActorLocation() + FVector::UnitY() * 50 - FVector::UnitX() * 100 - FVector::UnitZ() * 100;
+        worldPosition.Y = p1.Y;
+        TArray<FVector> verts
+        {
+            p1,
+            FVector(p1.X, p1.Y, worldPosition.Z),
+            worldPosition,
+            FVector(worldPosition.X, p1.Y, p1.Z),
+        };
+        for (auto& vert : verts)
+        {
+            vert.Y = GetActorLocation().Y;
+            vert = GetActorTransform().InverseTransformPosition(vert);
+            vert *= scale;
+            vert = GetActorTransform().TransformPosition(vert);
+        }
         
-        const auto line1 = FBatchedLine(vert1, vert2, FColor::Black, 0, thickness, 0);
-        const auto line2 = FBatchedLine(vert2, vert3, FColor::Black, 0, thickness, 0);
-        const auto line3 = FBatchedLine(vert3, vert4, FColor::Black, 0, thickness, 0);
-        const auto line4 = FBatchedLine(vert4, vert1, FColor::Black, 0, thickness, 0);
-    // UGameplayStatics::GetPlayerController(GetWorld(), 0)->
-        // DeprojectScreenPositionToWorld(position.X, position.Y, worldPosition, worldDirection);
+        const auto line1 = FBatchedLine(verts[0], verts[1], FColor::Red, 0, thickness, 0);
+        const auto line2 = FBatchedLine(verts[1], verts[2], FColor::Red, 0, thickness, 0);
+        const auto line3 = FBatchedLine(verts[2], verts[3], FColor::Red, 0, thickness, 0);
+        const auto line4 = FBatchedLine(verts[3], verts[0], FColor::Red, 0, thickness, 0);
 
         TArray<FBatchedLine> lines { line1, line2, line3, line4 };
         lineBatchComponent->DrawLines(lines);
     }
-    
-    
-    DrawCircle(GetActorLocation() + FVector::UnitY() * 50,
-        FVector::UnitZ(), FVector::UnitX(), FColor::Green, 100, 64, 0);
 }
 UClass* ACreatorBoard::TileClass() const { return ACreatorTile::StaticClass(); }

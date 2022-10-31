@@ -14,9 +14,15 @@ class TILES2_API ACreatorBoard : public ABoard
 	UClass* TileClass() const override;
 	void DrawCircle(const FVector& Base, const FVector& X, const FVector& Y, FColor Color, float Radius, int32 NumSides, uint8 DepthPriority);
 	ACreatorBoard();
-
 protected:
 	UPROPERTY()
 	ULineBatchComponent* lineBatchComponent;
-	const float thickness = 0.05f;
+
+	UPROPERTY(EditAnywhere)
+	float thickness = 5;
+
+	UPROPERTY(EditAnywhere)
+	float scale = 57;
+
+	TOptional<FVector> firstClick;
 };
