@@ -7,8 +7,12 @@
 #include "Components/TextRenderComponent.h"
 #include "Components/BoxComponent.h"
 #include "TileModule.h"
-#include "Coord.h"
 #include "TileColor.h"
+
+//#define ShowDebugText
+#ifdef ShowDebugText
+#include "Coord.h"
+#endif 
 
 int ATile::tileCount = 0;
 
@@ -25,6 +29,7 @@ ATile::ATile()
 	Box->AttachToComponent(Mesh, FAttachmentTransformRules::KeepRelativeTransform);
 	Box->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 
+#ifdef ShowDebugText
 	CoordText = CreateDefaultSubobject<UTextRenderComponent>(TEXT("Coord Text"));
 	if (!CoordText)
 		return;
@@ -34,6 +39,7 @@ ATile::ATile()
 	CoordText->SetRelativeRotation(FRotator(0, 0, 0));
 	CoordText->HorizontalAlignment = EHorizTextAligment::EHTA_Center;
 	CoordText->SetWorldSize(18);
+#endif
 }
 
 void ATile::BeginPlay() { Super::BeginPlay(); }
@@ -42,11 +48,12 @@ void ATile::SetColor(const ETileColor color)
 	const FString path = "MaterialInstanceConstant'/Game/Materials/TileColors/MI_TileColor.MI_TileColor'"_f;
 
 	if (mat == nullptr)
+	{
 		mat = Cast<UMaterialInstanceConstant>(
 		StaticLoadObject(UMaterialInstanceConstant::StaticClass(), nullptr, *path));
-	const FMaterialParameterInfo info("Color");
-	const auto instance = UMaterialInstanceDynamic::Create(mat, this);
-
+		const FMaterialParameterInfo info("Color");
+		instance = UMaterialInstanceDynamic::Create(mat, this);
+	}
 	instance->SetVectorParameterValue(FName("Color"), UColorCast::TileColorToLinearColor(color));
 	Mesh->SetMaterial(0, instance);
 }
@@ -59,14 +66,18 @@ void ATile::Tick    (const float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 #ifdef UE_BUILD_DEBUG
+#ifdef ShowDebugText
 	CoordText->SetWorldRotation(FRotator(0, 90, 0));
 	CoordText->SetText(FText::FromString(Coord->ToString() + "\n"_f + fstr(id)));
+#endif
 #endif
 }
 void ATile::SetCoord(const FCoordPtr coord)
 {
 	Coord = coord;
+#ifdef ShowDebugText
 	CoordText->SetText(FText::FromString(coord->ToString() + "\n"_f + fstr(id)));
+#endif
 	SetActorLocation(board->LocationOf(coord));
 }
 void ATile::SetShape(const EBoardShape boardShape) const

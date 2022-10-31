@@ -45,4 +45,5 @@ private:
 	static int tileCount;
 	int id;
 	UMaterialInstanceConstant* mat;
+	UMaterialInstanceDynamic* instance;
 };
