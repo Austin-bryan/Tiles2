@@ -10,6 +10,10 @@ void ACreatorTile::Tick(const float deltaSeconds)
     if (activeAnimation)
         activeAnimation->Tick(deltaSeconds);
 }
+void ACreatorTile::EmptySelectedTiles()
+{
+    SelectedTiles.Empty();
+}
 void ACreatorTile::NotifyActorOnClicked(FKey ButtonPressed)
 {
     if (isSelected)

@@ -10,6 +10,7 @@ class TILES2_API ACreatorTile : public ATile
 	GENERATED_BODY()
 public:
 	static TArray<ACreatorTile*> SelectedTiles;
+	static void EmptySelectedTiles();
 
 	ACreatorTile();
 	void Tick(float deltaSeconds) override;

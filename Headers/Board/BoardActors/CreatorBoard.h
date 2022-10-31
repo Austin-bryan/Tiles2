@@ -15,6 +15,7 @@ class TILES2_API ACreatorBoard : public ABoard
 	void DrawCircle(const FVector& Base, const FVector& X, const FVector& Y, FColor Color, float Radius, int32 NumSides, uint8 DepthPriority);
 	void DrawBox(FVector worldPosition);
 	ACreatorBoard();
+	~ACreatorBoard();
 protected:
 	UPROPERTY()
 	ULineBatchComponent* lineBatchComponent;

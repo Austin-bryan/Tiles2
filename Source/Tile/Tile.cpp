@@ -47,24 +47,13 @@ void ATile::SetColor(const ETileColor color)
 {
 	const FString path = "MaterialInstanceConstant'/Game/Materials/TileColors/MI_TileColor.MI_TileColor'"_f;
 
-	if (mat == nullptr)
+	if (instance == nullptr)
 	{
-		mat = Cast<UMaterialInstanceConstant>(
+		const auto mat = Cast<UMaterialInstanceConstant>(
 		StaticLoadObject(UMaterialInstanceConstant::StaticClass(), nullptr, *path));
-		const FMaterialParameterInfo info("Color");
 		instance = UMaterialInstanceDynamic::Create(mat, this);
 	}
 	instance->SetVectorParameterValue(FName("Color"), UColorCast::TileColorToLinearColor(color));
-	if (instance == nullptr)
-	{
-		Log("null instance");
-		return;
-	}
-	if (Mesh == nullptr)
-	{
-		Log("null mesh");
-		return;
-	}
 	Mesh->SetMaterial(0, instance);
 }
 void ATile::SetBoard(ABoard* newBoard)

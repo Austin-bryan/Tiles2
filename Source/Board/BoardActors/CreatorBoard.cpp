@@ -62,6 +62,11 @@ ACreatorBoard::ACreatorBoard()
     lineBatchComponent = CreateDefaultSubobject<ULineBatchComponent>(FName("Line Component"));
 }
 
+ACreatorBoard::~ACreatorBoard()
+{
+    ACreatorTile::EmptySelectedTiles();
+}
+
 void ACreatorBoard::Tick(const float DeltaSeconds)
 {
     lineBatchComponent->Flush();
