@@ -3,6 +3,14 @@
 #include "Components/ActorComponent.h"
 #include "BoardCoordinator.generated.h"
 
+class ABoard;
+class APlayerBoard;
+class ACreatorBoard;
+class ASizeBoard;
+
+UENUM()
+enum class EBoardType : uint8 { PlayerBoard, CreatorBoard, SizeBoard, TargetBoard  };
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class TILES2_API UBoardCoordinator : public UActorComponent
 {
@@ -10,6 +18,20 @@ class TILES2_API UBoardCoordinator : public UActorComponent
 public:	
 	UBoardCoordinator(){}
 	void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+	UFUNCTION(BlueprintCallable)
+	void SetBoard(ABoard* board, EBoardType boardType);
+
+	APlayerBoard* PlayerBoard() { return playerBoard; }
 protected:
 	void BeginPlay() override;
+
+	UPROPERTY()
+	APlayerBoard* playerBoard;
+
+	UPROPERTY()
+	ACreatorBoard* creatorBoard;
+
+	UPROPERTY()
+	ASizeBoard* sizeBoard;
 };
