@@ -3,6 +3,7 @@
 #include "Components/LineBatchComponent.h"
 #include "GameFramework/HUD.h"
 #include "Kismet/GameplayStatics.h"
+#include "TilesMap.h"
 
 void ACreatorBoard::DrawCircle(const FVector& Base, const FVector& X,const FVector& Y,FColor Color,float Radius,int32 NumSides, uint8 DepthPriority)
 {
@@ -15,7 +16,6 @@ void ACreatorBoard::DrawCircle(const FVector& Base, const FVector& X,const FVect
         new(lineBatchComponent->BatchedLines) FBatchedLine(LastVertex,Vertex,Color,100, thickness, DepthPriority);
         LastVertex = Vertex;
     }
-
     lineBatchComponent->MarkRenderStateDirty();
 }
 
@@ -69,7 +69,7 @@ void ACreatorBoard::Tick(const float DeltaSeconds)
         };
         for (auto& vert : verts)
         {
-            vert.Y = GetActorLocation().Y;
+            vert.Y = GetActorLocation().Y + 1;
             vert = GetActorTransform().InverseTransformPosition(vert);
             vert *= scale;
             vert = GetActorTransform().TransformPosition(vert);
@@ -82,6 +82,28 @@ void ACreatorBoard::Tick(const float DeltaSeconds)
 
         TArray<FBatchedLine> lines { line1, line2, line3, line4 };
         lineBatchComponent->DrawLines(lines);
+
+        float minZ, maxZ, minX, maxX;
+
+        if (verts[0].Z > verts[2].Z)
+             maxZ = verts[0].Z, minZ = verts[2].Z;
+        else minZ = verts[0].Z, maxZ = verts[2].Z;
+        
+        if (verts[0].X > verts[2].X)
+             maxX = verts[0].X, minX = verts[2].X;
+        else minX = verts[0].X, maxX = verts[2].X;
+
+        for (auto& tile : tiles.Values())
+        {
+            auto creatorTile = static_cast<ACreatorTile*>(tile);
+            // ReSharper disable once CppTooWideScopeInitStatement
+            const auto loc = creatorTile->GetActorLocation();
+
+            if (loc.Z > minZ && loc.Z < maxZ
+             && loc.X > minX && loc.X < maxX)
+                 creatorTile->Select();
+            else creatorTile->Deselect();
+        }
     }
 }
 UClass* ACreatorBoard::TileClass() const { return ACreatorTile::StaticClass(); }

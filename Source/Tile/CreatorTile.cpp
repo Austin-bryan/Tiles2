@@ -18,6 +18,8 @@ void ACreatorTile::NotifyActorOnClicked(FKey ButtonPressed)
 }
 void ACreatorTile::Select()
 {
+    if (isSelected)
+        return;
     isSelected = true;
     animPress.PlayForwards();
     activeAnimation = &animPress;
@@ -25,6 +27,8 @@ void ACreatorTile::Select()
 }
 void ACreatorTile::Deselect()
 {
+    if (!isSelected)
+        return;
     isSelected = false;
     animPress.PlayReverse();
     activeAnimation = &animPress;

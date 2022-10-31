@@ -37,7 +37,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadonly)
 		USceneComponent* Root;
 	FCoordPtr Size;
+	Tiles tiles;
 private:
 	static float GetCenteredPosition(const float coord);
-	Tiles tiles;
 };
