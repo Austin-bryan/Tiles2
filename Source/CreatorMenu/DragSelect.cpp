@@ -17,7 +17,6 @@ UDragSelect::UDragSelect()
 void UDragSelect::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
     Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-    lineBatchComponent->Flush();
 
     const auto controller = board->GetWorld()->GetFirstPlayerController();
     auto GetScreenToWorld = [this, controller]
@@ -38,13 +37,18 @@ void UDragSelect::TickComponent(float DeltaTime, ELevelTick TickType, FActorComp
         {
             Draw(GetScreenToWorld(), !controller->IsInputKeyDown(EKeys::LeftShift));
         }
-        else firstClick.Reset();
+        else
+        {
+            lineBatchComponent->Flush();
+            firstClick.Reset();
+        }
     }
     else if (controller->IsInputKeyDown(EKeys::LeftMouseButton))
         firstClick = GetScreenToWorld();
 }
 void UDragSelect::Draw(FVector&& worldPosition, bool shouldDeselect)
 {
+    lineBatchComponent->Flush();
     worldPosition.Y = firstClick->Y;
     
     TArray verts
