@@ -2,15 +2,33 @@
 #include "CoreMinimal.h"
 #include "DragSelect.generated.h"
 
+class ACreatorBoard;
+class ULineBatchComponent;
+
 UCLASS()
-class UDragSelect : public UObject
+class UDragSelect : public UActorComponent
 {
     GENERATED_BODY()
 public:
-    UDragSelect() { }
-    explicit UDragSelect(const int lineCount);
-    virtual void Select(){}
-    virtual void Draw(){}
+    UDragSelect();
+
+    void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+    void Select();
+    void Draw(FVector&& worldPosition, bool shouldDeselect);
+    void SetBoard(ACreatorBoard* _board);
+
 protected:
-    int lineCount = 4;
+    UPROPERTY()
+    ACreatorBoard* board;
+
+    UPROPERTY()
+    ULineBatchComponent* lineBatchComponent;
+
+    UPROPERTY(EditInstanceOnly)
+    float scale = 57;
+
+    UPROPERTY(EditInstanceOnly)
+    float thickness = 5;
+private:
+    TOptional<FVector> firstClick;
 };

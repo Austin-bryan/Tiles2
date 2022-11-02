@@ -18,17 +18,17 @@ class TILES2_API ACreatorBoard : public ABoard
 	ACreatorBoard();
 	~ACreatorBoard();
 protected:
-	UPROPERTY()
-	ULineBatchComponent* lineBatchComponent;
-
-	UPROPERTY(EditAnywhere)
-	float thickness = 5;
-
-	UPROPERTY(EditAnywhere)
-	float scale = 57;
+	// UPROPERTY()
+	// ULineBatchComponent* lineBatchComponent;
+	//
+	// UPROPERTY(EditAnywhere)
+	// float thickness = 5;
+	//
+	// UPROPERTY(EditAnywhere)
+	// float scale = 57;
 
 	UPROPERTY()
 	UDragSelect* dragSelect;
 private:
-	TOptional<FVector> firstClick;
+	// TOptional<FVector> firstClick;
 };
