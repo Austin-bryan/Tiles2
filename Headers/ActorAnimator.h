@@ -10,8 +10,8 @@ class TILES2_API ActorAnimator
 public:
     ActorAnimator(AActor* target, FVector start, FVector end, EAnimMode animMode, float speed = 1);
     void Tick(float deltaSeconds);
-    void PlayForwards();
-    void PlayReverse();
+    void Play(bool forwards);
+    // void PlayReverse();
     void Toggle();
     void FinishAnimation();
 private:

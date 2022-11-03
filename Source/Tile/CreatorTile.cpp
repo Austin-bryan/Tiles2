@@ -2,7 +2,9 @@
 #include "Kismet/GameplayStatics.h"
 
 TArray<ACreatorTile*> ACreatorTile::SelectedTiles;
-ACreatorTile::ACreatorTile(): ATile() { }
+ACreatorTile::ACreatorTile() : ATile()
+{
+}
 
 void ACreatorTile::Tick(const float deltaSeconds)
 {
@@ -11,25 +13,18 @@ void ACreatorTile::Tick(const float deltaSeconds)
     if (activeAnimation)
         activeAnimation->Tick(deltaSeconds);
 }
-void ACreatorTile::EmptySelectedTiles()
-{
-    SelectedTiles.Empty();
-}
-void ACreatorTile::NotifyActorOnClicked(FKey ButtonPressed)
-{
-    if (isSelected)
-         Deselect();
-    else Select();
-}
+void ACreatorTile::EmptySelectedTiles() { SelectedTiles.Empty(); }
+void ACreatorTile::NotifyActorOnClicked(FKey ButtonPressed) { Select(!isSelected); }
 
 // todo:: this bool should be whether or not we're dragging
 // todo: allow shift select when individually clicking but not dragging
 // todo:: allow shift select and override select for dragging
-void ACreatorTile::Select(const bool isDragSelecting)
+void ACreatorTile::Select(const bool _isSelected, const bool isDragSelecting)
 {
-    if (isSelected)
+    if (_isSelected && isSelected || !_isSelected && !isSelected)
         return;
-    if (!isDragSelecting)
+    isSelected = _isSelected;
+    if (isSelected &&  !isDragSelecting)
     {
         if (const auto& controller = GetWorld()->GetFirstPlayerController();
             !controller->IsInputKeyDown(EKeys::LeftShift))
@@ -39,32 +34,34 @@ void ACreatorTile::Select(const bool isDragSelecting)
                 static_cast<ACreatorTile*>(tile)->Deselect();
         }
     }
-    isSelected = true;
-    animPress.PlayForwards();
+    animPress.Play(isSelected);
     activeAnimation = &animPress;
-    SelectedTiles.Add(this);
+    
+    if (isSelected)
+         SelectedTiles.Add(this);
+    else SelectedTiles.Remove(this);
 }
 void ACreatorTile::Deselect()
 {
-    if (!isSelected)
-        return;
-    isSelected = false;
-    animPress.PlayReverse();
-    activeAnimation = &animPress;
-    SelectedTiles.Remove(this);
+    // if (!isSelected)
+    //     return;
+    // isSelected = false;
+    // animPress.PlayReverse();
+    // activeAnimation = &animPress;
+    // SelectedTiles.Remove(this);
 }
 
 void ACreatorTile::NotifyActorBeginCursorOver()
 {
-    if (isSelected)
-        return;
-    animHover.PlayForwards();
-    activeAnimation = &animHover;
+    // if (isSelected)
+    //     return;
+    // animHover.Play(true);
+    // activeAnimation = &animHover;
 }
 void ACreatorTile::NotifyActorEndCursorOver()
 {
-    if (isSelected)
-        return;
-    animHover.PlayReverse();
-    activeAnimation = &animHover;
+    // if (isSelected)
+    //     return;
+    // animHover.Play(false);
+    // activeAnimation = &animHover;
 }

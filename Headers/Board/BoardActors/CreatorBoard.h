@@ -18,6 +18,11 @@ public:
 	void DrawBox(FVector worldPosition, bool shouldDeselect);
 	ACreatorBoard();
 	~ACreatorBoard();
+	
+	static float Scale;
+
+	UPROPERTY(EditAnywhere)
+	float scale;
 protected:
 	UPROPERTY()
 	UDragSelect* dragSelect;

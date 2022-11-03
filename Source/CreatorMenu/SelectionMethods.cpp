@@ -11,9 +11,9 @@ void IndividualSelection::Select()
 }
 void ControlSelection::Select()
 {
-    if  (creatorTile->IsSelected())
-         creatorTile->Deselect();
-    else creatorTile->Select();
+    // if  (creatorTile->IsSelected())
+    //      creatorTile->Deselect();
+    // else creatorTile->Select();
 }
 void AltSelection::MultiSelect()
 {

@@ -1,11 +1,11 @@
 #pragma once
 #include "CoreMinimal.h"
+#include "Components/BoxComponent.h"
 #include "DragSelect.generated.h"
 
 class ASelectionBox;
 class ACreatorBoard;
 class ULineBatchComponent;
-
 struct FBatchedLine;
 
 UCLASS()
@@ -31,13 +31,13 @@ protected:
     ULineBatchComponent* lineBatchComponent;
 
     UPROPERTY(EditInstanceOnly)
-    float scale = 57;
+    float scale = 56.0f;
     
     UPROPERTY()
-    ASelectionBox* selectionBox;    
+    ASelectionBox* selectionBox;
 
     UPROPERTY(EditInstanceOnly)
     float thickness = 4;
-private:
+    
     TOptional<FVector> firstClick;
 };

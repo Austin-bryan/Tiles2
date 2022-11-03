@@ -20,20 +20,15 @@ void ActorAnimator::Tick(const float deltaSeconds)
     }
 }
 
-void ActorAnimator::FinishAnimation() { ApplyAnimation(animState == EAnimState::Forwards ? end : begin); }
-void ActorAnimator::PlayForwards()    { SetupAnim(0, EAnimState::Forwards, true); }
-void ActorAnimator::PlayReverse()     { SetupAnim(1, EAnimState::Backwards, false); }
+void ActorAnimator::FinishAnimation()   { ApplyAnimation(animState == EAnimState::Forwards ? end : begin); }
+void ActorAnimator::Play(bool forwards) { SetupAnim(forwards ? 0 : 1
+    , forwards ? EAnimState::Forwards : EAnimState::Backwards, forwards); }
 
 void ActorAnimator::SetupAnim(const float _alpha, const EAnimState _animState, const bool _isSelected)
 {
     alpha = _alpha, animState = _animState, isSelected = _isSelected;
 }
-void ActorAnimator::Toggle()
-{
-    if (!isSelected)
-         PlayForwards();
-    else PlayReverse();
-}
+void ActorAnimator::Toggle() { Play(!isSelected); }
 void ActorAnimator::ApplyAnimation(const FVector value)
 {
     switch (animMode)

@@ -22,7 +22,7 @@ void SelectionMethod::SetFirstTiles(ACreatorTile* creatorTile)
 }
 void SelectionMethod::Select() 
 {
-    creatorTile->Select();
+    // creatorTile->Select();
     MultiSelect();
 }
 void SelectionMethod::Reset()
