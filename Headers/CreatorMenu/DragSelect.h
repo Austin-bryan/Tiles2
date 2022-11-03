@@ -5,6 +5,8 @@
 class ACreatorBoard;
 class ULineBatchComponent;
 
+struct FBatchedLine;
+
 UCLASS()
 class UDragSelect : public UActorComponent
 {
@@ -14,9 +16,12 @@ public:
 
     void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
     void Select();
-    void Draw(FVector&& worldPosition, bool shouldDeselect);
     void SetBoard(ACreatorBoard* _board);
-
+    
+    void Draw(TArray<FBatchedLine>& lines, FVector&& worldPosition);
+    void Select(const TArray<FBatchedLine>& lines, bool shouldDeselect);
+    void DrawCircle(TArray<FBatchedLine>& lines, FVector&& worldPosition);
+    // void SelectCircle(const TArray<FBatchedLine>& lines, bool shouldDeselect);
 protected:
     UPROPERTY()
     ACreatorBoard* board;

@@ -35,7 +35,10 @@ void UDragSelect::TickComponent(float DeltaTime, ELevelTick TickType, FActorComp
             return;
         if (controller->IsInputKeyDown(EKeys::LeftMouseButton))
         {
-            Draw(GetScreenToWorld(), !controller->IsInputKeyDown(EKeys::LeftShift));
+            TArray<FBatchedLine> lines;
+
+            Draw(lines, GetScreenToWorld());
+            Select(lines,!controller->IsInputKeyDown(EKeys::LeftShift));
         }
         else
         {
@@ -46,7 +49,7 @@ void UDragSelect::TickComponent(float DeltaTime, ELevelTick TickType, FActorComp
     else if (controller->IsInputKeyDown(EKeys::LeftMouseButton))
         firstClick = GetScreenToWorld();
 }
-void UDragSelect::Draw(FVector&& worldPosition, bool shouldDeselect)
+void UDragSelect::Draw(TArray<FBatchedLine>& lines, FVector&& worldPosition)
 {
     lineBatchComponent->Flush();
     worldPosition.Y = firstClick->Y;
@@ -63,19 +66,34 @@ void UDragSelect::Draw(FVector&& worldPosition, bool shouldDeselect)
              board->GetActorTransform().InverseTransformPosition(vert) * scale);
     }
     
-    TArray<FBatchedLine> lines;
     for (int i = 0; i < verts.Num(); i++) 
         lines.Add(FBatchedLine(verts[i], verts[(i + 1) % verts.Num()],
             FColor::Red, 0, thickness, 0));
     
     lineBatchComponent->DrawLines(lines);
+}
+void UDragSelect::DrawCircle(TArray<FBatchedLine>& lines, FVector&& worldPosition)
+{
+    // const float	AngleDelta = 2.0f * PI / NumSides;
+    // FVector	LastVertex = Base + X * Radius;
+    //
+    // for(int32 SideIndex = 0; SideIndex < NumSides; SideIndex++)
+    // {
+    //     const FVector Vertex = Base + (X * FMath::Cos(AngleDelta * (SideIndex + 1)) + Y * FMath::Sin(AngleDelta * (SideIndex + 1))) * Radius;
+    //     new(lineBatchComponent->BatchedLines) FBatchedLine(LastVertex,Vertex,Color,100, thickness, DepthPriority);
+    //     LastVertex = Vertex;
+    // }
+    // lineBatchComponent->MarkRenderStateDirty();
+}
+void UDragSelect::Select(const TArray<FBatchedLine>& lines, const bool shouldDeselect)
+{
     TInterval<float> intervalZ, intervalX;
 
     auto SetMinMax = [](const float f1, const float f2, TInterval<float>& interval) {
         interval = f1 > f2 ? TInterval(f2, f1) : TInterval(f1, f2); };
 
-    SetMinMax(verts[0].Z, verts[2].Z, intervalZ);
-    SetMinMax(verts[0].X, verts[2].X, intervalX);
+    SetMinMax(lines[0].Start.Z, lines[2].Start.Z, intervalZ);
+    SetMinMax(lines[0].Start.X, lines[2].Start.X, intervalX);
     
     for (const auto& tile : board->GetTiles().Values())
     {
