@@ -27,10 +27,10 @@ ACreatorBoard::ACreatorBoard()
 {
     // lineBatchComponent = CreateDefaultSubobject<ULineBatchComponent>(FName("Line Component"));
     dragSelect = CreateDefaultSubobject<UDragSelect>(FName("Drag Select"));
-    dragSelect->SetBoard(this);
     dragSelect->RegisterComponent();
-    dragSelect->SetComponentTickEnabled(true);
     dragSelect->PrimaryComponentTick.bCanEverTick = true;
+    dragSelect->SetComponentTickEnabled(true);
+    dragSelect->SetBoard(this);
 
     // auto d= GetWorld()->GetPlayerControllerIterator();
 }

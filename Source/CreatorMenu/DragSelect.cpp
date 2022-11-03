@@ -8,11 +8,13 @@
 
 void UDragSelect::Select() {}
 
-UDragSelect::UDragSelect()
+UDragSelect::UDragSelect() 
 {
     UActorComponent::SetComponentTickEnabled(true);
     lineBatchComponent = CreateDefaultSubobject<ULineBatchComponent>(FName("Line Batch"));
 }
+
+void UDragSelect::BeginPlay() { Super::BeginPlay(); }
 
 void UDragSelect::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {

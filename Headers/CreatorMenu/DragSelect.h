@@ -14,6 +14,8 @@ class UDragSelect : public UActorComponent
 public:
     UDragSelect();
 
+    void BeginPlay() override;
+
     void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
     void Select();
     void SetBoard(ACreatorBoard* _board);
