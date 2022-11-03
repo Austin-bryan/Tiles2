@@ -9,7 +9,10 @@ class ASelectionBox : public AActor
 public:
     ASelectionBox();
     void BeginPlay() override;
+    void SetVisibility(bool visibility);
 protected:
     UPROPERTY()
     UStaticMeshComponent* mesh;
+private:
+    bool isVisible;
 };

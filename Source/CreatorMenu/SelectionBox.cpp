@@ -12,8 +12,17 @@ ASelectionBox::ASelectionBox()
     mesh->SetStaticMesh(staticMesh);
     mesh->SetWorldScale3D(FVector(0.001f, 1, 1));
     ASelectionBox::Rename(TEXT("Selection Box"));
+    SetVisibility(false);
 }
 void ASelectionBox::BeginPlay()
 {
     Super::BeginPlay();
 }
+
+void ASelectionBox::SetVisibility(const bool visibility)
+{
+    isVisible = visibility;
+    SetActorScale3D(FVector::Zero());
+    mesh->SetVisibility(visibility);
+}
+

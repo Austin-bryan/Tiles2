@@ -59,10 +59,14 @@ void UDragSelect::TickComponent(const float deltaTime, const ELevelTick tickType
         {
             lineBatchComponent->Flush();
             firstClick.Reset();
+            selectionBox->SetVisibility(false);
         }
     }
     else if (controller->IsInputKeyDown(EKeys::LeftMouseButton))
+    {
         firstClick = GetScreenToWorld();
+        selectionBox->SetVisibility(true);
+    }
 }
 void UDragSelect::Draw(TArray<FBatchedLine>& lines, FVector&& worldPosition)
 {
