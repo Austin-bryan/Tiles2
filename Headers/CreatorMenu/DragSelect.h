@@ -20,8 +20,6 @@ public:
     
     void Draw(TArray<FBatchedLine>& lines, FVector&& worldPosition);
     void Select(const TArray<FBatchedLine>& lines, bool shouldDeselect);
-    void DrawCircle(TArray<FBatchedLine>& lines, FVector&& worldPosition);
-    // void SelectCircle(const TArray<FBatchedLine>& lines, bool shouldDeselect);
 protected:
     UPROPERTY()
     ACreatorBoard* board;

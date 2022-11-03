@@ -72,19 +72,6 @@ void UDragSelect::Draw(TArray<FBatchedLine>& lines, FVector&& worldPosition)
     
     lineBatchComponent->DrawLines(lines);
 }
-void UDragSelect::DrawCircle(TArray<FBatchedLine>& lines, FVector&& worldPosition)
-{
-    // const float	AngleDelta = 2.0f * PI / NumSides;
-    // FVector	LastVertex = Base + X * Radius;
-    //
-    // for(int32 SideIndex = 0; SideIndex < NumSides; SideIndex++)
-    // {
-    //     const FVector Vertex = Base + (X * FMath::Cos(AngleDelta * (SideIndex + 1)) + Y * FMath::Sin(AngleDelta * (SideIndex + 1))) * Radius;
-    //     new(lineBatchComponent->BatchedLines) FBatchedLine(LastVertex,Vertex,Color,100, thickness, DepthPriority);
-    //     LastVertex = Vertex;
-    // }
-    // lineBatchComponent->MarkRenderStateDirty();
-}
 void UDragSelect::Select(const TArray<FBatchedLine>& lines, const bool shouldDeselect)
 {
     TInterval<float> intervalZ, intervalX;
