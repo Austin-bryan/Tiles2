@@ -73,13 +73,15 @@ void UDragSelect::Draw(TArray<FBatchedLine>& lines, FVector&& worldPosition)
         *firstClick,   FVector(firstClick->X,   firstClick->Y, worldPosition.Z),
         worldPosition, FVector(worldPosition.X, firstClick->Y, firstClick->Z),
     };
+#ifdef PERSPECTIVE_MODE
     for (auto& vert : verts)
     {
         vert.Y = board->GetActorLocation().Y + 0.5f;
         vert = board->GetActorTransform().TransformPosition(
              board->GetActorTransform().InverseTransformPosition(vert) * scale);
     }
-
+#endif
+    
     const FVector avgPos = (verts[0] + verts[2]) / 2;
     const float height   = FVector::Distance(verts[0], verts[1]);
     const float width    = FVector::Distance(verts[1], verts[2]);
