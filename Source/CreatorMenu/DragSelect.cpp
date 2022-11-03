@@ -1,9 +1,13 @@
 #pragma once
 #include "DragSelect.h"
+
+#include <ThirdParty/SPIRV-Reflect/SPIRV-Reflect/include/spirv/unified1/spirv.h>
+
 #include "CreatorTile.h"
 #include "Components/LineBatchComponent.h"
 #include "GameFramework/HUD.h"
 #include "CreatorBoard.h"
+#include "SelectionBox.h"
 #include "Kismet/GameplayStatics.h"
 
 void UDragSelect::Select() {}
@@ -14,11 +18,19 @@ UDragSelect::UDragSelect()
     lineBatchComponent = CreateDefaultSubobject<ULineBatchComponent>(FName("Line Batch"));
 }
 
-void UDragSelect::BeginPlay() { Super::BeginPlay(); }
-
-void UDragSelect::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+void UDragSelect::BeginPlay()
 {
-    Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+    Log("create box");
+    selectionBox = GetWorld()->SpawnActor<ASelectionBox>(
+        ASelectionBox::StaticClass(),
+        board->GetActorLocation(),
+        FRotator(0, 90, 0));
+    Super::BeginPlay();
+}
+
+void UDragSelect::TickComponent(const float deltaTime, const ELevelTick tickType, FActorComponentTickFunction* ThisTickFunction)
+{
+    Super::TickComponent(deltaTime, tickType, ThisTickFunction);
 
     const auto controller = board->GetWorld()->GetFirstPlayerController();
     auto GetScreenToWorld = [this, controller]
@@ -41,6 +53,7 @@ void UDragSelect::TickComponent(float DeltaTime, ELevelTick TickType, FActorComp
 
             Draw(lines, GetScreenToWorld());
             Select(lines,!controller->IsInputKeyDown(EKeys::LeftShift));
+
         }
         else
         {
@@ -67,11 +80,17 @@ void UDragSelect::Draw(TArray<FBatchedLine>& lines, FVector&& worldPosition)
         vert = board->GetActorTransform().TransformPosition(
              board->GetActorTransform().InverseTransformPosition(vert) * scale);
     }
-    
+
+    const FVector avgPos = (verts[0] + verts[2]) / 2;
+    const float height   = FVector::Distance(verts[0], verts[1]);
+    const float width    = FVector::Distance(verts[1], verts[2]);
+
+    selectionBox->SetActorLocation(avgPos);
+    selectionBox->SetActorScale3D(FVector(0.001, width, height) / 100);
+
     for (int i = 0; i < verts.Num(); i++) 
         lines.Add(FBatchedLine(verts[i], verts[(i + 1) % verts.Num()],
-            FColor::Red, 0, thickness, 0));
-    
+            FLinearColor(0, 0, 0, 0.6f), 0, thickness, 0));
     lineBatchComponent->DrawLines(lines);
 }
 void UDragSelect::Select(const TArray<FBatchedLine>& lines, const bool shouldDeselect)

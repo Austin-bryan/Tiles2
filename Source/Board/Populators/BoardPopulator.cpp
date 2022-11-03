@@ -13,11 +13,10 @@ BoardPopulator::BoardPopulator(ABoard* const board) : board{board}, boardShape{ 
 }
 ATile* BoardPopulator::CreateTile(const FCoordPtr coord, Tiles& tiles) const
 {
-	auto d = ATile::StaticClass();
 	const auto tile = board->GetWorld()->SpawnActor<ATile>(
 		board->TileClass(),
 		board->LocationOf(coord),
-		FRotator(0, 0, 0));
+		FRotator::ZeroRotator);
 	tiles.Add(coord, tile);
 	tile->SetShape(boardShape);
 	tile->SetBoard(board);

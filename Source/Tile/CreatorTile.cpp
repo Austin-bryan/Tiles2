@@ -21,6 +21,7 @@ void ACreatorTile::NotifyActorOnClicked(FKey ButtonPressed)
          Deselect();
     else Select();
 }
+
 // todo:: this bool should be whether or not we're dragging
 // todo: allow shift select when individually clicking but not dragging
 // todo:: allow shift select and override select for dragging
@@ -28,7 +29,6 @@ void ACreatorTile::Select(const bool isDragSelecting)
 {
     if (isSelected)
         return;
-
     if (!isDragSelecting)
     {
         if (const auto& controller = GetWorld()->GetFirstPlayerController();
@@ -68,5 +68,3 @@ void ACreatorTile::NotifyActorEndCursorOver()
     animHover.PlayReverse();
     activeAnimation = &animHover;
 }
-
-

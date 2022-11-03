@@ -30,7 +30,9 @@ ACreatorBoard::ACreatorBoard()
     dragSelect->RegisterComponent();
     dragSelect->PrimaryComponentTick.bCanEverTick = true;
     dragSelect->SetComponentTickEnabled(true);
+    dragSelect->PrimaryComponentTick.SetTickFunctionEnable(true);
     dragSelect->SetBoard(this);
+
 
     // auto d= GetWorld()->GetPlayerControllerIterator();
 }

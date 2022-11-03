@@ -2,6 +2,7 @@
 #include "CoreMinimal.h"
 #include "DragSelect.generated.h"
 
+class ASelectionBox;
 class ACreatorBoard;
 class ULineBatchComponent;
 
@@ -16,7 +17,7 @@ public:
 
     void BeginPlay() override;
 
-    void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+    void TickComponent(float deltaTime, ELevelTick tickType, FActorComponentTickFunction* ThisTickFunction) override;
     void Select();
     void SetBoard(ACreatorBoard* _board);
     
@@ -31,9 +32,12 @@ protected:
 
     UPROPERTY(EditInstanceOnly)
     float scale = 57;
+    
+    UPROPERTY()
+    ASelectionBox* selectionBox;    
 
     UPROPERTY(EditInstanceOnly)
-    float thickness = 5;
+    float thickness = 4;
 private:
     TOptional<FVector> firstClick;
 };
