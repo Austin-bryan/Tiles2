@@ -20,7 +20,7 @@ public:
     void TickComponent(float deltaTime, ELevelTick tickType, FActorComponentTickFunction* ThisTickFunction) override;
     void Select();
     void SetBoard(ACreatorBoard* _board);
-    void Draw(FVector&& worldPosition);
+    void Draw(FVector&& worldPosition, FVector& vert1);
 protected:
     UPROPERTY()
         ACreatorBoard* board;
@@ -34,4 +34,7 @@ protected:
         float thickness = 4;
     
     TOptional<FVector> firstClick;
+    TOptional<FVector> secondClick;
+private:
+    FRotator rotation;
 };

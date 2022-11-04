@@ -3,6 +3,7 @@
 #include "Components/LineBatchComponent.h"
 #include "GameFramework/HUD.h"
 #include "CreatorBoard.h"
+#include "SAdvancedTransformInputBox.h"
 #include "SelectionBox.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -42,12 +43,28 @@ void UDragSelect::TickComponent(const float deltaTime, const ELevelTick tickType
     {
         if (FVector::Distance(GetScreenToWorld(), *firstClick) < 0.25f)
             return;
+        if (controller->IsInputKeyDown(EKeys::LeftAlt))
+        {
+            secondClick = GetScreenToWorld();
+        }
         if (controller->IsInputKeyDown(EKeys::LeftMouseButton))
-            Draw(GetScreenToWorld());
+        {
+            FVector vert1;
+            Draw(GetScreenToWorld(), vert1);
+            
+            if (controller->IsInputKeyDown(EKeys::R))
+            {
+                rotation = (*firstClick - GetScreenToWorld()).Rotation() ;
+                rotation = FRotator(rotation.Pitch, 0, 0);
+                Log(rotation);
+            }
+        }
         else
         {
             lineBatchComponent->Flush();
             firstClick.Reset();
+            secondClick.Reset();
+            rotation = FRotator::ZeroRotator;
             selectionBox->SetVisibility(false);
         }
     }
@@ -57,23 +74,44 @@ void UDragSelect::TickComponent(const float deltaTime, const ELevelTick tickType
         selectionBox->SetVisibility(true);
     }
 }
-void UDragSelect::Draw(FVector&& worldPosition)
+void UDragSelect::Draw(FVector&& worldPosition, FVector& vert1)
 {
     lineBatchComponent->Flush();
     worldPosition.Y = firstClick->Y;
-    
+
+
+    //todo:: the trapazoid effect happens when secondclick is lockded down then the mouse is moved
+    //todo: selection must always map to mouse
+    //todo: if second click could be updated to stay perpendicular to worldPosition, vert4 could get
+    //todo: calculated to be at the correct position as well
+    //todo: to do this, it might require caching last frames verts 2 and 3.
+    //todo:: factor verts into its own nested class
     TArray verts
     {
-        *firstClick,   FVector(firstClick->X,   firstClick->Y, worldPosition.Z),
-        worldPosition, FVector(worldPosition.X, firstClick->Y, firstClick->Z),
+        *firstClick,
+        secondClick ? *secondClick : FVector(firstClick->X,   firstClick->Y, worldPosition.Z),
+        worldPosition,
+        secondClick
+            ? FVector(*firstClick - *secondClick + worldPosition)
+            : FVector(worldPosition.X, firstClick->Y, firstClick->Z),
     };
-    
+    vert1 = verts[3];
+
+    const FTransform trans(*firstClick);
+    for (auto& vert : verts)
+    {
+        vert = trans.TransformPosition(
+            rotation.RotateVector(
+                trans.InverseTransformPosition(vert)));
+    }
+
     const FVector avgPos = (verts[0] + verts[2]) / 2;
     const float height   = FVector::Distance(verts[0], verts[1]);
     const float width    = FVector::Distance(verts[1], verts[2]);
 
     selectionBox->SetActorLocation(avgPos);
     selectionBox->ScaleArea(width, height);
+    selectionBox->SetActorRotation(FRotator(0, 90, -rotation.Pitch));
 
     TArray<FBatchedLine> lines;
     for (int i = 0; i < verts.Num(); i++) 
@@ -82,4 +120,3 @@ void UDragSelect::Draw(FVector&& worldPosition)
     lineBatchComponent->DrawLines(lines);
 }
 void UDragSelect::SetBoard(ACreatorBoard* _board) { board = _board; }
-
