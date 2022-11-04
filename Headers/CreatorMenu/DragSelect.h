@@ -1,6 +1,5 @@
 #pragma once
 #include "CoreMinimal.h"
-#include "Components/BoxComponent.h"
 #include "DragSelect.generated.h"
 
 class ASelectionBox;
@@ -16,11 +15,9 @@ public:
     UDragSelect();
 
     void BeginPlay() override;
-
     void TickComponent(float deltaTime, ELevelTick tickType, FActorComponentTickFunction* ThisTickFunction) override;
-    void Select();
-    void SetBoard(ACreatorBoard* _board);
-    void Draw(FVector&& worldPosition, FVector& vert1);
+    void SetBoard(ACreatorBoard* _board) { board = _board; }
+    void Draw(FVector&& worldPosition);
 protected:
     UPROPERTY()
         ACreatorBoard* board;
@@ -32,9 +29,7 @@ protected:
         ASelectionBox* selectionBox;
     UPROPERTY(EditInstanceOnly)
         float thickness = 4;
-    
     TOptional<FVector> firstClick;
-    TOptional<FVector> secondClick;
 private:
     FRotator rotation;
 };

@@ -16,13 +16,11 @@ public:
     void ScaleArea(float width, float height);
 protected:
     UPROPERTY(VisibleAnywhere)
-    UStaticMeshComponent* mesh;
-    
+        UStaticMeshComponent* mesh;
     UPROPERTY(VisibleAnywhere)
-    UStaticMeshComponent* collider;
-
+        UStaticMeshComponent* collider;
     UPROPERTY(VisibleAnywhere)
-    USceneComponent* root;
+        USceneComponent* root;
 private:
     bool isVisible;
 

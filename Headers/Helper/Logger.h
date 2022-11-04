@@ -18,10 +18,18 @@ void Log(FString,     FColor color = defaultColor, float time = defaultTime);
 void Log(FRotator,    FColor color = defaultColor, float time = defaultTime);
 void Log(FParameter&, FColor color = defaultColor, float time = defaultTime);
 
+void Log(int,         float time);
+void Log(float,       float time);
+void Log(FVector,     float time);
+void Log(FString,     float time);	
+void Log(FRotator,    float time);
+void Log(FParameter&, float time);
+
 void NullCheck(FString&& label, const void* object, FColor color = defaultColor, float time = defaultTime);
 void NullCheck(const void* object, FColor color = defaultColor, float time = defaultTime);
 
-void Path(const int n, const float time = defaultTime, const FColor color = FColor::Cyan);
+void Path(int n, FColor color = defaultColor, float time = defaultTime);
+void Path(int n, float time);
 
 inline FString operator"" _f(const unsigned long long int i) { return FString::FromInt(i); }
 inline FString operator"" _f(const char* s, std::size_t) { return FString(s); }

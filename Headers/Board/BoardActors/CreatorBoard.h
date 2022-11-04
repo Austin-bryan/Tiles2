@@ -17,8 +17,8 @@ public:
 	~ACreatorBoard();
 	
 	UPROPERTY(EditAnywhere)
-	float scale;
+		float scale;
 protected:
-	UPROPERTY(EditInstanceOnly)
-	UDragSelect* dragSelect;
+	UPROPERTY(VisibleAnywhere)
+		UDragSelect* dragSelect;
 };

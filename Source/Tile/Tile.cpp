@@ -65,8 +65,10 @@ void ATile::SetColor(const ETileColor color)
 }
 void ATile::SetBoard(ABoard* newBoard)
 {
-	if (board == nullptr)
-		board = newBoard;
+	if (board != nullptr)
+		return;
+	board = newBoard;
+	AttachToActor(board, FAttachmentTransformRules::KeepRelativeTransform);
 }
 void ATile::Tick    (const float DeltaTime)
 {
