@@ -20,24 +20,18 @@ public:
     void TickComponent(float deltaTime, ELevelTick tickType, FActorComponentTickFunction* ThisTickFunction) override;
     void Select();
     void SetBoard(ACreatorBoard* _board);
-    
-    void Draw(TArray<FBatchedLine>& lines, FVector&& worldPosition);
-    void Select(const TArray<FBatchedLine>& lines, bool shouldDeselect);
+    void Draw(FVector&& worldPosition);
 protected:
     UPROPERTY()
-    ACreatorBoard* board;
-
+        ACreatorBoard* board;
     UPROPERTY()
-    ULineBatchComponent* lineBatchComponent;
-
+        ULineBatchComponent* lineBatchComponent;
     UPROPERTY(EditInstanceOnly)
-    float scale = 56.0f;
-    
+        float scale = 56.0f;
     UPROPERTY()
-    ASelectionBox* selectionBox;
-
+        ASelectionBox* selectionBox;
     UPROPERTY(EditInstanceOnly)
-    float thickness = 4;
+        float thickness = 4;
     
     TOptional<FVector> firstClick;
 };

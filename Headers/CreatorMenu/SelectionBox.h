@@ -14,8 +14,6 @@ public:
     void BeginPlay() override;
     void SetVisibility(bool visibility);
     void ScaleArea(float width, float height);
-
-    void Tick(float DeltaSeconds) override;
 protected:
     UPROPERTY(VisibleAnywhere)
     UStaticMeshComponent* mesh;

@@ -1,15 +1,8 @@
 #include "CreatorTile.h"
 #include "Kismet/GameplayStatics.h"
-#include "AssetDir.h"
 
 TArray<ACreatorTile*> ACreatorTile::SelectedTiles;
-ACreatorTile::ACreatorTile() : ATile()
-{
-    // Highlight = CreateDefaultSubobject<UStaticMeshComponent>(FName("Highlight Mesh"));
-    // Highlight->SetStaticMesh(Mesh->GetStaticMesh());
-    // Highlight->AttachToComponent(Root, FAttachmentTransformRules::KeepRelativeTransform);
-    // Highlight->SetRelativeLocation(FVector(0.5f, 0, 0));
-}
+ACreatorTile::ACreatorTile() : ATile() { }
 
 void ACreatorTile::Tick(const float deltaSeconds)
 {
@@ -36,7 +29,7 @@ void ACreatorTile::Select(const bool _isSelected, const bool isDragSelecting)
         {
             const auto selected = SelectedTiles;
             for (const auto& tile : selected)
-                static_cast<ACreatorTile*>(tile)->Deselect();
+                static_cast<ACreatorTile*>(tile)->Select(false);
         }
     }
     animPress.Play(isSelected);
@@ -45,28 +38,4 @@ void ACreatorTile::Select(const bool _isSelected, const bool isDragSelecting)
     if (isSelected)
          SelectedTiles.Add(this);
     else SelectedTiles.Remove(this);
-}
-void ACreatorTile::Deselect()
-{
-    // if (!isSelected)
-    //     return;
-    // isSelected = false;
-    // animPress.PlayReverse();
-    // activeAnimation = &animPress;
-    // SelectedTiles.Remove(this);
-}
-
-void ACreatorTile::NotifyActorBeginCursorOver()
-{
-    // if (isSelected)
-    //     return;
-    // animHover.Play(true);
-    // activeAnimation = &animHover;
-}
-void ACreatorTile::NotifyActorEndCursorOver()
-{
-    // if (isSelected)
-    //     return;
-    // animHover.Play(false);
-    // activeAnimation = &animHover;
 }

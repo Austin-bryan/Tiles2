@@ -10,8 +10,6 @@ void SelectionMethod::DeselectAll(const bool preserveFirstTiles)
 {
     auto tilesToDeselect = selectedTiles.FilterByPredicate([preserveFirstTiles](ACreatorTile* c){
         return !(preserveFirstTiles && firstSelectedTiles.Contains(c)); });
-    for (const auto& creatorTile : tilesToDeselect)
-        creatorTile->Deselect();
 }
 void SelectionMethod::SetFirstTiles(ACreatorTile* creatorTile)
 {

@@ -52,13 +52,8 @@ void ASelectionBox::ScaleArea(float width, float height)
     collider->SetWorldScale3D(FVector(1, width + expansion, height + expansion));
 }
 
-void ASelectionBox::Tick(float DeltaSeconds)
-{
-    Super::Tick(DeltaSeconds);
-}
-
 void ASelectionBox::OnBeginOverlap(UPrimitiveComponent* overlappedComp, AActor* otherActor, UPrimitiveComponent* otherComp
-                                   , int otherBodyIndex, bool fromSweep, const FHitResult& sweepResult)
+    , int otherBodyIndex, bool fromSweep, const FHitResult& sweepResult)
 {
     Select(otherActor, true);
 }

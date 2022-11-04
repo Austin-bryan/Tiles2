@@ -15,11 +15,8 @@ public:
 	ACreatorTile();
 	void Tick(float deltaSeconds) override;
 	void NotifyActorOnClicked(FKey ButtonPressed) override;
-	void NotifyActorBeginCursorOver() override;
-	void NotifyActorEndCursorOver() override;
 
 	void Select(bool _isSelected, bool isDragSelecting = false);
-	void Deselect();
 private:
 	bool isSelected, isPlayingSelectAnim;
 	FVector targetScale, startScale;

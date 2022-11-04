@@ -43,13 +43,7 @@ void UDragSelect::TickComponent(const float deltaTime, const ELevelTick tickType
         if (FVector::Distance(GetScreenToWorld(), *firstClick) < 0.25f)
             return;
         if (controller->IsInputKeyDown(EKeys::LeftMouseButton))
-        {
-            TArray<FBatchedLine> lines;
-
-            Draw(lines, GetScreenToWorld());
-            Select(lines,!controller->IsInputKeyDown(EKeys::LeftShift));
-
-        }
+            Draw(GetScreenToWorld());
         else
         {
             lineBatchComponent->Flush();
@@ -63,7 +57,7 @@ void UDragSelect::TickComponent(const float deltaTime, const ELevelTick tickType
         selectionBox->SetVisibility(true);
     }
 }
-void UDragSelect::Draw(TArray<FBatchedLine>& lines, FVector&& worldPosition)
+void UDragSelect::Draw(FVector&& worldPosition)
 {
     lineBatchComponent->Flush();
     worldPosition.Y = firstClick->Y;
@@ -73,14 +67,6 @@ void UDragSelect::Draw(TArray<FBatchedLine>& lines, FVector&& worldPosition)
         *firstClick,   FVector(firstClick->X,   firstClick->Y, worldPosition.Z),
         worldPosition, FVector(worldPosition.X, firstClick->Y, firstClick->Z),
     };
-#ifdef PERSPECTIVE_MODE
-    for (auto& vert : verts)
-    {
-        vert.Y = board->GetActorLocation().Y + 0.5f;
-        vert = board->GetActorTransform().TransformPosition(
-             board->GetActorTransform().InverseTransformPosition(vert) * scale);
-    }
-#endif
     
     const FVector avgPos = (verts[0] + verts[2]) / 2;
     const float height   = FVector::Distance(verts[0], verts[1]);
@@ -89,30 +75,11 @@ void UDragSelect::Draw(TArray<FBatchedLine>& lines, FVector&& worldPosition)
     selectionBox->SetActorLocation(avgPos);
     selectionBox->ScaleArea(width, height);
 
+    TArray<FBatchedLine> lines;
     for (int i = 0; i < verts.Num(); i++) 
         lines.Add(FBatchedLine(verts[i], verts[(i + 1) % verts.Num()],
             FLinearColor(0, 0, 0, 0.6f), 0, thickness, 0));
     lineBatchComponent->DrawLines(lines);
-}
-void UDragSelect::Select(const TArray<FBatchedLine>& lines, const bool shouldDeselect)
-{
-    // TInterval<float> intervalZ, intervalX;
-    //
-    // auto SetMinMax = [](const float f1, const float f2, TInterval<float>& interval) {
-    //     interval = f1 > f2 ? TInterval(f2, f1) : TInterval(f1, f2); };
-    //
-    // SetMinMax(lines[0].Start.Z, lines[2].Start.Z, intervalZ);
-    // SetMinMax(lines[0].Start.X, lines[2].Start.X, intervalX);
-    //
-    // for (const auto& tile : board->GetTiles().Values())
-    // {
-    //     const auto creatorTile = static_cast<ACreatorTile*>(tile);
-    //
-    //     if (const auto loc = creatorTile->GetActorLocation();
-    //         intervalZ.Contains(loc.Z) && intervalX.Contains(loc.X))
-    //             creatorTile->Select(true);
-    //     else if (shouldDeselect) creatorTile->Deselect();
-    // }
 }
 void UDragSelect::SetBoard(ACreatorBoard* _board) { board = _board; }
 
