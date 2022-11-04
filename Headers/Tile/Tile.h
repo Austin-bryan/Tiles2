@@ -34,15 +34,22 @@ public:
 protected:
 	void BeginPlay() override;
 	FCoordPtr Coord;
-	ABoard* board;
-
+	
+	UPROPERTY()
+		ABoard* board;
+	UPROPERTY(VisibleAnywhere, BlueprintReadonly)
+		USceneComponent* Root;
 	UPROPERTY(VisibleAnywhere, BlueprintReadonly)
 		UStaticMeshComponent* Mesh;
+	UPROPERTY(VisibleAnywhere, BlueprintReadonly)
+		UStaticMeshComponent* Collider;
 	UPROPERTY(VisibleAnywhere, BlueprintReadonly)
 		UBoxComponent* Box;
 	void NotifyActorOnClicked(FKey buttonPressed) override;
 private:
 	static int tileCount;
 	int id;
-	UMaterialInstanceDynamic* instance;
+	
+	UPROPERTY()
+		UMaterialInstanceDynamic* instance;
 };

@@ -1,6 +1,6 @@
 #include "ActorAnimator.h"
 
-ActorAnimator::ActorAnimator(AActor* target, FVector start, FVector end, const EAnimMode animMode, const float speed) :
+ActorAnimator::ActorAnimator(USceneComponent* target, FVector start, FVector end, const EAnimMode animMode, const float speed) :
     target{ target }, animMode{ animMode}, speed{ speed },
     animState{ EAnimState::Idle }, begin{ start }, end{ end }
 {
@@ -33,8 +33,8 @@ void ActorAnimator::ApplyAnimation(const FVector value)
 {
     switch (animMode)
     {
-    case EAnimMode::Scale:    target->SetActorScale3D(value);  break;
-    case EAnimMode::Position: target->SetActorLocation(value); break;
+    case EAnimMode::Scale:    target->SetWorldScale3D(value);  break;
+    case EAnimMode::Position: target->SetWorldLocation(value); break;
     default: throw std::invalid_argument("Invalid animation mode.");
     }
 }

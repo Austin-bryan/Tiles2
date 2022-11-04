@@ -3,11 +3,8 @@
 #include "CreatorTile.h"
 #include "Components/BoxComponent.h"
 
-//TODO:: replcae defines with fstring constants to avoid having to create locals to deference
 //TODO:: allow for shift drag
-//TODO:: prevent selection flip flop, perhaps by having a seperate collider just for deselction
 //TODO:: prevent last time from being selected when exiting drag
-//TODO:: glowing selection background
 ASelectionBox::ASelectionBox()
 {
     const auto mat = LoadMaterialFromPath(TEXT(MAT_SELECTION_BOX));
@@ -25,7 +22,7 @@ ASelectionBox::ASelectionBox()
     collider->SetStaticMesh(staticMesh);
     collider->AttachToComponent(root, FAttachmentTransformRules::KeepRelativeTransform, NAME_None);
     collider->SetVisibility(false);
-    collider->SetRelativeLocation(FVector(-550, 0, 0));
+    collider->SetRelativeLocation(FVector(-580, 0, 0));
 
     ScaleArea(1, 1);
     SetVisibility(false);
@@ -42,19 +39,26 @@ void ASelectionBox::SetVisibility(const bool visibility)
     
     if (isVisible)
         ScaleArea(0, 0);
+    //if (!isVisible)
     mesh->SetVisibility(visibility);
 }
 void ASelectionBox::ScaleArea(float width, float height)
 {
     width  /= 100;
     height /= 100;
-    constexpr float expansion = 0.125f;
+    constexpr float expansion = 0;
     
     mesh->SetWorldScale3D(FVector(0.001f, width, height));
     collider->SetWorldScale3D(FVector(1, width + expansion, height + expansion));
 }
+
+void ASelectionBox::Tick(float DeltaSeconds)
+{
+    Super::Tick(DeltaSeconds);
+}
+
 void ASelectionBox::OnBeginOverlap(UPrimitiveComponent* overlappedComp, AActor* otherActor, UPrimitiveComponent* otherComp
-    , int otherBodyIndex, bool fromSweep, const FHitResult& sweepResult)
+                                   , int otherBodyIndex, bool fromSweep, const FHitResult& sweepResult)
 {
     Select(otherActor, true);
 }
@@ -71,6 +75,6 @@ void ASelectionBox::Select(AActor* otherActor, const bool isSelected)
 
     if (!creatorTile)
         return;
-    creatorTile->Select(isSelected, true);    
+    creatorTile->Select(isSelected, true);
 }
 

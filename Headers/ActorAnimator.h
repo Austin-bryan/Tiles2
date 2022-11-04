@@ -8,17 +8,16 @@ enum class EAnimState { Idle, Forwards, Backwards };
 class TILES2_API ActorAnimator
 {
 public:
-    ActorAnimator(AActor* target, FVector start, FVector end, EAnimMode animMode, float speed = 1);
+    ActorAnimator(USceneComponent* target, FVector start, FVector end, EAnimMode animMode, float speed = 1);
     void Tick(float deltaSeconds);
     void Play(bool forwards);
-    // void PlayReverse();
     void Toggle();
     void FinishAnimation();
 private:
     void SetupAnim(float _alpha, EAnimState _animState, bool _isSelected);
     void ApplyAnimation(FVector value);
     
-    AActor* target;
+    USceneComponent* target;
     bool isSelected = false;
     const EAnimMode animMode;
     const float speed;

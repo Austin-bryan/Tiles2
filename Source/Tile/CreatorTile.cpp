@@ -1,9 +1,14 @@
 #include "CreatorTile.h"
 #include "Kismet/GameplayStatics.h"
+#include "AssetDir.h"
 
 TArray<ACreatorTile*> ACreatorTile::SelectedTiles;
 ACreatorTile::ACreatorTile() : ATile()
 {
+    // Highlight = CreateDefaultSubobject<UStaticMeshComponent>(FName("Highlight Mesh"));
+    // Highlight->SetStaticMesh(Mesh->GetStaticMesh());
+    // Highlight->AttachToComponent(Root, FAttachmentTransformRules::KeepRelativeTransform);
+    // Highlight->SetRelativeLocation(FVector(0.5f, 0, 0));
 }
 
 void ACreatorTile::Tick(const float deltaSeconds)

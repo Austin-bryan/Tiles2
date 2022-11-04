@@ -5,11 +5,10 @@
 #include "Enums.h"
 #include "Materials/MaterialInstanceConstant.h"
 #include "Components/TextRenderComponent.h"
-#include "Components/BoxComponent.h"
 #include "TileModule.h"
 #include "TileColor.h"
 
-//#define ShowDebugText
+// #define ShowDebugText
 #ifdef ShowDebugText
 #include "Coord.h"
 #endif 
@@ -18,16 +17,24 @@ int ATile::tileCount = 0;
 
 ATile::ATile()
 {
-	id = tileCount++;
-	
 	PrimaryActorTick.bCanEverTick = true;
+	
+	id   = tileCount++;
+	Root = CreateDefaultSubobject<USceneComponent>(FName("Root"));
+	RootComponent = Root;
+	
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Mesh->SetWorldRotation(FRotator(0, -90, 0));
-	RootComponent = Mesh;
+	Mesh->AttachToComponent(Root, FAttachmentTransformRules::KeepRelativeTransform);
+	Mesh->SetCollisionProfileName("BlockAll");
+	Mesh->SetGenerateOverlapEvents(false);
 
-	Box = CreateDefaultSubobject<UBoxComponent>(TEXT("Box"));
-	Box->AttachToComponent(Mesh, FAttachmentTransformRules::KeepRelativeTransform);
-	Box->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	// By avoiding using the mesh as the collider, several scale related bugs are avoided
+	Collider = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Collider"));
+	Collider->SetWorldRotation(FRotator(0, -90, 0));
+	Collider->AttachToComponent(Root, FAttachmentTransformRules::KeepRelativeTransform);
+	Collider->SetCollisionProfileName("OverlapAll");
+	Collider->SetVisibility(false);
 
 #ifdef ShowDebugText
 	CoordText = CreateDefaultSubobject<UTextRenderComponent>(TEXT("Coord Text"));
@@ -90,6 +97,7 @@ void ATile::SetShape(const EBoardShape boardShape) const
 	}
 	const auto tileMesh = Cast<UStaticMesh>(StaticLoadObject(UStaticMesh::StaticClass(), nullptr, *meshDir));
 	Mesh->SetStaticMesh(tileMesh);
+	Collider->SetStaticMesh(tileMesh);
 }
 
 void ATile::NotifyActorOnClicked(FKey buttonPressed) 
