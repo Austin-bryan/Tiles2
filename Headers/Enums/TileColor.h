@@ -6,7 +6,7 @@
 UENUM(Blueprintable)
 enum class ETileColor : uint8
 {
-	None UMETA(DisplayName = "None"), White, Red, Orange, Yellow, Green,
+	None, White, Red, Orange, Yellow, Green,
 	Cyan, Blue, Purple, Pink, Magenta, Brown, Black,
 };
 

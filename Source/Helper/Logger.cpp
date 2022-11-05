@@ -4,7 +4,6 @@
 
 void Log(const FString s,  const FColor color, const float time) { GEngine->AddOnScreenDebugMessage(-1, time, color, s); }
 
-
 void Log(const int n,         const FColor color, const float time) { Log(FString::FromInt(n), color, time); }
 void Log(const float f,       const FColor color, const float time) { Log(FString::SanitizeFloat(f), color, time); }
 void Log(const FVector v,     const FColor color, const float time) { Log(v.ToString(), color, time); }
@@ -23,8 +22,12 @@ void NullCheck(const void* object, const FColor color, const float time)
 }
 void NullCheck(FString&& label, const void* object, FColor color, const  float time)
 {
-	Log(object == nullptr ? label + fstr(" is null") : label + fstr(" is not null"), 
-		object == nullptr ? FColor::Red : FColor::Green, time);
+	Log(object == nullptr ? label + fstr(" is null") : label + fstr(" is not null"),
+		color == defaultColor
+		? object == nullptr
+			? FColor::Red
+			: FColor::Green
+		: color, time);
 }
 
 void Path(const int n, const FColor color, const float time)

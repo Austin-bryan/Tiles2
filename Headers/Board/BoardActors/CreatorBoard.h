@@ -16,12 +16,18 @@ public:
 	UClass* TileClass() const override;
 	ACreatorBoard();
 	~ACreatorBoard();
-	
+
+	UFUNCTION(BlueprintCallable, Category="Default")
+		UCreatorRotator* GetCreatorRotator() const { return rotator; }
 	UPROPERTY(EditAnywhere)
 		float scale;
+
+	// These get nulled instantly if they are UPROPERTY()'s
+	// ReSharper disable once CppUE4ProbableMemoryIssuesWithUObject
+	UDragSelect* dragSelect;
+	// ReSharper disable once CppUE4ProbableMemoryIssuesWithUObject
+	UCreatorRotator* rotator;
 protected:
-	UPROPERTY(VisibleAnywhere)
-		UDragSelect* dragSelect;
-	UPROPERTY(VisibleAnywhere)
-		UCreatorRotator* rotator;
+private:
+	int rand = 0;
 };
