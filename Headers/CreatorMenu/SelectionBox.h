@@ -25,10 +25,8 @@ private:
     bool isVisible;
 
     UFUNCTION()
-    void OnBeginOverlap(UPrimitiveComponent* overlappedComp, AActor* otherActor, UPrimitiveComponent* otherComp, int otherBodyIndex, bool fromSweep, const FHitResult& sweepResult);
-    
+        void OnBeginOverlap(UPrimitiveComponent* overlappedComp, AActor* otherActor, UPrimitiveComponent* otherComp, int otherBodyIndex, bool fromSweep, const FHitResult& sweepResult);
     UFUNCTION()
-    void OnEndOverlap(UPrimitiveComponent* overlappedComp, AActor* otherActor,  UPrimitiveComponent* otherComp, int otherBodyIndex);
-
+        void OnEndOverlap(UPrimitiveComponent* overlappedComp, AActor* otherActor,  UPrimitiveComponent* otherComp, int otherBodyIndex);
     void Select(AActor* otherActor, bool isSelected);
 };

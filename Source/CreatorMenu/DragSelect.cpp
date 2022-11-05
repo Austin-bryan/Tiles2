@@ -22,7 +22,6 @@ void UDragSelect::BeginPlay()
         FRotator(0, 90, 0));
     Super::BeginPlay();
 }
-
 void UDragSelect::TickComponent(const float deltaTime, const ELevelTick tickType, FActorComponentTickFunction* ThisTickFunction)
 {
     Super::TickComponent(deltaTime, tickType, ThisTickFunction);

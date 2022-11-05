@@ -4,6 +4,7 @@
 #include "CreatorBoard.generated.h"
 
 class UDragSelect;
+class UCreatorRotator;
 class ATile;
 enum class EBoardShape;
 
@@ -21,4 +22,6 @@ public:
 protected:
 	UPROPERTY(VisibleAnywhere)
 		UDragSelect* dragSelect;
+	UPROPERTY(VisibleAnywhere)
+		UCreatorRotator* rotator;
 };
