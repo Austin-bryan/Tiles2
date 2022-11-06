@@ -23,6 +23,8 @@ ASelectionBox::ASelectionBox()
     collider->AttachToComponent(root, FAttachmentTransformRules::KeepRelativeTransform, NAME_None);
     collider->SetVisibility(false);
     collider->SetRelativeLocation(FVector(-580, 0, 0));
+    collider->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+    collider->SetCollisionResponseToChannel(ECC_Visibility, ECR_Ignore);
 
     ScaleArea(1, 1);
     SetVisibility(false);
@@ -39,10 +41,9 @@ void ASelectionBox::SetVisibility(const bool visibility)
     
     if (isVisible)
         ScaleArea(0, 0);
-    //if (!isVisible)
     mesh->SetVisibility(visibility);
 }
-void ASelectionBox::ScaleArea(float width, float height)
+void ASelectionBox::ScaleArea(float width, float height) const
 {
     width  /= 100;
     height /= 100;
@@ -52,19 +53,24 @@ void ASelectionBox::ScaleArea(float width, float height)
     collider->SetWorldScale3D(FVector(1, width + expansion, height + expansion));
 }
 
+// ReSharper disable CppMemberFunctionMayBeConst
 void ASelectionBox::OnBeginOverlap(UPrimitiveComponent* overlappedComp, AActor* otherActor, UPrimitiveComponent* otherComp
-    , int otherBodyIndex, bool fromSweep, const FHitResult& sweepResult)
+                                   , int otherBodyIndex, bool fromSweep, const FHitResult& sweepResult)
 {
     Select(otherActor, true);
 }
-
 void ASelectionBox::OnEndOverlap(UPrimitiveComponent* overlappedComp, AActor* otherActor, UPrimitiveComponent* otherComp
     , int otherBodyIndex)
 {
-    Select(otherActor, false);
+    const auto& controller = GetWorld()->GetFirstPlayerController();
+    
+    if (!controller->IsInputKeyDown(EKeys::LeftShift))
+    if (otherActor != ACreatorTile::FirstSelectedTile())
+        Select(otherActor, false);
 }
+// ReSharper restore CppMemberFunctionMayBeConst
 
-void ASelectionBox::Select(AActor* otherActor, const bool isSelected)
+void ASelectionBox::Select(AActor* otherActor, const bool isSelected) const
 {
     ACreatorTile* creatorTile = Cast<ACreatorTile>(otherActor);
 

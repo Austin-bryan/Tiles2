@@ -2,7 +2,13 @@
 #include "Kismet/GameplayStatics.h"
 
 TArray<ACreatorTile*> ACreatorTile::SelectedTiles;
-ACreatorTile::ACreatorTile() : ATile() { }
+ACreatorTile* ACreatorTile::firstSelectedTile;
+
+ACreatorTile::ACreatorTile() : ATile()
+{
+    if (SelectedTiles.Num() > 0)
+        SelectedTiles.Empty();
+}
 
 void ACreatorTile::Tick(const float deltaSeconds)
 {
@@ -12,30 +18,45 @@ void ACreatorTile::Tick(const float deltaSeconds)
         activeAnimation->Tick(deltaSeconds);
 }
 void ACreatorTile::EmptySelectedTiles() { SelectedTiles.Empty(); }
-void ACreatorTile::NotifyActorOnClicked(FKey ButtonPressed) { Select(!isSelected); }
+void ACreatorTile::NotifyActorOnClicked(FKey ButtonPressed)
+{
+    // Invert selection, unless was previously dragselected
+    Select(!isSelected || wasDragSelected && isSelected);
+}
 
 // todo:: this bool should be whether or not we're dragging
-// todo: allow shift select when individually clicking but not dragging
+// todo:  allow shift select when individually clicking but not dragging
 // todo:: allow shift select and override select for dragging
 void ACreatorTile::Select(const bool _isSelected, const bool isDragSelecting)
 {
-    if (_isSelected && isSelected || !_isSelected && !isSelected)
-        return;
     isSelected = _isSelected;
-    if (isSelected &&  !isDragSelecting)
+
+    // Slick selection
+    if (isSelected && !isDragSelecting)
     {
+        firstSelectedTile = this;
+
+        // Deselect other tiles except for self
         if (const auto& controller = GetWorld()->GetFirstPlayerController();
             !controller->IsInputKeyDown(EKeys::LeftShift))
         {
             const auto selected = SelectedTiles;
             for (const auto& tile : selected)
-                static_cast<ACreatorTile*>(tile)->Select(false);
+                if (tile != this)
+                    tile->Select(false);
         }
     }
-    animPress.Play(isSelected);
-    activeAnimation = &animPress;
+    // prevents animating into the state its already in
+    if (isSelected && animPress.GetAnimState() != EAnimState::Forwards
+    || !isSelected && animPress.GetAnimState() != EAnimState::Backwards)
+    {
+        animPress.Play(isSelected);
+        activeAnimation = &animPress;
+    }
     
     if (isSelected)
-         SelectedTiles.Add(this);
+         SelectedTiles.AddUnique(this);
     else SelectedTiles.Remove(this);
+    
+    wasDragSelected = isDragSelecting;
 }

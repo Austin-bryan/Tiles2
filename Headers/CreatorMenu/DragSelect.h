@@ -32,4 +32,5 @@ protected:
     TOptional<FVector> firstClick;
 private:
     FRotator rotation;
+    bool isDragging;
 };

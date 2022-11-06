@@ -1,12 +1,9 @@
 #pragma once
 #include "DragSelect.h"
-#include "Components/LineBatchComponent.h"
-#include "GameFramework/HUD.h"
 #include "CreatorBoard.h"
-#include "SAdvancedTransformInputBox.h"
-#include "SegmentTypes.h"
 #include "SelectionBox.h"
-#include "Kismet/GameplayStatics.h"
+#include "Components/LineBatchComponent.h"
+#include "Logger.h"
 
 UDragSelect::UDragSelect() 
 {
@@ -36,11 +33,17 @@ void UDragSelect::TickComponent(const float deltaTime, const ELevelTick tickType
         controller->DeprojectScreenPositionToWorld(posX, posY, worldPosition, _);
         return worldPosition;
     };
-    
+
+    // selectionBox->SetIsDragging(controller->IsInputKeyDown(EKeys::LeftMouseButton));
     if (firstClick.IsSet())
     {
-        if (FVector::Distance(GetScreenToWorld(), *firstClick) < 0.25f)
+        if (FVector::Distance(GetScreenToWorld(), *firstClick) < 10)
+        {
+            selectionBox->SetActorLocation(FVector::Zero());
             return;
+        }
+        selectionBox->SetIsDragging(true);
+
         if (controller->IsInputKeyDown(EKeys::LeftMouseButton))
             Draw(GetScreenToWorld());
         else
@@ -48,6 +51,7 @@ void UDragSelect::TickComponent(const float deltaTime, const ELevelTick tickType
             lineBatchComponent->Flush();
             firstClick.Reset();
             rotation = FRotator::ZeroRotator;
+            selectionBox->SetIsDragging(false);
             selectionBox->SetVisibility(false);
         }
     }

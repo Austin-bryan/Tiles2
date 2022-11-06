@@ -8,7 +8,7 @@
 #include "TileModule.h"
 #include "TileColor.h"
 
-// #define ShowDebugText
+//#define ShowDebugText
 #ifdef ShowDebugText
 #include "Coord.h"
 #endif 

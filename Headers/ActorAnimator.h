@@ -13,6 +13,8 @@ public:
     void Play(bool forwards);
     void Toggle();
     void FinishAnimation();
+
+    EAnimState GetAnimState() const { return animState; }
 private:
     void SetupAnim(float _alpha, EAnimState _animState, bool _isSelected);
     void ApplyAnimation(FVector value);

@@ -11,6 +11,7 @@ class TILES2_API ACreatorTile : public ATile
 public:
 	static TArray<ACreatorTile*> SelectedTiles;
 	static void EmptySelectedTiles();
+	static ACreatorTile* FirstSelectedTile() { return firstSelectedTile; }
 
 	ACreatorTile();
 	void Tick(float deltaSeconds) override;
@@ -18,9 +19,11 @@ public:
 
 	void Select(bool _isSelected, bool isDragSelecting = false);
 private:
+	static ACreatorTile* firstSelectedTile;
 	bool isSelected, isPlayingSelectAnim;
 	FVector targetScale, startScale;
 	float selectAlpha;
+	bool wasDragSelected;
 
 	ActorAnimator* activeAnimation;
 	ActorAnimator animPress{Mesh, FVector::One(), FVector(0.75f), EAnimMode::Scale, 8};

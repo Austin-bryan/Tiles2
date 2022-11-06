@@ -13,7 +13,8 @@ public:
     ASelectionBox();
     void BeginPlay() override;
     void SetVisibility(bool visibility);
-    void ScaleArea(float width, float height);
+    void ScaleArea(float width, float height) const;
+    void SetIsDragging(bool _isDragging) { isDragging = _isDragging; }
 protected:
     UPROPERTY(VisibleAnywhere)
         UStaticMeshComponent* mesh;
@@ -22,11 +23,11 @@ protected:
     UPROPERTY(VisibleAnywhere)
         USceneComponent* root;
 private:
-    bool isVisible;
+    bool isVisible, isDragging;
 
     UFUNCTION()
         void OnBeginOverlap(UPrimitiveComponent* overlappedComp, AActor* otherActor, UPrimitiveComponent* otherComp, int otherBodyIndex, bool fromSweep, const FHitResult& sweepResult);
     UFUNCTION()
         void OnEndOverlap(UPrimitiveComponent* overlappedComp, AActor* otherActor,  UPrimitiveComponent* otherComp, int otherBodyIndex);
-    void Select(AActor* otherActor, bool isSelected);
+    void Select(AActor* otherActor, bool isSelected) const;
 };

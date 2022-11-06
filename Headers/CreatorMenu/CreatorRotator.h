@@ -1,6 +1,5 @@
 #pragma once
 #include "CoreMinimal.h"
-#include "Logger.h"
 #include "CreatorRotator.generated.h"
 
 class ACreatorBoard;
@@ -11,9 +10,6 @@ class UCreatorRotator : public UActorComponent
 {
     GENERATED_BODY()
 public:
-    UCreatorRotator();
-    void TickComponent(float deltaTime, ELevelTick tickType
-                       , FActorComponentTickFunction* thisTickFunction) override;
     void SetBoard(ACreatorBoard* _board) { board = _board; }
 
     UFUNCTION(BlueprintCallable, Category="Default")
@@ -22,7 +18,6 @@ protected:
     ACreatorBoard* board = nullptr;
 private:
     ESelectionType selectionType;
-    void ResetRotation() const;
     float newRoll = 0;
     float increment = 15;
     bool rDown, lDown;

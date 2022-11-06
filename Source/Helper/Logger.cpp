@@ -13,6 +13,7 @@ void Log(const FParameter& p, const FColor color, const float time) { Log(p.ToSt
 void Log(const int n,         const float time) { Log(FString::FromInt(n), defaultColor, time); }
 void Log(const float f,       const float time) { Log(FString::SanitizeFloat(f), defaultColor, time); }
 void Log(const FVector v,     const float time) { Log(v.ToString(), defaultColor, time); }
+void Log(const FString s,     const float time) { Log(s,			  defaultColor, time); }
 void Log(const FRotator r,    const float time) { Log(r.ToString(), defaultColor, time); }
 void Log(const FParameter& p, const float time) { Log(p.ToString(), defaultColor, time); }
 
