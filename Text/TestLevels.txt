@@ -25,3 +25,4 @@ tri (3, 4, 2) | r/o/y/ g/c/b/ p/n/k/ w/m/r;
 tri (2, 2, 2) | r/ b/b/b;
 
 tri (5, 5, 5) | r/ b/b/b/ g/g/g/g/g/ n/n/n/n/n/n/n/ k/k/k/k/k/k/k/k/k;
+tri (7, 7, 7) | r/ b/b/b/ g/g/g/g/g/ n/n/n/n/n/n/n/ k/k/k/k/k/k/k/k/k/ c/c/c/c/c/c/c/c/c/c/c/ o/o/o/o/o/o/o/o/o/o/o/o/o;

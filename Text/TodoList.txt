@@ -46,7 +46,14 @@
 	---- Hex
 	---- Square
 	---- Triangle
-X.0 floats rohnd to X in Coord text
+---- X.0 floats rohnd to X in Coord text
+
+Changing selection rotation doesn't change selected tiles
+    Exit selector before turning
+If no tiles are drag selected, the first tile to be drag selected last time will remain selected
+    Deseleciton board should fix this
+
+
 Board Parser
 	States
 		---- Color

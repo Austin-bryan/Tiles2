@@ -16,6 +16,8 @@ public:
 	UClass* TileClass() const override;
 	ACreatorBoard();
 	~ACreatorBoard();
+	
+	void BeginPlay() override;
 
 	UFUNCTION(BlueprintCallable, Category="Default")
 		UCreatorRotator* GetCreatorRotator() const { return rotator; }
@@ -23,11 +25,10 @@ public:
 		float scale;
 
 	// These get nulled instantly if they are UPROPERTY()'s
-	// ReSharper disable once CppUE4ProbableMemoryIssuesWithUObject
+	// ReSharper disable CppUE4ProbableMemoryIssuesWithUObject
 	UDragSelect* dragSelect;
-	// ReSharper disable once CppUE4ProbableMemoryIssuesWithUObject
 	UCreatorRotator* rotator;
-protected:
+	// ReSharper enable CppUE4ProbableMemoryIssuesWithUObject
 private:
 	int rand = 0;
 };

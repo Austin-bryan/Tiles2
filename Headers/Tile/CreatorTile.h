@@ -9,6 +9,7 @@ class TILES2_API ACreatorTile : public ATile
 {
 	GENERATED_BODY()
 public:
+	// TODO:: make private with const getter
 	static TArray<ACreatorTile*> SelectedTiles;
 	static void EmptySelectedTiles();
 	static ACreatorTile* FirstSelectedTile() { return firstSelectedTile; }
