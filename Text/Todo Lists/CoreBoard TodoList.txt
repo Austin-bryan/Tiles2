@@ -1,0 +1,45 @@
+Devise coord complete system
+	---- Bandaged
+	sliced
+	sub
+Circle Board
+	hex
+	square
+	triangle
+Line Board
+Sub tiles
+	Square
+	Thin
+	Wide
+	Micro
+Slice Tiles
+	Square
+		Wide Semi
+		Thin Semi
+		Quad
+	Hex
+		Middle
+		Left
+		Right
+		MidLeft
+		MidRight
+		LeftRight
+		Triangles
+	Triangle
+		Center
+		Right
+		Left
+		CenterRight
+		CenterLeft
+		RightLeft
+		Zelda
+Bandaged Tiles
+	Square
+		Any size
+		swipes all columns
+		double swipes when being wrapped or teleported
+	Hex
+	Triangle
+		Diamond
+		Hex
+		Trapazoid

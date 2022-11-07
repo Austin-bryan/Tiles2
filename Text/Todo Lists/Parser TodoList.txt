@@ -1,0 +1,42 @@
+
+Board Parser
+	States
+		---- Color
+		---- Shape
+		---- fix colors
+		---- horizontal square load	
+	Subtiles
+		mesh
+		Module parsing
+			enter
+			parse
+			exit
+			errors
+		paramater parsing
+			enter
+			parse
+			exit
+			errors
+			expect type
+				int 
+					enter
+					parse
+					exit
+					errors
+				string
+					enter
+					parse
+					exit
+					errors
+				coord
+					enter
+					parse
+						position subtile at parsed position
+					exit
+					errors	
+	---- Bandage tiles
+	slice tiles
+---- refactor board size parsing to use coord state
+	---- after board shape, expect coord then enter state
+---- Genrealized operators for coords
+	TriCoord arthetmic flips isUP flag correctly

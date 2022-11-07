@@ -1,0 +1,13 @@
+﻿Tooltip
+    timer to show
+        once tooltip is shown, all other items no longer have a timer until deselected
+    hide timer
+    shows at initial mouse cursor
+    shows shortcut
+        bind to shortcut dynamically
+    shows hint at what it does
+Input class
+    holds reference to controller
+    static methods to check inputs
+Shortcut
+    

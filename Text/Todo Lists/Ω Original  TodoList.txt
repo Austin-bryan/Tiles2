@@ -1,0 +1,53 @@
+
+9/7/21
+---- Board
+---- Hex Board
+---- Coord is proper USTRUCT
+---- Board changes shape either through enum or polymorphism
+---- Board Populator
+	---- Square
+	---- Hex
+	---- Triangle
+		---- X Clip
+		---- Y Clip
+		---- Z Clip
+		---- fix bugs
+		---- auto bool toggle implement
+		---- center coord position to use as balanced numebrs as possible
+---- TriCoord automatically toggle bool
+---- Coord visible in editor
+---- flip z
+---- even and odd
+---- all equal sizes fully soft coded
+---- double coord from board
+---- triCoord parity
+---- Figure out Triangle coord pattern
+---- loop through triangle
+---- variable triangles
+	---- x
+	---- y
+	---- z
+---- show coord on all tiles
+---- Setup board spacing
+	---- hex
+	---- triangle
+---- better triangle population
+---- make x constantly get bigger from right to left
+---- make z constantly get lower from right to left
+---- generalization population
+---- stop square board from double populating
+---- even hex board
+---- Make hex boards one order of mag smaller
+---- consider if Coord is needed to be replaced with TUniquePtr<Coord> in all areas
+---- Coord polymorphism
+	---- Coord pointer
+	---- Square constructor
+	---- Hex
+	---- Square
+	---- Triangle
+---- X.0 floats rohnd to X in Coord text
+
+---- Changing selection rotation doesn't change selected tiles
+    ---- Exit selector before turning
+---- If no tiles are drag selected, the first tile to be drag selected last time will remain selected
+    ---- Deseleciton board should fix this
