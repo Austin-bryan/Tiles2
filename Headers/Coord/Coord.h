@@ -1,7 +1,6 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "Enums.h"
-#include "Logger.h"
 #include "ForwardDeclares.h"
 #include "Coord.generated.h"
 

@@ -8,7 +8,7 @@ class ULineBatchComponent;
 struct FBatchedLine;
 
 UCLASS()
-class UDragSelect : public UActorComponent
+class TILES2_API UDragSelect : public UActorComponent
 {
     GENERATED_BODY()
 public:

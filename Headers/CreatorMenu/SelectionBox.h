@@ -6,7 +6,7 @@ class ACreatorTile;
 class UBoxComponent;
 
 UCLASS()
-class ASelectionBox : public AActor
+class TILES2_API ASelectionBox : public AActor
 {
     GENERATED_BODY()
 public:

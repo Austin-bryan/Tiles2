@@ -7,7 +7,7 @@ class ACreatorBoard;
 enum class ESelectionType : uint8;
 
 UCLASS()
-class UCreatorRotator : public UActorComponent
+class TILES2_API UCreatorRotator : public UActorComponent
 {
     GENERATED_BODY()
 public:

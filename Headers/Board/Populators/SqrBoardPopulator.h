@@ -9,6 +9,6 @@ class ABoard;
 class TILES2_API SqrBoardPopulator final : public BoardPopulator
 {
 public:
-	SqrBoardPopulator(ABoard* const board) : BoardPopulator(board){ }
+	explicit SqrBoardPopulator(ABoard* const board) : BoardPopulator(board){ }
 	void Populate(FCoordPtr size, Tiles& tiles) override;
 };

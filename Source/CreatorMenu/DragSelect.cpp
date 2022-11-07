@@ -3,7 +3,6 @@
 #include "CreatorBoard.h"
 #include "SelectionBox.h"
 #include "Components/LineBatchComponent.h"
-#include "Logger.h"
 #include "Slate/SceneViewport.h"
 
 UDragSelect::UDragSelect() 
