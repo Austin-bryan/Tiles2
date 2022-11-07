@@ -31,7 +31,7 @@ void ACreatorTile::Select(const bool _isSelected, const bool isDragSelecting)
 {
     isSelected = _isSelected;
 
-    // Slick selection
+    // Shift selection
     if (isSelected && !isDragSelecting)
     {
         firstSelectedTile = this;

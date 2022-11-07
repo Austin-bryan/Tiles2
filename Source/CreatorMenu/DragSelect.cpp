@@ -4,6 +4,7 @@
 #include "SelectionBox.h"
 #include "Components/LineBatchComponent.h"
 #include "Logger.h"
+#include "Slate/SceneViewport.h"
 
 UDragSelect::UDragSelect() 
 {
@@ -42,7 +43,6 @@ void UDragSelect::TickComponent(const float deltaTime, const ELevelTick tickType
             selectionBox->SetActorLocation(FVector::Zero());
             return;
         }
-        selectionBox->SetIsDragging(true);
 
         if (controller->IsInputKeyDown(EKeys::LeftMouseButton))
             Draw(GetScreenToWorld());
@@ -51,7 +51,6 @@ void UDragSelect::TickComponent(const float deltaTime, const ELevelTick tickType
             lineBatchComponent->Flush();
             firstClick.Reset();
             rotation = FRotator::ZeroRotator;
-            selectionBox->SetIsDragging(false);
             selectionBox->SetVisibility(false);
         }
     }
@@ -86,4 +85,9 @@ void UDragSelect::Draw(FVector&& worldPosition)
         lines.Add(FBatchedLine(verts[i], verts[(i + 1) % verts.Num()],
             FLinearColor(0, 0, 0, 0.6f), 0, thickness, 0));
     lineBatchComponent->DrawLines(lines);
+}
+
+void UDragSelect::OnRotate() const
+{
+    selectionBox->SetVisibility(false, true);
 }

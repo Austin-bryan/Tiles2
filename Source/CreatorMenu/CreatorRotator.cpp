@@ -1,6 +1,7 @@
 #pragma once
 #include "CreatorRotator.h"
 #include "CreatorBoard.h"
+#include "DragSelect.h"
 #include "SelectionType.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -23,6 +24,7 @@ void UCreatorRotator::SetSelectionType(const ESelectionType _selectionType)
     const auto pawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
     const FRotator rotation = FRotator(0, 0, newRoll);
     
+    dragSelect->OnRotate();
     board->SetActorRotation(FRotator(newRoll, 0, 0));
     pawn->SetActorRotation(FRotator(0, -90, -newRoll));
 }// 55, 29

@@ -35,13 +35,13 @@ void ASelectionBox::BeginPlay()
     collider->OnComponentBeginOverlap.AddDynamic(this, &ASelectionBox::OnBeginOverlap);
     collider->OnComponentEndOverlap.AddDynamic(this, &ASelectionBox::OnEndOverlap);
 }
-void ASelectionBox::SetVisibility(const bool visibility)
+void ASelectionBox::SetVisibility(const bool _isVisible, const bool _isRotating)
 {
-    isVisible = visibility;
+    isVisible = _isVisible, isRotating = _isRotating;
     
-    if (isVisible)
+    if (isVisible || _isRotating)
         ScaleArea(0, 0);
-    mesh->SetVisibility(visibility);
+    mesh->SetVisibility(_isVisible);
 }
 void ASelectionBox::ScaleArea(float width, float height) const
 {
@@ -57,14 +57,15 @@ void ASelectionBox::ScaleArea(float width, float height) const
 void ASelectionBox::OnBeginOverlap(UPrimitiveComponent* overlappedComp, AActor* otherActor, UPrimitiveComponent* otherComp
                                    , int otherBodyIndex, bool fromSweep, const FHitResult& sweepResult)
 {
-    Select(otherActor, true);
+    if (!isRotating)
+        Select(otherActor, true);
 }
 void ASelectionBox::OnEndOverlap(UPrimitiveComponent* overlappedComp, AActor* otherActor, UPrimitiveComponent* otherComp
     , int otherBodyIndex)
 {
     const auto& controller = GetWorld()->GetFirstPlayerController();
-    
-    if (!controller->IsInputKeyDown(EKeys::LeftShift))
+
+    if (!controller->IsInputKeyDown(EKeys::LeftShift) && !isRotating)
     if (otherActor != ACreatorTile::FirstSelectedTile())
         Select(otherActor, false);
 }

@@ -12,9 +12,8 @@ class ASelectionBox : public AActor
 public:
     ASelectionBox();
     void BeginPlay() override;
-    void SetVisibility(bool visibility);
+    void SetVisibility(bool _isVisible, bool _isRotating = false);
     void ScaleArea(float width, float height) const;
-    void SetIsDragging(bool _isDragging) { isDragging = _isDragging; }
 protected:
     UPROPERTY(VisibleAnywhere)
         UStaticMeshComponent* mesh;
@@ -23,7 +22,7 @@ protected:
     UPROPERTY(VisibleAnywhere)
         USceneComponent* root;
 private:
-    bool isVisible, isDragging;
+    bool isVisible, isRotating;
 
     UFUNCTION()
         void OnBeginOverlap(UPrimitiveComponent* overlappedComp, AActor* otherActor, UPrimitiveComponent* otherComp, int otherBodyIndex, bool fromSweep, const FHitResult& sweepResult);

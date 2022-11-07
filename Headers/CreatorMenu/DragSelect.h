@@ -18,6 +18,7 @@ public:
     void TickComponent(float deltaTime, ELevelTick tickType, FActorComponentTickFunction* ThisTickFunction) override;
     void SetBoard(ACreatorBoard* _board) { board = _board; }
     void Draw(FVector&& worldPosition);
+    void OnRotate() const;
 protected:
     UPROPERTY()
         ACreatorBoard* board;

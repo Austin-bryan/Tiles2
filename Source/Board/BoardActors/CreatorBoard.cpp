@@ -21,6 +21,7 @@ ACreatorBoard::ACreatorBoard()
     rotator->PrimaryComponentTick.bCanEverTick = true;
     rotator->SetComponentTickEnabled(true);
     rotator->SetBoard(this);
+    rotator->SetDragSelect(dragSelect);
     AddOwnedComponent(rotator);
     this->AddInstanceComponent(rotator);
     
