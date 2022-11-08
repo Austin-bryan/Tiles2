@@ -19,7 +19,7 @@ constexpr char TAlpha       = 'A', TDigit      = 'D';
 constexpr char TSemiColon   = ';', TQuotation  = '\"';
 constexpr char TNegation	= '-';
 
-const FString INormal   = "",  IRift = "rft", IWrap = "z",   ICircuitWrap = "cir", IBandaged       = "bnd", ICloud = "cld";
+const FString INormal   = "",  IRift = "rft", IWrap = "w",   ICircuitWrap = "cir", IBandaged       = "bnd", ICloud = "cld";
 const FString INoSpawn  = "#", ILink = "lnk", ISwap = "swp", IRotator	  = "rot", ICorrectCounter = "cnt";
 const FString IGap      = "x", IIron = "irn", ICamo = "cmo", IMirrorWrap  = "mir", ITeleportWrap   = "tel";
 const FString IVoid     = "void", IString = "string", INumber = "number", ICoord = "coord";

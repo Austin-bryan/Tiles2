@@ -5,6 +5,7 @@
 
 class UDragSelect;
 class UCreatorRotator;
+class UShortcutDetector;
 class ATile;
 enum class EBoardShape;
 
@@ -23,11 +24,12 @@ public:
 		UCreatorRotator* GetCreatorRotator() const { return rotator; }
 	UPROPERTY(EditAnywhere)
 		float scale;
-
+protected:
 	// These get nulled instantly if they are UPROPERTY()'s
 	// ReSharper disable CppUE4ProbableMemoryIssuesWithUObject
 	UDragSelect* dragSelect;
 	UCreatorRotator* rotator;
+	UShortcutDetector* shortcutDetector;
 	// ReSharper enable CppUE4ProbableMemoryIssuesWithUObject
 private:
 	int rand = 0;

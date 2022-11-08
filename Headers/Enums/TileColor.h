@@ -34,11 +34,14 @@ class UColorCast : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
 public:
-	UFUNCTION(BlueprintPure, meta=( DisplayName = "To Linear Color", CompactNodeTitle = "•"), Category = "TilesEnums")
+	UFUNCTION(BlueprintPure, meta=( DisplayName = "To Linear Color", CompactNodeTitle = "•"), Category = "Tile Color")
 	static FLinearColor TileColorToLinearColor(const ETileColor color);
 
 	UFUNCTION(BlueprintCallable, meta=( DisplayName = "Color Creator Tiles"), Category = "Creator Board")
 	static void ColorCreatorTiles(ETileColor color);
+
+	UFUNCTION(BlueprintPure, meta=( DisplayName = "Get Key"), Category = "Creator Board")
+	static FKey GetKey(ETileColor color);
 };
 bool operator==(ETileColor lhs, ETileColor rhs);
 bool operator!=(const ETileColor lhs, const ETileColor rhs);

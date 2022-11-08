@@ -3,6 +3,7 @@
 #include "CreatorTile.h"
 #include "DeselectBoard.h"
 #include "DragSelect.h"
+#include "ShortcutDetector.h"
 #include "Kismet/GameplayStatics.h"
 
 ACreatorBoard::ACreatorBoard()
@@ -24,6 +25,12 @@ ACreatorBoard::ACreatorBoard()
     rotator->SetDragSelect(dragSelect);
     AddOwnedComponent(rotator);
     this->AddInstanceComponent(rotator);
+
+    shortcutDetector = CreateDefaultSubobject<UShortcutDetector>(FName("Shortcut Detector"));
+    shortcutDetector->RegisterComponent();
+    shortcutDetector->SetBoard(this)->SetRotator(rotator);
+    AddOwnedComponent(shortcutDetector);
+    this->AddInstanceComponent(shortcutDetector);
     
     rand = FMath::RandRange(0, 100000);
 }

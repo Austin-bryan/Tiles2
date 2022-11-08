@@ -9,5 +9,28 @@
 Input class
     holds reference to controller
     static methods to check inputs
-Shortcut
+Shortcuts:
+    MobileCameraMove
+    Pan
+    Escape         => Deselect
+    L              => LevelSelect
+    ShiftCtrl && Z => Redo
+    ShiftCtrl && A => SelectAll
+    Ctrl && Z      => Undo
+    Ctrl && C      => Copy
+    Ctrl && V      => Paste
+    Ctrl && X      => Cut 
+    Ctrl && A      => SelectShape
+    Ctrl && R      => Refresh
+    Ctrl && D      => Deselect
+    Ctrl && N      => SizeBoard
+    Ctrl && S      => Publish
+    Ctrl && Comma  => ChangeLevel(-1);
+    Ctrl && Period => ChangeLevel(1);
+    Ctrl && Delete => DeleteLevel
+    Delete         => DeleteTiles
+                   
+    LeftShift      => PickColor
+    Scroll         => ChangeZoom
+    Alt            => PickModule
     

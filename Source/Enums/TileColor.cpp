@@ -21,11 +21,30 @@ FLinearColor UColorCast::TileColorToLinearColor(const ETileColor color)
     default: throw std::invalid_argument("Invalid tile color enum.");
     }
 }
-
 void UColorCast::ColorCreatorTiles(const ETileColor color)
 {
     for (const auto& selectedTile : ACreatorTile::SelectedTiles)
         selectedTile->SetColor(color);
+}
+FKey UColorCast::GetKey(const ETileColor color)
+{
+    switch(color) 
+    {
+    case ETileColor::None:    return EKeys::Invalid;
+    case ETileColor::White:   return EKeys::W;
+    case ETileColor::Red:     return EKeys::R;
+    case ETileColor::Orange:  return EKeys::O;
+    case ETileColor::Yellow:  return EKeys::Y;
+    case ETileColor::Green:   return EKeys::G;
+    case ETileColor::Cyan:    return EKeys::C;
+    case ETileColor::Blue:    return EKeys::B;
+    case ETileColor::Purple:  return EKeys::P;
+    case ETileColor::Pink:    return EKeys::N;
+    case ETileColor::Magenta: return EKeys::T;
+    case ETileColor::Brown:   return EKeys::M;
+    case ETileColor::Black:   return EKeys::K;
+    default: throw std::invalid_argument("Invalid color.");
+    }
 }
 
 bool operator==(ETileColor lhs, ETileColor rhs)
