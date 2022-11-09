@@ -1,6 +1,8 @@
 #pragma once
 #include "DragSelect.h"
 #include "CreatorBoard.h"
+#include "CreatorTile.h"
+#include "Logger.h"
 #include "SelectionBox.h"
 #include "Components/LineBatchComponent.h"
 #include "Slate/SceneViewport.h"
@@ -22,7 +24,6 @@ void UDragSelect::BeginPlay()
 void UDragSelect::TickComponent(const float deltaTime, const ELevelTick tickType, FActorComponentTickFunction* ThisTickFunction)
 {
     Super::TickComponent(deltaTime, tickType, ThisTickFunction);
-
     const auto controller = board->GetWorld()->GetFirstPlayerController();
     auto GetScreenToWorld = [this, controller]
     {
@@ -34,7 +35,7 @@ void UDragSelect::TickComponent(const float deltaTime, const ELevelTick tickType
         return worldPosition;
     };
 
-    // selectionBox->SetIsDragging(controller->IsInputKeyDown(EKeys::LeftMouseButton));
+    //selectionBox->SetIsDragging(controller->IsInputKeyDown(EKeys::LeftMouseButton));
     if (firstClick.IsSet())
     {
         if (FVector::Distance(GetScreenToWorld(), *firstClick) < 10)
@@ -64,20 +65,43 @@ void UDragSelect::Draw(FVector&& worldPosition)
     lineBatchComponent->Flush();
     worldPosition.Y = firstClick->Y;
 
+#ifdef SquareSelect
     TArray verts
     {
         *firstClick,
-    	FVector(worldPosition.X, firstClick->Y, firstClick->Z),
+        FVector(worldPosition.X, firstClick->Y, firstClick->Z),
         worldPosition,
         FVector(firstClick->X, firstClick->Y, worldPosition.Z),
     };
-
+    
     const FVector avgPos = (verts[0] + verts[2]) / 2;
     const float height   = FVector::Distance(verts[1], verts[2]);
     const float width    = FVector::Distance(verts[0], verts[1]);
-
+    
     selectionBox->SetActorLocation(avgPos);
-    selectionBox->ScaleArea(width, height);
+    selectionBox->ScaleArea(height, width);
+#else
+    TArray<FVector> verts;
+    const double radius = FVector::Distance(*firstClick, worldPosition);
+    const float delta = 2.0f * PI / vertexCount;
+
+    const FTransform anchorTrans{ *firstClick };
+    const FVector edge = FVector(0, 0, radius);
+
+    for (int i = 0; i < vertexCount; i++)
+    {
+        FRotator rotator{ delta * i * angleMultiplier + 45, 0, 0 };
+        const auto result = anchorTrans.TransformPosition(rotator.RotateVector(edge));
+        verts.Add(result);
+    }
+
+    selectionBox->SetActorLocation(*firstClick);
+
+    const float width = FVector::Distance(verts[0], verts[verts.Num() / 4]);
+    const float height = FVector::Distance(verts[verts.Num() / 4], verts[verts.Num() / 4 * 3]);
+
+    selectionBox->ScaleArea(radius * 2, radius * 2);
+#endif
 
     TArray<FBatchedLine> lines;
     for (int i = 0; i < verts.Num(); i++) 

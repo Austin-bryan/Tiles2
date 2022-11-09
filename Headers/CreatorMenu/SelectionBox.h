@@ -21,6 +21,8 @@ protected:
         UStaticMeshComponent* collider;
     UPROPERTY(VisibleAnywhere)
         USceneComponent* root;
+    UPROPERTY(EditInstanceOnly)
+        bool useBox = false;
 private:
     bool isVisible, isRotating;
 

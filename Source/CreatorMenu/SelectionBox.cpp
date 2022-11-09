@@ -8,7 +8,10 @@
 ASelectionBox::ASelectionBox()
 {
     const auto mat = LoadMaterialFromPath(TEXT(MAT_SELECTION_BOX));
-    const auto staticMesh = LoadObjectFromPath<UStaticMesh>(TEXT(SIMPLE_SQUARE));
+
+    const auto staticMesh = LoadObjectFromPath<UStaticMesh>(FName(
+        useBox ? SIMPLE_SQUARE : SELECTION_CYLINDER));
+    // const auto staticMesh = LoadObjectFromPath<UStaticMesh>(TEXT(SIMPLE_SQUARE));
 
     root = CreateDefaultSubobject<USceneComponent>(FName("Root"));
     RootComponent = root;
@@ -50,7 +53,7 @@ void ASelectionBox::ScaleArea(float width, float height) const
     constexpr float expansion = 0;
     
     mesh->SetWorldScale3D(FVector(0.001f, width, height));
-    collider->SetWorldScale3D(FVector(1, width + expansion, height + expansion));
+    collider->SetWorldScale3D(FVector(width + expansion, width + expansion, height + expansion));
 }
 
 // ReSharper disable CppMemberFunctionMayBeConst

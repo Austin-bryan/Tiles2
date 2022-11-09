@@ -22,15 +22,13 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="Default")
 		UCreatorRotator* GetCreatorRotator() const { return rotator; }
-	UPROPERTY(EditAnywhere)
-		float scale;
+	UPROPERTY(EditInstanceOnly)
+		UShortcutDetector* shortcutDetector;
 protected:
-	// These get nulled instantly if they are UPROPERTY()'s
-	// ReSharper disable CppUE4ProbableMemoryIssuesWithUObject
-	UDragSelect* dragSelect;
-	UCreatorRotator* rotator;
-	UShortcutDetector* shortcutDetector;
-	// ReSharper enable CppUE4ProbableMemoryIssuesWithUObject
+	UPROPERTY(EditInstanceOnly)
+		UDragSelect* dragSelect;
+	UPROPERTY(EditInstanceOnly)
+		UCreatorRotator* rotator;
 private:
 	int rand = 0;
 };

@@ -30,6 +30,11 @@ protected:
         ASelectionBox* selectionBox;
     UPROPERTY(EditInstanceOnly)
         float thickness = 4;
+    // TODO:: this isnt showing up in editorl
+    UPROPERTY(EditInstanceOnly)
+        float angleMultiplier = 57.25f;
+    UPROPERTY(EditInstanceOnly)
+        int vertexCount = 128;
     TOptional<FVector> firstClick;
 private:
     FRotator rotation;
