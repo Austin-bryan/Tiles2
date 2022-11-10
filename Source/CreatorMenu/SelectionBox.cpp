@@ -61,6 +61,7 @@ void ASelectionBox::SetMesh(const FString meshName) const
 void ASelectionBox::OnBeginOverlap(UPrimitiveComponent* overlappedComp, AActor* otherActor, UPrimitiveComponent* otherComp
                                    , int otherBodyIndex, bool fromSweep, const FHitResult& sweepResult)
 {
+    // Prevents tiles from changing their selection status when selection angle changes
     if (!isRotating)
         Select(otherActor, true);
 }
@@ -69,6 +70,7 @@ void ASelectionBox::OnEndOverlap(UPrimitiveComponent* overlappedComp, AActor* ot
 {
     const auto& controller = GetWorld()->GetFirstPlayerController();
 
+    // Prevents tiles from changing their selection status when selection angle changes
     if (!controller->IsInputKeyDown(EKeys::LeftShift) && !isRotating)
     if (otherActor != ACreatorTile::FirstSelectedTile())
         Select(otherActor, false);

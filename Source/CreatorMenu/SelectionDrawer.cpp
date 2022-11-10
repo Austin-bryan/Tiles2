@@ -32,18 +32,18 @@ TUniquePtr<SelectionDrawer> SelectionDrawer::Create(const ESelectionType mode, U
 void SelectionDrawer::Draw(FVector&& worldPosition, const  FVector anchorPoint)
 {
     lineBatchComponent->Flush();
-    worldPosition.Y = anchorPoint.Y;
+    worldPosition.Y = anchorPoint.Y;        // Makes sure we're working in the correct plane
 
     TArray<FVector> verts;
     GetVerts(verts, std::move(worldPosition), anchorPoint);
 
+    // Create lines to be drawn later
     TArray<FBatchedLine> lines;
     for (int i = 0; i < verts.Num(); i++) 
         lines.Add(FBatchedLine(verts[i], verts[(i + 1) % verts.Num()],
             FLinearColor(0, 0, 0, 0.6f), 0, thickness, 0));
     lineBatchComponent->DrawLines(lines);
 }
-
 void CenterSelection::GetVerts(TArray<FVector>& verts, FVector&& worldPosition, const FVector anchorPoint)
 {
     const double radius = FVector::Distance(anchorPoint, worldPosition);
@@ -51,21 +51,56 @@ void CenterSelection::GetVerts(TArray<FVector>& verts, FVector&& worldPosition, 
     
     const FTransform anchorTrans{ anchorPoint };
     const FVector edge = FVector(0, 0, radius);
-    
+    const int rollOffset = RollOffset(anchorTrans, worldPosition);
+
+    // Create the Circle or Triangle
     for (int i = 0; i < VertexCount(); i++)
     {
-        FRotator rotator{ delta * i * angleMultiplier + AngleOffset(), 0, 0 };
+        FRotator rotator{ delta * i * angleMultiplier + rollOffset, 0, 0 };
         const auto result = anchorTrans.TransformPosition(rotator.RotateVector(edge));
         verts.Add(result);
     }
     selectionBox->SetActorLocation(anchorPoint);
     selectionBox->ScaleArea(radius * Scale(), radius * Scale());
+    selectionBox->SetActorRotation(FRotator(0, 90, rollOffset));
+}
+
+int TriangleSelection::RollOffset(const FTransform& anchorTrans, const FVector& worldPosition)
+{
+    // Uses a normalized worldPosition relative to anchor to get the angle
+    auto inverseWorldPosition = anchorTrans.InverseTransformPosition(worldPosition);
+    inverseWorldPosition.Normalize();
+
+    const auto rad = atan2(inverseWorldPosition.Z - 0, inverseWorldPosition.X - 0);
+    float deg = rad * (180 / PI) + 180 - 30;
+
+    // Snaps if less than the snap limit
+    constexpr int snapLimit = 20;
+    const auto SnapAngle = [snapLimit](float& degree, const int target)
+    {
+        const bool result = degree > (target - snapLimit) && degree < target + snapLimit;
+        
+        if (result)
+            degree = target;
+        return result;
+    };
+
+    if (!SnapAngle(deg, 240))
+        SnapAngle(deg, 60);
+    return deg;
+}
+
+SquareSelection::SquareSelection(ULineBatchComponent* lineBatch, ASelectionBox* box): SelectionDrawer{ lineBatch, box }
+{
+    // Clears the roll, incase Triangle was used last
+    selectionBox->SetActorRotation(FRotator(0, 90, 0));
 }
 void SquareSelection::GetVerts(TArray<FVector>& verts, FVector&& worldPosition, const FVector anchorPoint)
 {
     lineBatchComponent->Flush();
     worldPosition.Y = anchorPoint.Y;
-    
+
+    // Anchor point never moves, World Position is where the cursor is.
     verts =
     {
         anchorPoint,
@@ -80,10 +115,4 @@ void SquareSelection::GetVerts(TArray<FVector>& verts, FVector&& worldPosition, 
     
     selectionBox->SetActorLocation(avgPos);
     selectionBox->ScaleArea(width, height);
-    
-    TArray<FBatchedLine> lines;
-    for (int i = 0; i < verts.Num(); i++) 
-        lines.Add(FBatchedLine(verts[i], verts[(i + 1) % verts.Num()],
-            FLinearColor(0, 0, 0, 0.6f), 0, thickness, 0));
-    lineBatchComponent->DrawLines(lines);
 }
