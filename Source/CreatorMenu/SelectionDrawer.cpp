@@ -54,12 +54,12 @@ void CenterSelection::GetVerts(TArray<FVector>& verts, FVector&& worldPosition, 
     
     for (int i = 0; i < VertexCount(); i++)
     {
-        FRotator rotator{ delta * i * angleMultiplier + 45, 0, 0 };
+        FRotator rotator{ delta * i * angleMultiplier + AngleOffset(), 0, 0 };
         const auto result = anchorTrans.TransformPosition(rotator.RotateVector(edge));
         verts.Add(result);
     }
     selectionBox->SetActorLocation(anchorPoint);
-    selectionBox->ScaleArea(radius * 2, radius * 2);
+    selectionBox->ScaleArea(radius * Scale(), radius * Scale());
 }
 void SquareSelection::GetVerts(TArray<FVector>& verts, FVector&& worldPosition, const FVector anchorPoint)
 {

@@ -6,6 +6,8 @@
 #include "ShortcutDetector.h"
 #include "Kismet/GameplayStatics.h"
 
+float ACreatorBoard::TriRot;
+
 ACreatorBoard::ACreatorBoard()
 {
     dragSelect = CreateDefaultSubobject<UDragSelect>(FName("Drag Select"));
@@ -35,6 +37,13 @@ ACreatorBoard::ACreatorBoard()
     rand = FMath::RandRange(0, 100000);
 }
 ACreatorBoard::~ACreatorBoard() { ACreatorTile::EmptySelectedTiles(); }
+
+void ACreatorBoard::Tick(float DeltaSeconds)
+{
+    Super::Tick(DeltaSeconds);
+    TriRot = triangleRot;
+}
+
 void ACreatorBoard::BeginPlay()
 {
     Super::BeginPlay();

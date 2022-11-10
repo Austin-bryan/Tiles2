@@ -1,6 +1,7 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "AssetDir.h"
+#include "CreatorBoard.h"
 
 enum class ESelectionType : uint8;
 struct FBatchedLine;
@@ -29,15 +30,6 @@ private:
     void Init();
 };
 
-class TILES2_API CenterSelection : public SelectionDrawer
-{
-public:
-    CenterSelection(ULineBatchComponent* lineBatch, ASelectionBox* box)
-        : SelectionDrawer{ lineBatch, box } { }
-private:
-    void GetVerts(TArray<FVector>& verts, FVector&& worldPosition, FVector anchorPoint) override;
-};
-
 class TILES2_API SquareSelection : public SelectionDrawer
 {
 public:
@@ -50,15 +42,27 @@ private:
     FString Mesh() override    { return SIMPLE_SQUARE; }
 };
 
+class TILES2_API CenterSelection : public SelectionDrawer
+{
+public:
+    CenterSelection(ULineBatchComponent* lineBatch, ASelectionBox* box)
+        : SelectionDrawer{ lineBatch, box } { }
+protected:
+    virtual float Scale() const = 0;
+private:
+    void GetVerts(TArray<FVector>& verts, FVector&& worldPosition, FVector anchorPoint) override;
+};
+
 class TILES2_API TriangleSelection : public CenterSelection
 {
 public:
     TriangleSelection(ULineBatchComponent* lineBatch, ASelectionBox* box)
         : CenterSelection{ lineBatch, box } { }
 private:
-    int VertexCount() override { return 3; }
-    int AngleOffset() override { return 60; }
-    FString Mesh() override    { return ""; }
+    int VertexCount() override   { return 3; }
+    int AngleOffset() override   { return 0; }
+    float Scale() const override { return 1.48f; } 
+    FString Mesh() override      { return TRIANGLE_TILE; }
 };
 
 class TILES2_API CircleSelection : public CenterSelection
@@ -67,8 +71,9 @@ public:
     CircleSelection(ULineBatchComponent* lineBatch, ASelectionBox* box)
         : CenterSelection{ lineBatch, box } { }
 private:
-    int VertexCount() override { return 128; }
-    int AngleOffset() override { return 0; }
-    FString Mesh() override    { return SELECTION_CYLINDER; }
+    int VertexCount() override   { return 128; }
+    int AngleOffset() override   { return 0; }
+    float Scale() const override { return 2.0f; } 
+    FString Mesh() override      { return SELECTION_CYLINDER; }
 };
 

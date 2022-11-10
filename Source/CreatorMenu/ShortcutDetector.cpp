@@ -26,6 +26,22 @@ void UShortcutDetector::BeginPlay()
    const auto SetSelectionType = [this] { rotator ->SetSelectionType(ESelectionType::Downhill); };
    
    //TODO::rename brown to magenta
+   /*
+    * TODO:: add triangle selection type
+    * TODO:: 1, 2, and 3 do different things depending on selection shape:
+    * TODO:   Square:
+    * TODO:      1 => Up hill
+    * TODO:      2 => Flat
+    * TODO:      3 => Down Hill
+    * TODO:  Triangle:
+    * TODO:      1 => Upside Up
+    * TODO:      2 => Upside Down
+    * TODO:      3 => Nothing
+    * TODO:  Circle:
+    * TODO:      1 => Nothing
+    * TODO:      2 => Nothing
+    * TODO:      3 => Nothing
+    */
    shortcuts = 
    {
        // No Modifiers

@@ -1,0 +1,4 @@
+Changing selection angle when dragging box causes glitchy behaviour
+    Solutions:
+        A => Changing selection angle forces exit on selection
+        B => Selection angles do nothing while dragging

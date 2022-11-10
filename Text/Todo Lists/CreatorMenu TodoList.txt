@@ -1,3 +1,22 @@
 UI inheritance tree
     Shows which buttons are selected
 Shortcuts
+Selection
+    ---- Circle
+    ---- Triangle
+    ---- Upsidedown Tri
+    ---- Switch System
+    ---- Inheritence
+    Triangle should follow mouse
+        if shift => rounds to up or down
+            if in hex board, rounds to up, right, left
+Buttons
+    Add More
+        Circle
+        Square
+        Triangle
+    Change angle buttons
+        (Under the hood these call the same functions but are visually simpler)
+        3 angles for square
+        2 angles for triangle   
+    
