@@ -3,6 +3,7 @@
 #include "Logger.h"
 #include "ShortcutDetector.generated.h"
 
+class UDragSelect;
 class UCreatorRotator;
 class ACreatorBoard;
 using ModifiedShortcuts = TMap<FKey, TFunction<void()>>;
@@ -18,6 +19,7 @@ public:
     void BeginPlay() override;
     UShortcutDetector* SetBoard(ACreatorBoard* _creatorBoard) { creatorBoard = _creatorBoard; return this; }
     UShortcutDetector* SetRotator(UCreatorRotator* _rotator) { rotator = _rotator; return this; }
+    UShortcutDetector* SetDragSelect(UDragSelect* _dragSelect) { dragSelect = _dragSelect; return this; }
 
     UFUNCTION(BlueprintCallable)
     void CallShortcut(const FKey key) const
@@ -30,7 +32,9 @@ public:
 private:
     APlayerController* controller;
     ACreatorBoard* creatorBoard; 
-    UCreatorRotator* rotator; 
+    UCreatorRotator* rotator;
+    UDragSelect* dragSelect;
+    
     TArray<ModifiedShortcuts*> shortcuts;
     void AnyKey(FKey key);
 

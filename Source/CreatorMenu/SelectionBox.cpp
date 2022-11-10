@@ -9,20 +9,14 @@ ASelectionBox::ASelectionBox()
 {
     const auto mat = LoadMaterialFromPath(TEXT(MAT_SELECTION_BOX));
 
-    const auto staticMesh = LoadObjectFromPath<UStaticMesh>(FName(
-        useBox ? SIMPLE_SQUARE : SELECTION_CYLINDER));
-    // const auto staticMesh = LoadObjectFromPath<UStaticMesh>(TEXT(SIMPLE_SQUARE));
-
     root = CreateDefaultSubobject<USceneComponent>(FName("Root"));
     RootComponent = root;
 
     mesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("Mesh"));
     mesh->SetMaterial(0, mat);
-    mesh->SetStaticMesh(staticMesh);
     mesh->AttachToComponent(root, FAttachmentTransformRules::KeepRelativeTransform, NAME_None);
 
     collider = CreateDefaultSubobject<UStaticMeshComponent>(FName("Collider"));
-    collider->SetStaticMesh(staticMesh);
     collider->AttachToComponent(root, FAttachmentTransformRules::KeepRelativeTransform, NAME_None);
     collider->SetVisibility(false);
     collider->SetRelativeLocation(FVector(-580, 0, 0));
@@ -54,6 +48,13 @@ void ASelectionBox::ScaleArea(float width, float height) const
     
     mesh->SetWorldScale3D(FVector(0.001f, width, height));
     collider->SetWorldScale3D(FVector(width + expansion, width + expansion, height + expansion));
+}
+void ASelectionBox::SetMesh(const FString meshName) const
+{
+    const auto staticMesh = LoadObjectFromPath<UStaticMesh>(FName(meshName));
+
+    mesh->SetStaticMesh(staticMesh);
+    collider->SetStaticMesh(staticMesh);
 }
 
 // ReSharper disable CppMemberFunctionMayBeConst

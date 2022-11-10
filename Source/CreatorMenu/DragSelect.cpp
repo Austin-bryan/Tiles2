@@ -1,18 +1,17 @@
 #pragma once
 #include "DragSelect.h"
 #include "CreatorBoard.h"
-#include "CreatorTile.h"
-#include "Logger.h"
 #include "SelectionBox.h"
+#include "SelectionDrawer.h"
 #include "Components/LineBatchComponent.h"
 #include "Slate/SceneViewport.h"
+#include "SelectionType.h"
 
 UDragSelect::UDragSelect() 
 {
     UActorComponent::SetComponentTickEnabled(true);
     lineBatchComponent = CreateDefaultSubobject<ULineBatchComponent>(FName("Line Batch"));
 }
-
 void UDragSelect::BeginPlay()
 {
     selectionBox = GetWorld()->SpawnActor<ASelectionBox>(
@@ -20,8 +19,11 @@ void UDragSelect::BeginPlay()
         FVector::Zero(),
         FRotator(0, 90, 0));
     Super::BeginPlay();
+    ChangeSelectionShape(ESelectionType::Circle);
 }
-void UDragSelect::TickComponent(const float deltaTime, const ELevelTick tickType, FActorComponentTickFunction* ThisTickFunction)
+
+void UDragSelect::TickComponent(const float deltaTime, const ELevelTick tickType
+    , FActorComponentTickFunction* ThisTickFunction)
 {
     Super::TickComponent(deltaTime, tickType, ThisTickFunction);
     const auto controller = board->GetWorld()->GetFirstPlayerController();
@@ -35,82 +37,36 @@ void UDragSelect::TickComponent(const float deltaTime, const ELevelTick tickType
         return worldPosition;
     };
 
-    //selectionBox->SetIsDragging(controller->IsInputKeyDown(EKeys::LeftMouseButton));
-    if (firstClick.IsSet())
+    if (anchorPoint.IsSet())
     {
-        if (FVector::Distance(GetScreenToWorld(), *firstClick) < 10)
+        if (FVector::Distance(GetScreenToWorld(), *anchorPoint) < 10)
         {
             selectionBox->SetActorLocation(FVector::Zero());
             return;
         }
 
         if (controller->IsInputKeyDown(EKeys::LeftMouseButton))
-            Draw(GetScreenToWorld());
+            drawer->Draw(GetScreenToWorld(), *anchorPoint);
         else
         {
             lineBatchComponent->Flush();
-            firstClick.Reset();
+            anchorPoint.Reset();
             rotation = FRotator::ZeroRotator;
             selectionBox->SetVisibility(false);
         }
     }
     else if (controller->IsInputKeyDown(EKeys::LeftMouseButton))
     {
-        firstClick = GetScreenToWorld();
+        anchorPoint = GetScreenToWorld();
         selectionBox->SetVisibility(true);
     }
-}
-void UDragSelect::Draw(FVector&& worldPosition)
-{
-    lineBatchComponent->Flush();
-    worldPosition.Y = firstClick->Y;
-
-#ifdef SquareSelect
-    TArray verts
-    {
-        *firstClick,
-        FVector(worldPosition.X, firstClick->Y, firstClick->Z),
-        worldPosition,
-        FVector(firstClick->X, firstClick->Y, worldPosition.Z),
-    };
-    
-    const FVector avgPos = (verts[0] + verts[2]) / 2;
-    const float height   = FVector::Distance(verts[1], verts[2]);
-    const float width    = FVector::Distance(verts[0], verts[1]);
-    
-    selectionBox->SetActorLocation(avgPos);
-    selectionBox->ScaleArea(height, width);
-#else
-    TArray<FVector> verts;
-    const double radius = FVector::Distance(*firstClick, worldPosition);
-    const float delta = 2.0f * PI / vertexCount;
-
-    const FTransform anchorTrans{ *firstClick };
-    const FVector edge = FVector(0, 0, radius);
-
-    for (int i = 0; i < vertexCount; i++)
-    {
-        FRotator rotator{ delta * i * angleMultiplier + 45, 0, 0 };
-        const auto result = anchorTrans.TransformPosition(rotator.RotateVector(edge));
-        verts.Add(result);
-    }
-
-    selectionBox->SetActorLocation(*firstClick);
-
-    const float width = FVector::Distance(verts[0], verts[verts.Num() / 4]);
-    const float height = FVector::Distance(verts[verts.Num() / 4], verts[verts.Num() / 4 * 3]);
-
-    selectionBox->ScaleArea(radius * 2, radius * 2);
-#endif
-
-    TArray<FBatchedLine> lines;
-    for (int i = 0; i < verts.Num(); i++) 
-        lines.Add(FBatchedLine(verts[i], verts[(i + 1) % verts.Num()],
-            FLinearColor(0, 0, 0, 0.6f), 0, thickness, 0));
-    lineBatchComponent->DrawLines(lines);
 }
 
 void UDragSelect::OnRotate() const
 {
     selectionBox->SetVisibility(false, true);
+}
+void UDragSelect::ChangeSelectionShape(const ESelectionType mode)
+{
+    drawer = SelectionDrawer::Create(mode, lineBatchComponent, selectionBox);
 }

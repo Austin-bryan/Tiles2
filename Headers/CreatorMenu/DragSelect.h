@@ -1,11 +1,13 @@
 #pragma once
 #include "CoreMinimal.h"
+#include "SelectionDrawer.h"
 #include "DragSelect.generated.h"
 
 class ASelectionBox;
 class ACreatorBoard;
 class ULineBatchComponent;
 struct FBatchedLine;
+enum class ESelectionType : uint8;
 
 UCLASS()
 class TILES2_API UDragSelect : public UActorComponent
@@ -17,8 +19,9 @@ public:
     void BeginPlay() override;
     void TickComponent(float deltaTime, ELevelTick tickType, FActorComponentTickFunction* ThisTickFunction) override;
     void SetBoard(ACreatorBoard* _board) { board = _board; }
-    void Draw(FVector&& worldPosition);
     void OnRotate() const;
+
+    void ChangeSelectionShape(ESelectionType mode);
 protected:
     UPROPERTY()
         ACreatorBoard* board;
@@ -30,13 +33,14 @@ protected:
         ASelectionBox* selectionBox;
     UPROPERTY(EditInstanceOnly)
         float thickness = 4;
-    // TODO:: this isnt showing up in editorl
     UPROPERTY(EditInstanceOnly)
         float angleMultiplier = 57.25f;
     UPROPERTY(EditInstanceOnly)
         int vertexCount = 128;
-    TOptional<FVector> firstClick;
+    TOptional<FVector> anchorPoint;
 private:
     FRotator rotation;
     bool isDragging;
+
+    TUniquePtr<SelectionDrawer> drawer;
 };

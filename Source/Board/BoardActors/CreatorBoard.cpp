@@ -28,7 +28,7 @@ ACreatorBoard::ACreatorBoard()
 
     shortcutDetector = CreateDefaultSubobject<UShortcutDetector>(FName("Shortcut Detector"));
     shortcutDetector->RegisterComponent();
-    shortcutDetector->SetBoard(this)->SetRotator(rotator);
+    shortcutDetector->SetBoard(this)->SetRotator(rotator)->SetDragSelect(dragSelect);
     AddOwnedComponent(shortcutDetector);
     this->AddInstanceComponent(shortcutDetector);
     

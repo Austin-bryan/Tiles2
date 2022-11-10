@@ -1,8 +1,10 @@
 #pragma once
 #include "ShortcutDetector.h"
+#include "ShortcutDetector.h"
 #include "Logger.h"
 #include "TileColor.h"
 #include "CreatorRotator.h"
+#include "DragSelect.h"
 #include "SelectionType.h"
 
 UShortcutDetector::UShortcutDetector()
@@ -30,11 +32,13 @@ void UShortcutDetector::BeginPlay()
        new ModifiedShortcuts
        ({
            { EKeys::L, [] { Log("Level Select"); } },
-           { EKeys::W, [] { Log("Wand"); } },
            { EKeys::BackSpace, [] { Log("Backspace"); } },
            { EKeys::Enter, [] { Log("Return"); } },
            { EKeys::Escape, [] { Log("Escape"); } },
            { EKeys::Delete, [] { Log("Delete"); } },
+           { EKeys::Q, [this] { dragSelect->ChangeSelectionShape(ESelectionType::Triangle); } },
+           { EKeys::W, [this] { dragSelect->ChangeSelectionShape(ESelectionType::Square); } },
+           { EKeys::E, [this] { dragSelect->ChangeSelectionShape(ESelectionType::Circle); } },
            { EKeys::One, [this]{ rotator->SetSelectionType(ESelectionType::Downhill); } },
            { EKeys::NumPadOne, [this]{ rotator->SetSelectionType(ESelectionType::Downhill); } },
            { EKeys::Two, [this]{ rotator->SetSelectionType(ESelectionType::Flat); } },
@@ -61,6 +65,7 @@ void UShortcutDetector::BeginPlay()
        // Ctrl
        new ModifiedShortcuts
        ({
+          { EKeys::W, [] { Log("Wand"); } },
           { EKeys::Z, []{ Log("Undo"); } }, 
           { EKeys::C, []{ Log("Copy"); } }, 
           { EKeys::V, []{ Log("Paste"); } }, 

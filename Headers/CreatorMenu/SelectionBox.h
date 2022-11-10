@@ -14,6 +14,7 @@ public:
     void BeginPlay() override;
     void SetVisibility(bool _isVisible, bool _isRotating = false);
     void ScaleArea(float width, float height) const;
+    void SetMesh(FString meshName) const;
 protected:
     UPROPERTY(VisibleAnywhere)
         UStaticMeshComponent* mesh;
@@ -22,7 +23,7 @@ protected:
     UPROPERTY(VisibleAnywhere)
         USceneComponent* root;
     UPROPERTY(EditInstanceOnly)
-        bool useBox = false;
+        bool useBox = true;
 private:
     bool isVisible, isRotating;
 
