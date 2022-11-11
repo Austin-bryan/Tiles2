@@ -1,13 +1,14 @@
 #pragma once
 #include "CoreMinimal.h"
-#include "Enums.h"
 
+enum class EBoardParseState;
 class Parser;
 class ParseState;
 class DefaultParseState;
 class Default;
+
 /**
- * 
+ * Maintains stack of parse states
  */
 class TILES2_API ParseStateStack
 {

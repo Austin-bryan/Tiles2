@@ -4,6 +4,9 @@
 #include "Tile.h"
 #include "CreatorTile.generated.h"
 
+/**
+ * CreatorTiles are used in the level creator and have additional features such as being able to be selected.
+ */
 UCLASS()
 class TILES2_API ACreatorTile : public ATile
 {

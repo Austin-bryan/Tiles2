@@ -4,7 +4,7 @@
 #include "BandagedModule.generated.h"
 
 /**
- * 
+ * BandagedTiles are normal tiles stuck together to move as one.
  */
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class TILES2_API UBandagedModule : public UTileModule	

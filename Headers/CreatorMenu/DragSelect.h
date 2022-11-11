@@ -9,6 +9,11 @@ class ULineBatchComponent;
 struct FBatchedLine;
 enum class ESelectionType : uint8;
 
+/**
+ * Handles selection of creator tiles via dragging.
+ * Delegates drawing to SelectionDrawer, which determines if what shape the selection box is in.
+ */
+
 UCLASS()
 class TILES2_API UDragSelect : public UActorComponent
 {

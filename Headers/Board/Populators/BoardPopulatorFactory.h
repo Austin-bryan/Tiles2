@@ -4,9 +4,6 @@
 class ABoard;
 class BoardPopulator;
 
-/**
- * 
- */
 class TILES2_API BoardPopulatorFactory
 {
 public:

@@ -4,6 +4,7 @@
 
 class ACreatorTile;
 
+// DEPERCATED. TODO:: REMOVE
 class IndividualSelection : public SelectionMethod
 {
 public:

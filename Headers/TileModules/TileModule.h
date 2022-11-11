@@ -7,7 +7,7 @@
 struct FParameter;
 
 /**
- * 
+ * Modifies Player and CreatorTiles to look different and have different gameplay elements stacked on top of one another.
  */
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class TILES2_API UTileModule : public USceneComponent

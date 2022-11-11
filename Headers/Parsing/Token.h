@@ -85,7 +85,7 @@ const auto TileModuleParseKey = TMap<FString, EModule>
 
 
 /**
- * 
+ * TODO:: class is not needed.
  */
 class TILES2_API Token
 {

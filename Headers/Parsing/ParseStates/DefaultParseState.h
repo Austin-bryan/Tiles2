@@ -1,10 +1,10 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "ParseState.h"
-#include "Enums.h"
+#include "TileColor.h"
 
 /**
- * 
+ * The base fallback state. Used to detect colors and seperation of tiles.
  */
 class TILES2_API DefaultParseState : public ParseState
 {

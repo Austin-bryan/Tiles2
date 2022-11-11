@@ -5,6 +5,9 @@
 enum class EAnimMode  { Scale, Position };
 enum class EAnimState { Idle, Forwards, Backwards };
 
+/**
+ * Lerps two vectors back and forth and adjusts a vector based property as it does so.
+ */
 class TILES2_API ActorAnimator
 {
 public:

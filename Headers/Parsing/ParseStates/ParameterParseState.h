@@ -4,7 +4,6 @@
 #include <optional>
 #include "CoreMinimal.h"
 #include "ParseState.h"
-#include "Coord.h"
 #include "ParameterRequesterParseState.h"
 #include "ForwardDeclares.h"
 
@@ -19,7 +18,9 @@ enum class EParameter
 };
 
 /**
- * 
+ * Contains a type for each possible parameter, allowing Parameter Parse State to assign whatever.
+ * Modules that access FParameter know which types to expect, i.e: BandagedTiles always expect
+ * two FParamaters that are FCoords
  */
 struct FParameter
 {

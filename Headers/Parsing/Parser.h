@@ -11,8 +11,9 @@ class LexerPosition;
 class ParseError;
 class ParseStateStack;
 class ParameterKey;
+
 /**
- * Categorizes seed text into tokens
+ * Parses seed texts into instructions for creating tiles.
  */
 class TILES2_API Parser
 {

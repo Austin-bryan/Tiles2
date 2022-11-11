@@ -3,7 +3,7 @@
 #include "ParseState.h"
 
 /**
- * 
+ * Only parses floats, even if no decimals are parsed.
  */
 class TILES2_API NumberParseState final : public ParseState
 {

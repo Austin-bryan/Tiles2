@@ -5,6 +5,12 @@
 class ACreatorTile;
 class UBoxComponent;
 
+/**
+ * Used for marquee selection of various shapes dictated by SelectionDrawer.
+ * Mesh and Collider are always same shape but are seperated so Mesh can be in the camera plane,
+ * while Collider is in the CreatorBoard plane.
+ */
+
 UCLASS()
 class TILES2_API ASelectionBox : public AActor
 {

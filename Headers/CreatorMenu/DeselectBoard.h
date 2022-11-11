@@ -4,6 +4,9 @@
 
 class UBoxComponent;
 
+/*
+ * When the player touches this, it deslects the entire CreatorBoard.
+ */
 UCLASS()
 class TILES2_API ADeselectBoard : public AActor
 {

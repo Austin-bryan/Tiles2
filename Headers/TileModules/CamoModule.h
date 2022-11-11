@@ -4,7 +4,7 @@
 #include "CamoModule.generated.h"
 
 /**
- * 
+ * Always are correct, changing their colors to match their targettile.
  */
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class TILES2_API UCamoModule : public UTileModule	

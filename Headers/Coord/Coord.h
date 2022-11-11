@@ -5,6 +5,9 @@
 #include "Coord.generated.h"
 
 //todo:: have operators for fcoord be friend shared ptr, shared ptr and return shared ptr
+/**
+ * Typically stored as a TShared<const FCoord> AKA FCoordPtr
+ */
 USTRUCT()
 struct TILES2_API FCoord
 {

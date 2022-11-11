@@ -4,7 +4,7 @@
 #include "ParseState.h"
 
 /**
- *
+ * Parses modules in between '{' and '}' characters in seed.
  */
 class TILES2_API ModuleParseState : public ParameterRequesterParseState
 {

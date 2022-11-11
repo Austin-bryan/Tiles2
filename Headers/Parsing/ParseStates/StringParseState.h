@@ -3,7 +3,7 @@
 #include "ParseState.h"
 
 /**
- * 
+ * Parses everything in between a pair of '"' as a string
  */
 class TILES2_API StringParseState final : public ParseState
 {

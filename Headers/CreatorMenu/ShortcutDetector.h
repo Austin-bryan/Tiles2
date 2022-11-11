@@ -10,6 +10,11 @@ using ModifiedShortcuts = TMap<FKey, TFunction<void()>>;
 
 enum EKey;
 
+/**
+ * Uses binary flags to determine which combination of modifiers is being used, to find the correct
+ * function to execute.
+ */
+
 UCLASS()
 class UShortcutDetector : public UActorComponent
 {

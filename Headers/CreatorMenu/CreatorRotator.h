@@ -6,6 +6,10 @@ class UDragSelect;
 class ACreatorBoard;
 enum class ESelectionType : uint8;
 
+/**
+ * For the different angles of box selection to work, this class rotates the board and camera accordingly
+ * to create the illusion the selection box is angled differently.
+ */
 UCLASS()
 class TILES2_API UCreatorRotator : public UActorComponent
 {

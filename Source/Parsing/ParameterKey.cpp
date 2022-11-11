@@ -2,6 +2,7 @@
 #include "ParameterKey.h"
 #include "Token.h"
 #include "Enums.h"
+#include "Logger.h"
 
 ParameterKey::ParameterKey(const EBoardShape boardShape)
 {
@@ -31,11 +32,11 @@ ParameterKey::ParameterKey(const EBoardShape boardShape)
     }
 }
 
-bool ParameterKey::Contains(const FString& text)        { return key.Contains(text); }
+bool ParameterKey::Contains(const FString& text) const  { return key.Contains(text); }
 FString& ParameterKey::operator[](const FString& index) { return key[index]; }
 FString* ParameterKey::Find(const FString& parsedText)  { return key.Find(parsedText); }
 
-FString ParameterKey::format(const std::initializer_list<FString> args)
+FString ParameterKey::format(const std::initializer_list<FString> args) const
 {
     FString result;
 	
