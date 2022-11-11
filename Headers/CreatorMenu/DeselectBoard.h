@@ -16,5 +16,5 @@ public:
     void NotifyActorOnClicked(FKey ButtonPressed) override;
 protected:
     UPROPERTY(VisibleAnywhere)
-    UBoxComponent* Collider;
+        UBoxComponent* Collider;
 };

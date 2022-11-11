@@ -25,7 +25,7 @@ public:
 	void SetBoard(ABoard* newBoard);
 	void SetCoord(FCoordPtr coord);
 
-	ABoard* Board()			    { return board; }
+	ABoard* Board()		  const { return board; }
 	int ID()			  const { return id; }
 	FCoordPtr GetCoord()  const { return Coord; }
 

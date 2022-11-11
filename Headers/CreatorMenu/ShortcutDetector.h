@@ -1,6 +1,5 @@
 #pragma once
 #include "CoreMinimal.h"
-#include "Logger.h"
 #include "ShortcutDetector.generated.h"
 
 class UDragSelect;
@@ -35,10 +34,14 @@ public:
             (*shortcuts[modifier])[key]();
     }
 private:
-    APlayerController* controller;
-    ACreatorBoard* creatorBoard; 
-    UCreatorRotator* rotator;
-    UDragSelect* dragSelect;
+    UPROPERTY()
+        APlayerController* controller;
+    UPROPERTY()
+        ACreatorBoard* creatorBoard; 
+    UPROPERTY()
+        UCreatorRotator* rotator;
+    UPROPERTY()
+        UDragSelect* dragSelect;
     
     TArray<ModifiedShortcuts*> shortcuts;
     void AnyKey(FKey key);

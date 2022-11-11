@@ -24,5 +24,6 @@ public:
 	template<class T>
 	static UTileModule* Create(ATile* tile, const TArray<FParameter>& parameters);
 protected:
-	ATile* ModTile;
+	UPROPERTY()
+		ATile* ModTile;
 };

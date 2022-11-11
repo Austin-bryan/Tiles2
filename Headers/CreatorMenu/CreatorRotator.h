@@ -21,9 +21,11 @@ public:
     UFUNCTION(BlueprintCallable, Category="Default")
     void SetSelectionType(ESelectionType _selectionType);
 protected:
-    ACreatorBoard* board = nullptr;
+    UPROPERTY()
+        ACreatorBoard* board = nullptr;
 private:
-    UDragSelect* dragSelect;
+    UPROPERTY()
+        UDragSelect* dragSelect;
     ESelectionType selectionType;
     float newRoll = 0;
     float increment = 15;
