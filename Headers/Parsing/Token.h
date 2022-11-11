@@ -82,21 +82,3 @@ const auto TileModuleParseKey = TMap<FString, EModule>
 		Syntax: 
 			cnt(int)
 */
-
-
-/**
- * TODO:: class is not needed.
- */
-class TILES2_API Token
-{
-public:
-	explicit Token(char type, char value = '\0');
-
-	char GetType()  const { return type; }
-	char GetValue() const { return value; };
-
-	static bool CreateToken(const char c, Token& result);
-	FString ToString() const;
-private:
-	char type, value;
-};
