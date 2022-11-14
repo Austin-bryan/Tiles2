@@ -23,12 +23,12 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="Default")
 		UCreatorRotator* GetCreatorRotator() const;
-	UPROPERTY()
-		UShortcutDetector* shortcutDetector;
 protected:
-	UPROPERTY()
+	// UPROPERTY()
+		UShortcutDetector* shortcutDetector;
+	// UPROPERTY()
 		UDragSelect* dragSelect;
-	UPROPERTY()
+	// UPROPERTY()
 		UCreatorRotator* rotator;
 private:
 	int rand = 0;
