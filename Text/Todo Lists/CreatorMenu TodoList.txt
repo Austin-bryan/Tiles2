@@ -8,6 +8,7 @@ Selection
     ---- Switch System
     ---- Inheritence
     
+Make color selection based of clicks, not just down presses
     
 ---- Triangle should follow mouse
     Automatically snaps until moved far enough

@@ -19,7 +19,7 @@ void UDragSelect::BeginPlay()
         FVector::Zero(),
         FRotator(0, 90, 0));
     Super::BeginPlay();
-    ChangeSelectionShape(ESelectionType::Circle);
+    ChangeSelectionShape(ESelectionType::Square);
 }
 
 void UDragSelect::TickComponent(const float deltaTime, const ELevelTick tickType
