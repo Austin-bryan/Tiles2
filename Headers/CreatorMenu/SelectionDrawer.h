@@ -2,7 +2,7 @@
 #include "CoreMinimal.h"
 #include "AssetDir.h"
 
-enum class ESelectionType : uint8;
+enum class ESelectionShape : uint8;
 struct FBatchedLine;
 class ASelectionBox;
 class ULineBatchComponent;
@@ -13,7 +13,7 @@ class ULineBatchComponent;
 class TILES2_API SelectionDrawer
 {
 public:
-    static TUniquePtr<SelectionDrawer> Create(ESelectionType mode, ULineBatchComponent* lineBatch, ASelectionBox* box);
+    static TUniquePtr<SelectionDrawer> Create(ESelectionShape mode, ULineBatchComponent* lineBatch, ASelectionBox* box);
 
     virtual ~SelectionDrawer(){ }
     void Draw(FVector&& worldPosition, FVector anchorPoint);

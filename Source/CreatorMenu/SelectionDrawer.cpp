@@ -1,7 +1,7 @@
 #pragma once
 #include "SelectionDrawer.h"
 #include "SelectionBox.h"
-#include "SelectionType.h"
+#include "SelectionAngle.h"
 #include "Components/LineBatchComponent.h"
 
 SelectionDrawer::SelectionDrawer(ULineBatchComponent* lineBatch, ASelectionBox* box)
@@ -13,16 +13,16 @@ void SelectionDrawer::Init()
     selectionBox->SetMesh(Mesh());
 }
 
-TUniquePtr<SelectionDrawer> SelectionDrawer::Create(const ESelectionType mode, ULineBatchComponent* lineBatch, ASelectionBox* box)
+TUniquePtr<SelectionDrawer> SelectionDrawer::Create(const ESelectionShape mode, ULineBatchComponent* lineBatch, ASelectionBox* box)
 {
     // TODO:: Handle angle cases
     TUniquePtr<SelectionDrawer> drawer;
     
     switch(mode)
     {
-    case ESelectionType::Square:   drawer = MakeUnique<SquareSelection>(lineBatch, box); break;
-    case ESelectionType::Circle:   drawer = MakeUnique<CircleSelection>(lineBatch, box); break;
-    case ESelectionType::Triangle: drawer = MakeUnique<TriangleSelection>(lineBatch, box); break;
+    case ESelectionShape::Square:   drawer = MakeUnique<SquareSelection>(lineBatch, box); break;
+    case ESelectionShape::Circle:   drawer = MakeUnique<CircleSelection>(lineBatch, box); break;
+    case ESelectionShape::Triangle: drawer = MakeUnique<TriangleSelection>(lineBatch, box); break;
     default: ;
     }
     drawer->Init();

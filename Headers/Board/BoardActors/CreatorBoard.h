@@ -22,17 +22,14 @@ public:
 	void BeginPlay() override;
 
 	UFUNCTION(BlueprintCallable, Category="Default")
-		UCreatorRotator* GetCreatorRotator() const { return rotator; }
-	UPROPERTY(EditInstanceOnly)
+		UCreatorRotator* GetCreatorRotator() const;
+	UPROPERTY()
 		UShortcutDetector* shortcutDetector;
-	static float TriRot;
 protected:
-	UPROPERTY(EditInstanceOnly)
+	UPROPERTY()
 		UDragSelect* dragSelect;
-	UPROPERTY(EditInstanceOnly)
+	UPROPERTY()
 		UCreatorRotator* rotator;
-	UPROPERTY(EditInstanceOnly)
-		float triangleRot = 1;
 private:
 	int rand = 0;
 };

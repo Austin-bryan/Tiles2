@@ -6,8 +6,6 @@
 #include "ShortcutDetector.h"
 #include "Kismet/GameplayStatics.h"
 
-float ACreatorBoard::TriRot;
-
 ACreatorBoard::ACreatorBoard()
 {
     dragSelect = CreateDefaultSubobject<UDragSelect>(FName("Drag Select"));
@@ -16,8 +14,7 @@ ACreatorBoard::ACreatorBoard()
     dragSelect->SetComponentTickEnabled(true);
     dragSelect->PrimaryComponentTick.SetTickFunctionEnable(true);
     dragSelect->SetBoard(this);
-    AddOwnedComponent(dragSelect);
-    this->AddInstanceComponent(dragSelect);
+    AddInstanceComponent(dragSelect);
 
     rotator = CreateDefaultSubobject<UCreatorRotator>(FName("Creator Rotator"));
     rotator->RegisterComponent();
@@ -25,23 +22,22 @@ ACreatorBoard::ACreatorBoard()
     rotator->SetComponentTickEnabled(true);
     rotator->SetBoard(this);
     rotator->SetDragSelect(dragSelect);
-    AddOwnedComponent(rotator);
-    this->AddInstanceComponent(rotator);
+    AddInstanceComponent(rotator);
 
     shortcutDetector = CreateDefaultSubobject<UShortcutDetector>(FName("Shortcut Detector"));
     shortcutDetector->RegisterComponent();
     shortcutDetector->SetBoard(this)->SetRotator(rotator)->SetDragSelect(dragSelect);
     AddOwnedComponent(shortcutDetector);
-    this->AddInstanceComponent(shortcutDetector);
+    AddInstanceComponent(shortcutDetector);
     
     rand = FMath::RandRange(0, 100000);
 }
 ACreatorBoard::~ACreatorBoard() { ACreatorTile::EmptySelectedTiles(); }
 
-void ACreatorBoard::Tick(float DeltaSeconds)
+void ACreatorBoard::Tick(const float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
-    TriRot = triangleRot;
+    Log(fstr(rotator == nullptr), FColor::Red, 0);
 }
 
 void ACreatorBoard::BeginPlay()
@@ -55,5 +51,12 @@ void ACreatorBoard::BeginPlay()
         &location);
     deselectBoard->SetActorScale3D(FVector(200, 1, 200));
 }
+
+UCreatorRotator* ACreatorBoard::GetCreatorRotator() const
+{
+    Log(fstr(rotator == nullptr));
+    return rotator;
+}
+
 UClass* ACreatorBoard::TileClass() const { return ACreatorTile::StaticClass(); }
 //119, 50, 17

@@ -5,7 +5,7 @@
 #include "SelectionDrawer.h"
 #include "Components/LineBatchComponent.h"
 #include "Slate/SceneViewport.h"
-#include "SelectionType.h"
+#include "SelectionAngle.h"
 
 UDragSelect::UDragSelect() 
 {
@@ -19,13 +19,20 @@ void UDragSelect::BeginPlay()
         FVector::Zero(),
         FRotator(0, 90, 0));
     Super::BeginPlay();
-    ChangeSelectionShape(ESelectionType::Square);
+    ChangeSelectionShape(ESelectionShape::Square);
 }
 
 void UDragSelect::TickComponent(const float deltaTime, const ELevelTick tickType
     , FActorComponentTickFunction* ThisTickFunction)
 {
     Super::TickComponent(deltaTime, tickType, ThisTickFunction);
+
+    if (!board) { Log("Board is null", 0); return; }
+    if (!board->GetWorld()) { Log("World is null", 0); return; }
+    if (!board->GetWorld()->GetFirstPlayerController()) { Log("Controller is null", 0); return; }
+
+    if (!board || !board->GetWorld() || !board->GetWorld()->GetFirstPlayerController())
+        return;
     const auto controller = board->GetWorld()->GetFirstPlayerController();
     auto GetScreenToWorld = [this, controller]
     {
@@ -61,12 +68,11 @@ void UDragSelect::TickComponent(const float deltaTime, const ELevelTick tickType
         selectionBox->SetVisibility(true);
     }
 }
-
 void UDragSelect::OnRotate() const
 {
     selectionBox->SetVisibility(false, true);
 }
-void UDragSelect::ChangeSelectionShape(const ESelectionType mode)
+void UDragSelect::ChangeSelectionShape(const ESelectionShape mode)
 {
     drawer = SelectionDrawer::Create(mode, lineBatchComponent, selectionBox);
 }

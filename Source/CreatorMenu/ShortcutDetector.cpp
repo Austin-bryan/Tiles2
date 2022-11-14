@@ -5,7 +5,7 @@
 #include "TileColor.h"
 #include "CreatorRotator.h"
 #include "DragSelect.h"
-#include "SelectionType.h"
+#include "SelectionAngle.h"
 
 UShortcutDetector::UShortcutDetector()
 {
@@ -23,8 +23,8 @@ void UShortcutDetector::BeginPlay()
    controller = GetWorld()->GetFirstPlayerController();
    controller->InputComponent->BindAction("AnyKey", IE_Released, this, &UShortcutDetector::AnyKey);
 
-   const auto SetSelectionType = [this] { rotator ->SetSelectionType(ESelectionType::Downhill); };
-   
+   const auto SetSelectionType = [this] { rotator ->SetSelectionType(ESelectionAngle::Downhill); };
+
    shortcuts = 
    {
        // No Modifiers
@@ -35,15 +35,15 @@ void UShortcutDetector::BeginPlay()
            { EKeys::Enter, [] { Log("Return"); } },
            { EKeys::Escape, [] { Log("Escape"); } },
            { EKeys::Delete, [] { Log("Delete"); } },
-           { EKeys::Q, [this] { dragSelect->ChangeSelectionShape(ESelectionType::Triangle); } },
-           { EKeys::W, [this] { dragSelect->ChangeSelectionShape(ESelectionType::Square); } },
-           { EKeys::E, [this] { dragSelect->ChangeSelectionShape(ESelectionType::Circle); } },
-           { EKeys::One, [this]{ rotator->SetSelectionType(ESelectionType::Downhill); } },
-           { EKeys::NumPadOne, [this]{ rotator->SetSelectionType(ESelectionType::Downhill); } },
-           { EKeys::Two, [this]{ rotator->SetSelectionType(ESelectionType::Flat); } },
-           { EKeys::NumPadTwo, [this]{ rotator->SetSelectionType(ESelectionType::Flat); } },
-           { EKeys::Three, [this]{ rotator->SetSelectionType(ESelectionType::Uphill); } },
-           { EKeys::NumPadThree, [this]{ rotator->SetSelectionType(ESelectionType::Uphill); } },
+           { EKeys::Q, [this] { dragSelect->ChangeSelectionShape(ESelectionShape::Triangle); } },
+           { EKeys::W, [this] { dragSelect->ChangeSelectionShape(ESelectionShape::Square); } },
+           { EKeys::E, [this] { dragSelect->ChangeSelectionShape(ESelectionShape::Circle); } },
+           { EKeys::One, [this]{ rotator->SetSelectionType(ESelectionAngle::Downhill); } },
+           { EKeys::NumPadOne, [this]{ rotator->SetSelectionType(ESelectionAngle::Downhill); } },
+           { EKeys::Two, [this]{ rotator->SetSelectionType(ESelectionAngle::Flat); } },
+           { EKeys::NumPadTwo, [this]{ rotator->SetSelectionType(ESelectionAngle::Flat); } },
+           { EKeys::Three, [this]{ rotator->SetSelectionType(ESelectionAngle::Uphill); } },
+           { EKeys::NumPadThree, [this]{ rotator->SetSelectionType(ESelectionAngle::Uphill); } },
        }),
        // Shift
        new ModifiedShortcuts

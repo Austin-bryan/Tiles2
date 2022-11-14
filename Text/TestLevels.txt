@@ -26,3 +26,5 @@ tri (2, 2, 2) | r/ b/b/b;
 
 tri (5, 5, 5) | r/ b/b/b/ g/g/g/g/g/ n/n/n/n/n/n/n/ k/k/k/k/k/k/k/k/k;
 tri (7, 7, 7) | r/ b/b/b/ g/g/g/g/g/ n/n/n/n/n/n/n/ k/k/k/k/k/k/k/k/k/ c/c/c/c/c/c/c/c/c/c/c/ o/o/o/o/o/o/o/o/o/o/o/o/o;
+
+tri (8, 8, 8) | r/ b/b/b/ g/g/g/g/g/ n/n/n/n/n/n/n/ k/k/k/k/k/k/k/k/k/ c/c/c/c/c/c/c/c/c/c/c/ o/o/o/o/o/o/o/o/o/o/o/o/o/ m/m/m/m/m/m/m/m/m/m/m/m/m/m/m;

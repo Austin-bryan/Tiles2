@@ -2,10 +2,10 @@
 #include "CreatorRotator.h"
 #include "CreatorBoard.h"
 #include "DragSelect.h"
-#include "SelectionType.h"
+#include "SelectionAngle.h"
 #include "Kismet/GameplayStatics.h"
 
-void UCreatorRotator::SetSelectionType(const ESelectionType _selectionType)
+void UCreatorRotator::SetSelectionType(const ESelectionAngle _selectionType)
 {
     if (selectionType == _selectionType)
         return;
@@ -15,9 +15,9 @@ void UCreatorRotator::SetSelectionType(const ESelectionType _selectionType)
          ? 60 : 45;
     switch(selectionType)
     {
-    case ESelectionType::Downhill: newRoll =  increment; break;
-    case ESelectionType::Uphill:   newRoll = -increment; break;
-    case ESelectionType::Flat:     newRoll = 0; break;
+    case ESelectionAngle::Downhill: newRoll =  increment; break;
+    case ESelectionAngle::Uphill:   newRoll = -increment; break;
+    case ESelectionAngle::Flat:     newRoll = 0; break;
     default: throw std::invalid_argument("Invalid selection type");        
     }
     

@@ -7,7 +7,7 @@ class ASelectionBox;
 class ACreatorBoard;
 class ULineBatchComponent;
 struct FBatchedLine;
-enum class ESelectionType : uint8;
+enum class ESelectionShape : uint8;
 
 /**
  * Handles selection of creator tiles via dragging.
@@ -25,7 +25,7 @@ public:
     void TickComponent(float deltaTime, ELevelTick tickType, FActorComponentTickFunction* ThisTickFunction) override;
     void SetBoard(ACreatorBoard* _board) { board = _board; }
     void OnRotate() const;
-    void ChangeSelectionShape(ESelectionType mode);
+    void ChangeSelectionShape(ESelectionShape mode);
 protected:
     UPROPERTY()
         ACreatorBoard* board;
