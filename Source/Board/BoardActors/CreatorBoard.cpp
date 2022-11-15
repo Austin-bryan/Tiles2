@@ -8,7 +8,7 @@
 
 ACreatorBoard::ACreatorBoard()
 {
-    dragSelect = CreateDefaultSubobject<UDragSelect>(FName("Drag Select"));
+    dragSelect = CreateDefaultSubobject<UDragSelect>(TEXT("Drag Select"));
     dragSelect->RegisterComponent();
     dragSelect->PrimaryComponentTick.bCanEverTick = true;
     dragSelect->SetComponentTickEnabled(true);
@@ -16,7 +16,7 @@ ACreatorBoard::ACreatorBoard()
     dragSelect->SetBoard(this);
     AddInstanceComponent(dragSelect);
 
-    rotator = CreateDefaultSubobject<UCreatorRotator>(FName("Creator Rotator"));
+    rotator = CreateDefaultSubobject<UCreatorRotator>(TEXT("Creator Rotator"));
     rotator->RegisterComponent();
     rotator->PrimaryComponentTick.bCanEverTick = true;
     rotator->SetComponentTickEnabled(true);
@@ -24,7 +24,7 @@ ACreatorBoard::ACreatorBoard()
     rotator->SetDragSelect(dragSelect);
     AddInstanceComponent(rotator);
 
-    shortcutDetector = CreateDefaultSubobject<UShortcutDetector>(FName("Shortcut Detector"));
+    shortcutDetector = CreateDefaultSubobject<UShortcutDetector>(TEXT("Shortcut Detector"));
     shortcutDetector->RegisterComponent();
     shortcutDetector->SetBoard(this)->SetRotator(rotator)->SetDragSelect(dragSelect);
     AddOwnedComponent(shortcutDetector);
@@ -34,16 +34,9 @@ ACreatorBoard::ACreatorBoard()
 }
 ACreatorBoard::~ACreatorBoard() { ACreatorTile::EmptySelectedTiles(); }
 
-void ACreatorBoard::Tick(const float DeltaSeconds)
-{
-    Super::Tick(DeltaSeconds);
-    Log(fstr(rotator == nullptr), FColor::Red, 0);
-}
-
 void ACreatorBoard::BeginPlay()
 {
     Super::BeginPlay();
-
     const FVector location = GetActorLocation() - FVector(0, 100, 0);
 
     const auto deselectBoard = GetWorld()->SpawnActor(
@@ -52,10 +45,11 @@ void ACreatorBoard::BeginPlay()
     deselectBoard->SetActorScale3D(FVector(200, 1, 200));
 }
 
-UCreatorRotator* ACreatorBoard::GetCreatorRotator() const
+UCreatorRotator* ACreatorBoard::GetCreatorRotator() const { return rotator; }
+void ACreatorBoard::SetCreatorMenu(UCreatorMenu* _creatorMenu)
 {
-    Log(fstr(rotator == nullptr));
-    return rotator;
+    creatorMenu = _creatorMenu;
+    shortcutDetector->SetCreatorMenu(creatorMenu);
 }
 
 UClass* ACreatorBoard::TileClass() const { return ACreatorTile::StaticClass(); }

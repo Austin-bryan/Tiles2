@@ -10,11 +10,8 @@ class UToggleButton : public UUserWidget
 {
     GENERATED_BODY()
 public:
-    void NativeConstruct() override; 
-    void NativePreConstruct() override;
-
     UPROPERTY(EditAnywhere)
         FVector2D Size;
     UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Default")
-    void OnToggle();
+        void OnToggle();
 };

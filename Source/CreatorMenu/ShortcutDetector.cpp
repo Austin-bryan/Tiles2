@@ -1,11 +1,13 @@
 #pragma once
 #include "ShortcutDetector.h"
-#include "ShortcutDetector.h"
+
+#include "CreatorMenu.h"
 #include "Logger.h"
 #include "TileColor.h"
 #include "CreatorRotator.h"
 #include "DragSelect.h"
 #include "SelectionAngle.h"
+#include "ToggleButton.h"
 
 UShortcutDetector::UShortcutDetector()
 {
@@ -23,9 +25,20 @@ void UShortcutDetector::BeginPlay()
    controller = GetWorld()->GetFirstPlayerController();
    controller->InputComponent->BindAction("AnyKey", IE_Released, this, &UShortcutDetector::AnyKey);
 
-   const auto SetSelectionType = [this] { rotator ->SetSelectionType(ESelectionAngle::Downhill); };
+   const auto SetSelectionType = [this](const ESelectionAngle angle)
+   {
+      const auto button = creatorMenu->GetAngleButton(angle);
+      button->OnToggle();
+      rotator->SetSelectionType(angle);
+   };
+   const auto SetColor = [this](const ETileColor color)
+   {
+      const auto button = creatorMenu->GetColorButton(color);
+      button->OnToggle();
+      UColorCast::ColorCreatorTiles(color);
+   };
 
-   shortcuts = 
+   shortcuts =    
    {
        // No Modifiers
        new ModifiedShortcuts
@@ -35,31 +48,31 @@ void UShortcutDetector::BeginPlay()
            { EKeys::Enter, [] { Log("Return"); } },
            { EKeys::Escape, [] { Log("Escape"); } },
            { EKeys::Delete, [] { Log("Delete"); } },
-           { EKeys::Q, [this] { dragSelect->ChangeSelectionShape(ESelectionShape::Triangle); } },
-           { EKeys::W, [this] { dragSelect->ChangeSelectionShape(ESelectionShape::Square); } },
-           { EKeys::E, [this] { dragSelect->ChangeSelectionShape(ESelectionShape::Circle); } },
-           { EKeys::One, [this]{ rotator->SetSelectionType(ESelectionAngle::Downhill); } },
-           { EKeys::NumPadOne, [this]{ rotator->SetSelectionType(ESelectionAngle::Downhill); } },
-           { EKeys::Two, [this]{ rotator->SetSelectionType(ESelectionAngle::Flat); } },
-           { EKeys::NumPadTwo, [this]{ rotator->SetSelectionType(ESelectionAngle::Flat); } },
-           { EKeys::Three, [this]{ rotator->SetSelectionType(ESelectionAngle::Uphill); } },
-           { EKeys::NumPadThree, [this]{ rotator->SetSelectionType(ESelectionAngle::Uphill); } },
+           { EKeys::Q,           [this] { dragSelect->ChangeSelectionShape(ESelectionShape::Triangle); } },
+           { EKeys::W,           [this] { dragSelect->ChangeSelectionShape(ESelectionShape::Square); } },
+           { EKeys::E,           [this] { dragSelect->ChangeSelectionShape(ESelectionShape::Circle); } },
+           { EKeys::One,         [this, SetSelectionType] { SetSelectionType(ESelectionAngle::Downhill); } },
+           { EKeys::NumPadOne,   [this, SetSelectionType] { SetSelectionType(ESelectionAngle::Downhill); } },
+           { EKeys::Two,         [this, SetSelectionType] { SetSelectionType(ESelectionAngle::Flat); } },
+           { EKeys::NumPadTwo,   [this, SetSelectionType] { SetSelectionType(ESelectionAngle::Flat); } },
+           { EKeys::Three,       [this, SetSelectionType] { SetSelectionType(ESelectionAngle::Uphill); } },
+           { EKeys::NumPadThree, [this, SetSelectionType] { SetSelectionType(ESelectionAngle::Uphill); } },
        }),
        // Shift
        new ModifiedShortcuts
        ({
-          { EKeys::W, []{ UColorCast::ColorCreatorTiles(ETileColor::White);   } }, 
-          { EKeys::R, []{ UColorCast::ColorCreatorTiles(ETileColor::Red);     } }, 
-          { EKeys::O, []{ UColorCast::ColorCreatorTiles(ETileColor::Orange);  } }, 
-          { EKeys::Y, []{ UColorCast::ColorCreatorTiles(ETileColor::Yellow);  } }, 
-          { EKeys::G, []{ UColorCast::ColorCreatorTiles(ETileColor::Green);   } }, 
-          { EKeys::C, []{ UColorCast::ColorCreatorTiles(ETileColor::Cyan);    } }, 
-          { EKeys::B, []{ UColorCast::ColorCreatorTiles(ETileColor::Blue);    } }, 
-          { EKeys::P, []{ UColorCast::ColorCreatorTiles(ETileColor::Purple);  } }, 
-          // { EKeys::M, []{ UColorCast::ColorCreatorTiles(ETileColor::Maroon);  } }, 
-          { EKeys::T, []{ UColorCast::ColorCreatorTiles(ETileColor::Magenta); } }, 
-          { EKeys::N, []{ UColorCast::ColorCreatorTiles(ETileColor::Pink);    } }, 
-          { EKeys::K, []{ UColorCast::ColorCreatorTiles(ETileColor::Black);   } }, 
+          { EKeys::W, [this, SetColor]{ SetColor(ETileColor::White);   } }, 
+          { EKeys::R, [this, SetColor]{ SetColor(ETileColor::Red);     } }, 
+          { EKeys::O, [this, SetColor]{ SetColor(ETileColor::Orange);  } }, 
+          { EKeys::Y, [this, SetColor]{ SetColor(ETileColor::Yellow);  } }, 
+          { EKeys::G, [this, SetColor]{ SetColor(ETileColor::Green);   } }, 
+          { EKeys::C, [this, SetColor]{ SetColor(ETileColor::Cyan);    } }, 
+          { EKeys::B, [this, SetColor]{ SetColor(ETileColor::Blue);    } }, 
+          { EKeys::P, [this, SetColor]{ SetColor(ETileColor::Purple);  } },
+       // { EKeys::M, [this, SetColor]{ SetColor(ETileColor::Maroon);  } }, 
+          { EKeys::T, [this, SetColor]{ SetColor(ETileColor::Magenta); } }, 
+          { EKeys::N, [this, SetColor]{ SetColor(ETileColor::Pink);    } }, 
+          { EKeys::K, [this, SetColor]{ SetColor(ETileColor::Black);   } }, 
        }),
        // Ctrl
        new ModifiedShortcuts

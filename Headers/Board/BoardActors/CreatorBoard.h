@@ -7,6 +7,7 @@ class UDragSelect;
 class UCreatorRotator;
 class UShortcutDetector;
 class ATile;
+class UCreatorMenu;
 enum class EBoardShape;
 
 UCLASS()
@@ -18,18 +19,17 @@ public:
 	ACreatorBoard();
 	~ACreatorBoard();
 
-	void Tick(float DeltaSeconds) override;
 	void BeginPlay() override;
 
 	UFUNCTION(BlueprintCallable, Category="Default")
 		UCreatorRotator* GetCreatorRotator() const;
+	UFUNCTION(BlueprintCallable, Category="Default")
+		void SetCreatorMenu(UCreatorMenu* _creatorMenu);
 protected:
-	// UPROPERTY()
-		UShortcutDetector* shortcutDetector;
-	// UPROPERTY()
-		UDragSelect* dragSelect;
-	// UPROPERTY()
-		UCreatorRotator* rotator;
+	UShortcutDetector* shortcutDetector;
+	UDragSelect* dragSelect;
+	UCreatorRotator* rotator;
+	UCreatorMenu* creatorMenu;
 private:
 	int rand = 0;
 };
