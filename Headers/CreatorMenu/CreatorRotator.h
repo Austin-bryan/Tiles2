@@ -19,7 +19,7 @@ public:
     void SetDragSelect(UDragSelect* _dragSelect) { dragSelect = _dragSelect; }
 
     UFUNCTION(BlueprintCallable, Category="Default")
-    void SetSelectionType(ESelectionAngle _selectionType);
+        void SetSelectionType(ESelectionAngle _selectionType);
 protected:
     ACreatorBoard* board = nullptr;
 private:

@@ -45,7 +45,9 @@ void ACreatorBoard::BeginPlay()
     deselectBoard->SetActorScale3D(FVector(200, 1, 200));
 }
 
+UDragSelect* ACreatorBoard::GetDragSelect() const { return dragSelect; }
 UCreatorRotator* ACreatorBoard::GetCreatorRotator() const { return rotator; }
+
 void ACreatorBoard::SetCreatorMenu(UCreatorMenu* _creatorMenu)
 {
     creatorMenu = _creatorMenu;

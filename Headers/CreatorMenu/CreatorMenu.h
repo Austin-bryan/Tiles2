@@ -6,6 +6,7 @@
 class UButton;
 class UToggleButton;
 enum class ESelectionAngle : uint8;
+enum class ESelectionShape : uint8;
 enum class ETileColor : uint8;
 
 UCLASS()
@@ -17,4 +18,6 @@ public:
         UToggleButton* GetAngleButton(ESelectionAngle selectionAngle);
     UFUNCTION(BlueprintNativeEvent, Category="Default")
         UToggleButton* GetColorButton(ETileColor color);
+    UFUNCTION(BlueprintNativeEvent, Category="Default")
+        UToggleButton* GetShapeButton(ESelectionShape shape);
 };

@@ -37,6 +37,12 @@ void UShortcutDetector::BeginPlay()
       button->OnToggle();
       UColorCast::ColorCreatorTiles(color);
    };
+   const auto SetSelectionShape = [this](const ESelectionShape shape)
+   {
+     const auto button = creatorMenu->GetShapeButton(shape);
+      button->OnToggle();
+      dragSelect->ChangeSelectionShape(shape);
+   };
 
    shortcuts =    
    {
@@ -48,15 +54,12 @@ void UShortcutDetector::BeginPlay()
            { EKeys::Enter, [] { Log("Return"); } },
            { EKeys::Escape, [] { Log("Escape"); } },
            { EKeys::Delete, [] { Log("Delete"); } },
-           { EKeys::Q,           [this] { dragSelect->ChangeSelectionShape(ESelectionShape::Triangle); } },
-           { EKeys::W,           [this] { dragSelect->ChangeSelectionShape(ESelectionShape::Square); } },
-           { EKeys::E,           [this] { dragSelect->ChangeSelectionShape(ESelectionShape::Circle); } },
-           { EKeys::One,         [this, SetSelectionType] { SetSelectionType(ESelectionAngle::Downhill); } },
-           { EKeys::NumPadOne,   [this, SetSelectionType] { SetSelectionType(ESelectionAngle::Downhill); } },
-           { EKeys::Two,         [this, SetSelectionType] { SetSelectionType(ESelectionAngle::Flat); } },
-           { EKeys::NumPadTwo,   [this, SetSelectionType] { SetSelectionType(ESelectionAngle::Flat); } },
-           { EKeys::Three,       [this, SetSelectionType] { SetSelectionType(ESelectionAngle::Uphill); } },
-           { EKeys::NumPadThree, [this, SetSelectionType] { SetSelectionType(ESelectionAngle::Uphill); } },
+           { EKeys::One,   [this, SetSelectionShape] { SetSelectionShape(ESelectionShape::Triangle); } },
+           { EKeys::Two,   [this, SetSelectionShape] { SetSelectionShape(ESelectionShape::Square); } },
+           { EKeys::Three, [this, SetSelectionShape] { SetSelectionShape(ESelectionShape::Circle); } },
+           { EKeys::Q,     [this, SetSelectionType]  { SetSelectionType(ESelectionAngle::Downhill); } },
+           { EKeys::W,     [this, SetSelectionType]  { SetSelectionType(ESelectionAngle::Flat); } },
+           { EKeys::E,     [this, SetSelectionType]  { SetSelectionType(ESelectionAngle::Uphill); } },
        }),
        // Shift
        new ModifiedShortcuts

@@ -25,7 +25,9 @@ public:
     void TickComponent(float deltaTime, ELevelTick tickType, FActorComponentTickFunction* ThisTickFunction) override;
     void SetBoard(ACreatorBoard* _board) { board = _board; }
     void OnRotate() const;
-    void ChangeSelectionShape(ESelectionShape mode);
+
+    UFUNCTION(BlueprintCallable, Category="Default")
+        void ChangeSelectionShape(ESelectionShape mode);
 protected:
     UPROPERTY()
         ACreatorBoard* board;

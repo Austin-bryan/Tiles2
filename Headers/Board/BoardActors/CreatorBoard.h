@@ -21,6 +21,9 @@ public:
 
 	void BeginPlay() override;
 
+	// todo:: can these be protected?
+	UFUNCTION(BlueprintCallable, Category="Default")
+		UDragSelect* GetDragSelect() const;
 	UFUNCTION(BlueprintCallable, Category="Default")
 		UCreatorRotator* GetCreatorRotator() const;
 	UFUNCTION(BlueprintCallable, Category="Default")
