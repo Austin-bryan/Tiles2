@@ -68,10 +68,7 @@ void UDragSelect::TickComponent(const float deltaTime, const ELevelTick tickType
         selectionBox->SetVisibility(true);
     }
 }
-void UDragSelect::OnRotate() const
-{
-    selectionBox->SetVisibility(false, true);
-}
+void UDragSelect::OnRotate() const { selectionBox->SetVisibility(false, true); }
 void UDragSelect::ChangeSelectionShape(const ESelectionShape mode)
 {
     drawer = SelectionDrawer::Create(mode, lineBatchComponent, selectionBox);

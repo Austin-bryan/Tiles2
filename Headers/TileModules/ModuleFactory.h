@@ -1,14 +1,11 @@
 #pragma once
 #include "CoreMinimal.h"
 
-enum class EModule;
+enum class EModule : uint8;
 struct FParameter;
 class ATile;
 class UTileModule;
 
-/**
- * 
- */
 class TILES2_API ModuleFactory
 {
 public:
