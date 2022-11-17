@@ -11,11 +11,10 @@ public:
     AMeshGenerator();
     void BeginPlay() override;
 
-    UPROPERTY(EditAnywhere) float Size;
-    UPROPERTY(EditAnywhere) int xLength = 10;
-    UPROPERTY(EditAnywhere) int yLength = 10;
-    UPROPERTY(EditAnywhere) int zLength = 10;
-        
+    UPROPERTY(EditAnywhere)
+        float Size = 100;
+    UPROPERTY(EditAnywhere)
+        FVector Lengths;
     UPROPERTY(VisibleAnywhere)
         USceneComponent* Root;
     UPROPERTY(VisibleAnywhere)

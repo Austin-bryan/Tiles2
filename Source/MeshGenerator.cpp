@@ -24,13 +24,13 @@ void AMeshGenerator::BeginPlay()
         return FVector(length, length, length) * normal;
     };
 
-    DrawQuad(0, xLength, zLength, FRotator(0,   0,   0), GetOrigin(FVector::RightVector, yLength));
-    DrawQuad(1, xLength, zLength, FRotator(0, 180,   0), GetOrigin(FVector::LeftVector, yLength));
-    DrawQuad(2, yLength, zLength, FRotator(0, -90,   0), GetOrigin(FVector::ForwardVector, xLength));
-    DrawQuad(3, yLength, zLength, FRotator(0,  90,   0), GetOrigin(FVector::BackwardVector, xLength));
-    DrawQuad(4, xLength, yLength, FRotator(0,   0, -90), GetOrigin(FVector::UpVector, zLength));
-    DrawQuad(5, xLength, yLength, FRotator(0,   0,  90), GetOrigin(FVector::DownVector, zLength));
-}                             
+    DrawQuad(0, Lengths.X, Lengths.Z, FRotator(0,   0,   0), GetOrigin(FVector::RightVector, Lengths.Y));
+    DrawQuad(1, Lengths.X, Lengths.Z, FRotator(0, 180,   0), GetOrigin(FVector::LeftVector, Lengths.Y));
+    DrawQuad(2, Lengths.Y, Lengths.Z, FRotator(0, -90,   0), GetOrigin(FVector::ForwardVector, Lengths.X));
+    DrawQuad(3, Lengths.Y, Lengths.Z, FRotator(0,  90,   0), GetOrigin(FVector::BackwardVector, Lengths.X));
+    DrawQuad(4, Lengths.X, Lengths.Y, FRotator(0,   0, -90), GetOrigin(FVector::UpVector, Lengths.Z));
+    DrawQuad(5, Lengths.X, Lengths.Y, FRotator(0,   0,  90), GetOrigin(FVector::DownVector, Lengths.Z));
+}
 
 void AMeshGenerator::DrawQuad(const int index, const int width, const int height, const FRotator rotator, const FVector origin)
 {
