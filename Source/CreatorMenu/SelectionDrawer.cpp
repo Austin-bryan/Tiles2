@@ -74,6 +74,9 @@ int TriangleSelection::RollOffset(const FTransform& anchorTrans, const FVector& 
     const auto rad = atan2(inverseWorldPosition.Z - 0, inverseWorldPosition.X - 0);
     float deg = rad * (180 / PI) + 180 - 30;
 
+
+    // LogV(x, y);
+
     // Snaps if less than the snap limit
     constexpr int snapLimit = 20;
     const auto SnapAngle = [snapLimit](float& degree, const int target)

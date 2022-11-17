@@ -1,5 +1,6 @@
 #pragma once
 #include "CoreMinimal.h"
+#include <sstream>
 
 #define NL fstr("\n")
 #define SPC fstr(" ")
@@ -25,15 +26,22 @@ void Log(FString,     float time);
 void Log(FRotator,    float time);
 void Log(FParameter&, float time);
 
+inline std::ostringstream& operator<<(std::ostringstream& os, const FString& string);
+
+inline void LogV(){}
+
+template <typename T, typename... Types>
+void LogV(const T& firstArg, Types&... types);
+
 void NullCheck(FString&& label, const void* object, FColor color = defaultColor, float time = defaultTime);
 void NullCheck(const void* object, FColor color = defaultColor, float time = defaultTime);
 
 void Path(int n, FColor color = defaultColor, float time = defaultTime);
 void Path(int n, float time);
 
+inline FString operator"" _f(const long double f)            { return FString::SanitizeFloat(f); }
+inline FString operator"" _f(const char* s, std::size_t)     { return FString(s); }
 inline FString operator"" _f(const unsigned long long int i) { return FString::FromInt(i); }
-inline FString operator"" _f(const char* s, std::size_t) { return FString(s); }
-inline FString operator"" _f(const long double f) { return FString::SanitizeFloat(f); }
 inline FString operator"" _f(const char c)
 {
     const std::string s(1, c);
