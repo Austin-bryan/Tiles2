@@ -46,7 +46,7 @@ public class Tiles2 : ModuleRules
 			"Core", "CoreUObject", "Engine", "InputCore",
 			"UMG"
 		});
-		PrivateDependencyModuleNames.AddRange(new string[] { "RD", "RD" });
+		PrivateDependencyModuleNames.AddRange(new string[] { "RD", "RD", "ProceduralMeshComponent" });
 
 		// Uncomment if you are using Slate UI
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
