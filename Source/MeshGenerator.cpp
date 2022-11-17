@@ -1,8 +1,5 @@
 #include "MeshGenerator.h"
 
-#include ""
-#include "Logger.h"
-
 AMeshGenerator::AMeshGenerator()
 {
     Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
