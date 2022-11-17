@@ -11,10 +11,21 @@ public:
     AMeshGenerator();
     void BeginPlay() override;
 
-    UPROPERTY(EditAnywhere)
-        float Size;
+    UPROPERTY(EditAnywhere) float Size;
+    UPROPERTY(EditAnywhere) int xLength;
+    UPROPERTY(EditAnywhere) int yLength;
+        
     UPROPERTY(VisibleAnywhere)
         USceneComponent* Root;
     UPROPERTY(VisibleAnywhere)
         UProceduralMeshComponent* Mesh;
+private:
+    void DrawQuad();
+
+    TArray<FVector> vertices;
+    TArray<int> triangles;
+    TArray<FVector> normals;
+    TArray<FVector2D> UV;
+    TArray<FColor> colors;
+    TArray<FProcMeshTangent> tangents;
 };

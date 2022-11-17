@@ -1,4 +1,5 @@
 #include "MeshGenerator.h"
+#include "KismetProceduralMeshLibrary.h"
 
 AMeshGenerator::AMeshGenerator()
 {
@@ -13,28 +14,22 @@ AMeshGenerator::AMeshGenerator()
 
 void AMeshGenerator::BeginPlay()
 {
-    const float size = Size;
     Super::BeginPlay();
-    const TArray<FVector> vertices =
-    {
-        { -size, 0,  size },
-        {  size * 3, 0,  size },
-        {  size * 2, 0, -size },
-        { -size, 0, -size },
-    };
-    const TArray faces = { 0, 1, 2, 3 };
-    const TArray<FVector> normals;
-    const TArray<FVector2D> UV =
-    {
-        { -1,  1 },
-        {  1,  1 },
-        {  1, -1 },
-        { -1, -1 },
-    };
-    const TArray<FColor> colors;
-    const TArray<FProcMeshTangent> tangents;
-
+    DrawQuad();
     
+    Mesh->CreateMeshSection(0, vertices, triangles, normals, UV, colors, tangents, true);
+}
 
-    Mesh->CreateMeshSection(0, vertices, faces, normals, UV, colors, tangents, true);
+// ReSharper disable once CppMemberFunctionMayBeConst
+void AMeshGenerator::DrawQuad()
+{
+    for(int x = 0; x <= xLength; x++)
+    for(int y = 0; y <= yLength; y++)
+    {
+        vertices.Add(FVector(x * Size, 0, y * Size));
+        UV.Add(FVector2d(x / xLength, y / yLength));
+    }
+
+    UKismetProceduralMeshLibrary::CreateGridMeshTriangles(xLength + 1, yLength + 1, true, triangles);
+    UKismetProceduralMeshLibrary::CalculateTangentsForMesh(vertices, triangles, UV, normals, tangents);
 }
