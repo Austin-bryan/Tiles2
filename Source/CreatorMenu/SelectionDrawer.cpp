@@ -78,17 +78,25 @@ int TriangleSelection::RollOffset(const FTransform& anchorTrans, const FVector& 
     constexpr int snapLimit = 20;
     const auto SnapAngle = [snapLimit](float& degree, const int target)
     {
-        const int mod = static_cast<int>(degree) % 30;
+        const int mod = static_cast<int>(degree) % 60;
         // bool result = mod > (mod / 3 - snapLimit) && mod < mod / 3 + snapLimit;
-        bool result = FMath::Abs(mod) < 15;
+        const bool result = FMath::Abs(mod) > 20 && FMath::Abs(mod) < 40;
+
+        Log(fstr(FMath::Abs(mod)) + PAIR + fstr(result), result ? FColor::Green : FColor::Red, 0);
         // result = mod == 0;
         
         float d = degree;
 
-        while (d > 15)
-            d -= 15;
         if (result)
-            degree -= d;
+        {
+            const float normalized = degree / 30;
+            const float rounded = FMath::RoundToFloat(normalized);
+            const float final = rounded * 30;
+
+            Log(fstr(normalized) + PAIR + fstr(rounded) + PAIR + fstr(final), 0);
+    
+            degree = final;
+        }
         return result;
     };
 
