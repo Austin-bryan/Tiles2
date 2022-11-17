@@ -6,6 +6,7 @@ enum class ESelectionShape : uint8;
 struct FBatchedLine;
 class ASelectionBox;
 class ULineBatchComponent;
+class ACreatorBoard;
 
 /**
  * Draws the outline of the selection box, and scales the body itself
@@ -19,6 +20,7 @@ public:
     void Draw(FVector&& worldPosition, FVector anchorPoint);
     virtual void GetVerts(TArray<FVector>& verts, FVector&& worldPosition, FVector anchorPoint) = 0;
     virtual FString Mesh() = 0;
+    void SetCreatorBoard(ACreatorBoard* _board) { board = _board; }
 protected:
     SelectionDrawer(ULineBatchComponent* lineBatch, ASelectionBox* box);
     virtual int VertexCount() = 0;
@@ -28,6 +30,7 @@ protected:
     ULineBatchComponent* lineBatchComponent;
     const float angleMultiplier = 57.25f;
     const float thickness = 4;
+    ACreatorBoard* board;
 private:
     void Init();
 };
@@ -38,9 +41,9 @@ public:
     SquareSelection(ULineBatchComponent* lineBatch, ASelectionBox* box);
     void GetVerts(TArray<FVector>& verts, FVector&& worldPosition, FVector anchorPoint) override;
 private:
+    FString Mesh() override    { return SIMPLE_SQUARE; }
     int VertexCount() override { return 4; }
     int RollOffset(const FTransform& anchorTrans, const FVector& worldPosition) override { return 45; }
-    FString Mesh() override    { return SIMPLE_SQUARE; }
 };
 
 /**

@@ -72,4 +72,5 @@ void UDragSelect::OnRotate() const { selectionBox->SetVisibility(false, true); }
 void UDragSelect::ChangeSelectionShape(const ESelectionShape mode)
 {
     drawer = SelectionDrawer::Create(mode, lineBatchComponent, selectionBox);
+    drawer->SetCreatorBoard(board);
 }

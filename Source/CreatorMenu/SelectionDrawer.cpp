@@ -1,5 +1,8 @@
 #pragma once
 #include "SelectionDrawer.h"
+
+#include "CreatorBoard.h"
+#include "Enums.h"
 #include "SelectionBox.h"
 #include "SelectionAngle.h"
 #include "Components/LineBatchComponent.h"
@@ -76,15 +79,16 @@ int TriangleSelection::RollOffset(const FTransform& anchorTrans, const FVector& 
 
     // Snaps if less than the snap limit
     constexpr int snapLimit = 20;
-    const auto SnapAngle = [snapLimit](float& degree, const int target)
+    const auto SnapAngle = [this, snapLimit](float& degree, const int target)
     {
         const int mod = static_cast<int>(degree) % 60;
-        // bool result = mod > (mod / 3 - snapLimit) && mod < mod / 3 + snapLimit;
-        const bool result = FMath::Abs(mod) > 20 && FMath::Abs(mod) < 40;
+        const int abs = FMath::Abs(mod);
 
-        Log(fstr(FMath::Abs(mod)) + PAIR + fstr(result), result ? FColor::Green : FColor::Red, 0);
-        // result = mod == 0;
-        
+        // Different offset depending on board
+        const bool result = board->GetBoardShape() == EBoardShape::Hex
+            ? abs > 20 && abs < 40
+            : abs < 10 || abs > 50;
+
         float d = degree;
 
         if (result)
@@ -92,8 +96,6 @@ int TriangleSelection::RollOffset(const FTransform& anchorTrans, const FVector& 
             const float normalized = degree / 30;
             const float rounded = FMath::RoundToFloat(normalized);
             const float final = rounded * 30;
-
-            Log(fstr(normalized) + PAIR + fstr(rounded) + PAIR + fstr(final), 0);
     
             degree = final;
         }
