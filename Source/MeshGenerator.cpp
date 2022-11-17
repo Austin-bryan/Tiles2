@@ -24,6 +24,10 @@ void AMeshGenerator::BeginPlay()
         return FVector(length, length, length) * normal;
     };
 
+    DrawHex(0, FRotator::ZeroRotator, FVector::ZeroVector);
+
+    // Square
+    return;
     DrawQuad(0, Lengths.X, Lengths.Z, FRotator(0,   0,   0), GetOrigin(FVector::RightVector, Lengths.Y));
     DrawQuad(1, Lengths.X, Lengths.Z, FRotator(0, 180,   0), GetOrigin(FVector::LeftVector, Lengths.Y));
     DrawQuad(2, Lengths.Y, Lengths.Z, FRotator(0, -90,   0), GetOrigin(FVector::ForwardVector, Lengths.X));
@@ -31,8 +35,27 @@ void AMeshGenerator::BeginPlay()
     DrawQuad(4, Lengths.X, Lengths.Y, FRotator(0,   0, -90), GetOrigin(FVector::UpVector, Lengths.Z));
     DrawQuad(5, Lengths.X, Lengths.Y, FRotator(0,   0,  90), GetOrigin(FVector::DownVector, Lengths.Z));
 }
+void AMeshGenerator::DrawHex(const int index, const FRotator faceAngle, const FVector origin)
+{
+    const double radius = Lengths.X * 50;
+    const FTransform trans{ origin };
 
-void AMeshGenerator::DrawQuad(const int index, const int width, const int height, const FRotator rotator, const FVector origin)
+    for (int i = 0; i < 6; i++)
+    {
+        auto v = FVector(radius * cos(i * 1.0472), 0, radius * sin(i * 1.0472));
+        
+        v  = trans.InverseTransformPosition(v);
+        v  = FRotator(0, 180, 0).RotateVector(v);
+        v  = trans.TransformPosition(v);
+
+        vertices.Add(v);
+    }
+
+    UKismetProceduralMeshLibrary::CreateGridMeshTriangles(Lengths.X + 1, Lengths.X + 1, true, triangles);
+    UKismetProceduralMeshLibrary::CalculateTangentsForMesh(vertices, triangles, UV, normals, tangents);
+    Mesh->CreateMeshSection(index, vertices, triangles, normals, UV, colors, tangents, true);
+}
+void AMeshGenerator::DrawQuad(const int index, const int width, const int height, const FRotator faceAngle, const FVector origin)
 {
     ClearData();
     const FTransform trans { origin };
@@ -47,10 +70,10 @@ void AMeshGenerator::DrawQuad(const int index, const int width, const int height
         };
         auto v =  FVector(GetVertex(w, width), 0, GetVertex(h, height));
         
-        v+= origin;
-        v = trans.InverseTransformPosition(v);
-        v = rotator.RotateVector(v);
-        v = trans.TransformPosition(v);
+        v += origin;
+        v  = trans.InverseTransformPosition(v);
+        v  = faceAngle.RotateVector(v);
+        v  = trans.TransformPosition(v);
 
         vertices.Add(v);
         UV.Add(FVector2d(w, h));

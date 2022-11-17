@@ -20,7 +20,8 @@ public:
     UPROPERTY(VisibleAnywhere)
         UProceduralMeshComponent* Mesh;
 private:
-    void DrawQuad(const int index, const int width, const int height, const FRotator rotator, const FVector origin);
+    void DrawHex(int index, FRotator faceAngle, FVector origin);
+    void DrawQuad(const int index, const int width, const int height, const FRotator faceAngle, const FVector origin);
     void ClearData();
 
     TArray<FVector> vertices;
