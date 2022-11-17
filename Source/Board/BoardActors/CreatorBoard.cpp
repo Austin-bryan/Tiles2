@@ -40,9 +40,9 @@ void ACreatorBoard::BeginPlay()
     const FVector location = GetActorLocation() - FVector(0, 100, 0);
 
     int x = 3;
-    int f = 425;
+    int f = 425;    
     float y = 23.69f;
-    LogV("swag"_f, x, y, f);
+    // LogV("swag"_f, x, y, f);
     const auto deselectBoard = GetWorld()->SpawnActor(
         ADeselectBoard::StaticClass(),
         &location);

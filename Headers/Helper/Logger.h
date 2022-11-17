@@ -26,13 +26,6 @@ void Log(FString,     float time);
 void Log(FRotator,    float time);
 void Log(FParameter&, float time);
 
-inline std::ostringstream& operator<<(std::ostringstream& os, const FString& string);
-
-inline void LogV(){}
-
-template <typename T, typename... Types>
-void LogV(const T& firstArg, Types&... types);
-
 void NullCheck(FString&& label, const void* object, FColor color = defaultColor, float time = defaultTime);
 void NullCheck(const void* object, FColor color = defaultColor, float time = defaultTime);
 

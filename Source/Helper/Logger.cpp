@@ -17,29 +17,6 @@ void Log(const FVector v,     const float time) { Log(v.ToString(), defaultColor
 void Log(const FRotator r,    const float time) { Log(r.ToString(), defaultColor, time); }
 void Log(const FParameter& p, const float time) { Log(p.ToString(), defaultColor, time); }
 
-inline std::ostringstream& operator<<(std::ostringstream& os, const FString& string)
-{
-	const std::string s = TCHAR_TO_UTF8(*string);
-	const char * c;
-	os << s;
-	return os;
-}
-template<typename... Types>
-void LogV(const char* c, Types... types)
-{
-	Log(c);
-	LogV(types...);
-}
-template <typename T, typename... Types>
-void LogV(const T& firstArg, Types&... types)
-{
-	std::ostringstream oss;
-	oss << firstArg;
-
-	Log(FString(oss.str().c_str()));
-	LogV(types...);
-}
-
 void NullCheck(const void* object, const FColor color, const float time)
 {
 	NullCheck("object", object, color, time);
