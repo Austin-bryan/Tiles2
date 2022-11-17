@@ -9,15 +9,10 @@
 #include "SelectionAngle.h"
 #include "ToggleButton.h"
 
-UShortcutDetector::UShortcutDetector()
-{
+UShortcutDetector::UShortcutDetector() { }
 
-}
 // ReSharper disable once CppMemberFunctionMayBeConst
-void UShortcutDetector::AnyKey(const FKey key)
-{
-    CallShortcut(key);
-}
+void UShortcutDetector::AnyKey(const FKey key) { CallShortcut(key); }
 
 void UShortcutDetector::BeginPlay()
 {
@@ -102,9 +97,11 @@ void UShortcutDetector::BeginPlay()
        ({
           { EKeys::X, []{ Log("Gap"); } },  
           { EKeys::W, []{ Log("Wrap"); } }, 
-          { EKeys::C, []{ Log("Camo"); } }, 
+          { EKeys::C, []{ Log("Camo"); } },
+          { EKeys::B, []{ Log("Bandaged"); } },
           { EKeys::R, []{ Log("Rotator"); } }, 
-          { EKeys::I, []{ Log("Iron"); } }, 
+          { EKeys::I, []{ Log("Iron"); } },
+          { EKeys::U, []{ Log("Cloud"); } },
           { EKeys::F, []{ Log("Rift"); } }, 
           { EKeys::L, []{ Log("Link"); } }, 
           { EKeys::S, []{ Log("Swap"); } }, 
