@@ -18,60 +18,46 @@ void AMeshGenerator::BeginPlay()
     Super::BeginPlay();
     ClearData();
 
-    const auto GetOrigin = [this](const FVector normal, const float length)
+    const auto GetOrigin = [this](const FVector normal, float length)
     {
+        length = Size / 2 * length;
         return FVector(length, length, length) * normal;
     };
-    
-    DrawQuad(FRotator(0, 0, 0), GetOrigin(FVector::RightVector, yLength));
-    Mesh->CreateMeshSection(0, vertices, triangles, normals, UV, colors, tangents, true);
-    
-    DrawQuad(FRotator(0, 180, 0), GetOrigin(FVector::LeftVector, yLength));
-    Mesh->CreateMeshSection(1, vertices, triangles, normals, UV, colors, tangents, true);
-    
-    DrawQuad(FRotator(0, -90, 0), GetOrigin(FVector::ForwardVector, xLength));
-    Mesh->CreateMeshSection(2, vertices, triangles, normals, UV, colors, tangents, true);
-    
-    DrawQuad(FRotator(0, 90, 0), GetOrigin(FVector::BackwardVector, xLength));
-    Mesh->CreateMeshSection(3, vertices, triangles, normals, UV, colors, tangents, true);
-    
-    DrawQuad(FRotator(0, 0, -90), GetOrigin(FVector::UpVector, xLength));
-    Mesh->CreateMeshSection(4, vertices, triangles, normals, UV, colors, tangents, true);
-    
-    DrawQuad(FRotator(0, 0, 90), GetOrigin(FVector::DownVector, xLength));
-    Mesh->CreateMeshSection(5, vertices, triangles, normals, UV, colors, tangents, true);
-}
 
-void AMeshGenerator::DrawQuad(const FRotator rotator, const FVector origin)
+    DrawQuad(0, xLength, zLength, FRotator(0,   0,   0), GetOrigin(FVector::RightVector, yLength));
+    DrawQuad(1, xLength, zLength, FRotator(0, 180,   0), GetOrigin(FVector::LeftVector, yLength));
+    DrawQuad(2, yLength, zLength, FRotator(0, -90,   0), GetOrigin(FVector::ForwardVector, xLength));
+    DrawQuad(3, yLength, zLength, FRotator(0,  90,   0), GetOrigin(FVector::BackwardVector, xLength));
+    DrawQuad(4, xLength, yLength, FRotator(0,   0, -90), GetOrigin(FVector::UpVector, zLength));
+    DrawQuad(5, xLength, yLength, FRotator(0,   0,  90), GetOrigin(FVector::DownVector, zLength));
+}                             
+
+void AMeshGenerator::DrawQuad(const int index, const int width, const int height, const FRotator rotator, const FVector origin)
 {
     ClearData();
     const FTransform trans { origin };
 
-    for(int x = 0; x <= xLength; x++)
-    for(int y = 0; y <= yLength; y++)
+    for(int w = 0; w <= width; w++)
+    for(int h = 0; h <= height; h++)
     {
         // Centers mesh
         const auto GetVertex = [this](const int n, const float length)
         {
             return n * Size - Size * length / 2;
         };
-        auto v =  FVector(GetVertex(x, xLength), 0, GetVertex(y, yLength));
+        auto v =  FVector(GetVertex(w, width), 0, GetVertex(h, height));
         
         v+= origin;
         v = trans.InverseTransformPosition(v);
         v = rotator.RotateVector(v);
         v = trans.TransformPosition(v);
 
-        // todo:: bug fixes:
-        // todo: adding the origin isnt needed
-        // todo: rotator doesnt effect the normal
-        // todo: figure out what actually causes the origin to be placed
         vertices.Add(v);
-        // vertices.Add(origin + normal * FVector(GetVertex(x, xLength), 0, GetVertex(y, yLength)));
-        UV.Add(FVector2d(x, y));
+        UV.Add(FVector2d(w, h));
     }
-    UKismetProceduralMeshLibrary::CreateGridMeshTriangles(xLength + 1, yLength + 1, true, triangles);
+    UKismetProceduralMeshLibrary::CreateGridMeshTriangles(width + 1, height + 1, true, triangles);
     UKismetProceduralMeshLibrary::CalculateTangentsForMesh(vertices, triangles, UV, normals, tangents);
+    Mesh->CreateMeshSection(index, vertices, triangles, normals, UV, colors, tangents, true);
 }
 
 void AMeshGenerator::ClearData()
