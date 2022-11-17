@@ -12,15 +12,17 @@ public:
     void BeginPlay() override;
 
     UPROPERTY(EditAnywhere) float Size;
-    UPROPERTY(EditAnywhere) int xLength;
-    UPROPERTY(EditAnywhere) int yLength;
+    UPROPERTY(EditAnywhere) int xLength = 10;
+    UPROPERTY(EditAnywhere) int yLength = 10;
+    UPROPERTY(EditAnywhere) int zLength = 10;
         
     UPROPERTY(VisibleAnywhere)
         USceneComponent* Root;
     UPROPERTY(VisibleAnywhere)
         UProceduralMeshComponent* Mesh;
 private:
-    void DrawQuad();
+    void DrawQuad(const FRotator rotator, const FVector origin);
+    void ClearData();
 
     TArray<FVector> vertices;
     TArray<int> triangles;
