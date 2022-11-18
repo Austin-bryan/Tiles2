@@ -1,6 +1,7 @@
 #include "MeshGenerator.h"
 #include "KismetProceduralMeshLibrary.h"
 #include "Logger.h"
+#include "Kismet/KismetMathLibrary.h"
 
 AMeshGenerator::AMeshGenerator()
 {
@@ -9,8 +10,6 @@ AMeshGenerator::AMeshGenerator()
 
     Mesh = CreateDefaultSubobject<UProceduralMeshComponent>(TEXT("Mesh"));
     Mesh->AttachToComponent(Root, FAttachmentTransformRules::KeepRelativeTransform);
-
- 
 }
 
 void AMeshGenerator::BeginPlay()
@@ -24,11 +23,6 @@ void AMeshGenerator::BeginPlay()
         return FVector(length, length, length) * normal;
     };
     DrawHex(0, FRotator::ZeroRotator, GetOrigin(FVector::RightVector, Lengths.Y));
-
-    if (!Other)
-        return;
-
-    
 
     return;
     DrawQuad(0, Lengths.X, Lengths.Z, FRotator(0, 0, 0), GetOrigin(FVector::RightVector, Lengths.Y));       // Front Quad
@@ -46,19 +40,8 @@ void AMeshGenerator::DrawHex(const int index, const FRotator faceAngle, const FV
     const FTransform trans{ origin };
 
     for (int i = 0; i < 6; i++)
-    {
-        auto v = FVector(radius * cos(i * 1.0472), 0, radius * sin(i * 1.0472));
-
-        v += origin;
-        v  = trans.InverseTransformPosition(v);
-        v  = FRotator(0, 180, 0).RotateVector(v);
-        v  = trans.TransformPosition(v);
-
-        vertices.Add(v);
-        UV.Add(FVector2d(v.X, v.Z));
-    }
-
-    UKismetProceduralMeshLibrary::CreateGridMeshTriangles(Lengths.X + 1, Lengths.X + 1, true, triangles);
+        vertices.Add(FVector(radius * UKismetMathLibrary::DegCos(i * 60), 0, radius * UKismetMathLibrary::DegSin(i * 60)));
+    UKismetProceduralMeshLibrary::CreateGridMeshTriangles(Lengths.X + 1, Lengths.X + 1, false, triangles);
     UKismetProceduralMeshLibrary::CalculateTangentsForMesh(vertices, triangles, UV, normals, tangents);
     Mesh->CreateMeshSection(index, vertices, triangles, normals, UV, colors, tangents, true);
 }

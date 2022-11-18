@@ -12,17 +12,15 @@ public:
     void BeginPlay() override;
 
     UPROPERTY(EditAnywhere)
-        float Size = 100;
+        float Size = 5.5f;
     UPROPERTY(EditAnywhere)
-        FVector Lengths;
+        FVector Lengths = FVector(10, 10, 10);
     UPROPERTY(EditAnywhere)
         FVector pos;
     UPROPERTY(VisibleAnywhere)
         USceneComponent* Root;
     UPROPERTY(VisibleAnywhere)
         UProceduralMeshComponent* Mesh;
-    UPROPERTY(EditAnywhere)
-        UProceduralMeshComponent* Other;
 private:
     void DrawHex(int index, FRotator faceAngle, FVector origin);
     void DrawQuad(const int index, const int width, const int height, const FRotator faceAngle, const FVector origin);
