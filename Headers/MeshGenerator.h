@@ -15,10 +15,14 @@ public:
         float Size = 100;
     UPROPERTY(EditAnywhere)
         FVector Lengths;
+    UPROPERTY(EditAnywhere)
+        FVector pos;
     UPROPERTY(VisibleAnywhere)
         USceneComponent* Root;
     UPROPERTY(VisibleAnywhere)
         UProceduralMeshComponent* Mesh;
+    UPROPERTY(EditAnywhere)
+        UProceduralMeshComponent* Other;
 private:
     void DrawHex(int index, FRotator faceAngle, FVector origin);
     void DrawQuad(const int index, const int width, const int height, const FRotator faceAngle, const FVector origin);

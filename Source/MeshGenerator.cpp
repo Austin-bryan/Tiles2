@@ -23,32 +23,39 @@ void AMeshGenerator::BeginPlay()
         length = Size / 2 * length;
         return FVector(length, length, length) * normal;
     };
+    DrawHex(0, FRotator::ZeroRotator, GetOrigin(FVector::RightVector, Lengths.Y));
 
-    DrawHex(0, FRotator::ZeroRotator, FVector::ZeroVector);
+    if (!Other)
+        return;
 
-    // Square
+    
+
     return;
-    DrawQuad(0, Lengths.X, Lengths.Z, FRotator(0,   0,   0), GetOrigin(FVector::RightVector, Lengths.Y));
-    DrawQuad(1, Lengths.X, Lengths.Z, FRotator(0, 180,   0), GetOrigin(FVector::LeftVector, Lengths.Y));
-    DrawQuad(2, Lengths.Y, Lengths.Z, FRotator(0, -90,   0), GetOrigin(FVector::ForwardVector, Lengths.X));
-    DrawQuad(3, Lengths.Y, Lengths.Z, FRotator(0,  90,   0), GetOrigin(FVector::BackwardVector, Lengths.X));
-    DrawQuad(4, Lengths.X, Lengths.Y, FRotator(0,   0, -90), GetOrigin(FVector::UpVector, Lengths.Z));
-    DrawQuad(5, Lengths.X, Lengths.Y, FRotator(0,   0,  90), GetOrigin(FVector::DownVector, Lengths.Z));
+    DrawQuad(0, Lengths.X, Lengths.Z, FRotator(0, 0, 0), GetOrigin(FVector::RightVector, Lengths.Y));       // Front Quad
+    
+    DrawQuad(1, Lengths.X, Lengths.Z, FRotator(0, 180, 0), GetOrigin(FVector::LeftVector, Lengths.Y));      // Back Quad
+    DrawQuad(2, Lengths.Y, Lengths.Z, FRotator(0, -90, 0), GetOrigin(FVector::ForwardVector, Lengths.X));   // Right Quad
+    DrawQuad(3, Lengths.Y, Lengths.Z, FRotator(0, 90, 0), GetOrigin(FVector::BackwardVector, Lengths.X));   // Left Quad
+    DrawQuad(4, Lengths.X, Lengths.Y, FRotator(0, 0, -90), GetOrigin(FVector::UpVector, Lengths.Z));        // Top Quad
+    DrawQuad(5, Lengths.X, Lengths.Y, FRotator(0, 0, 90), GetOrigin(FVector::DownVector, Lengths.Z));       // Bottom Quad
 }
 void AMeshGenerator::DrawHex(const int index, const FRotator faceAngle, const FVector origin)
 {
-    const double radius = Lengths.X * 50;
+    ClearData();
+    const double radius = Lengths.X * Size;
     const FTransform trans{ origin };
 
     for (int i = 0; i < 6; i++)
     {
         auto v = FVector(radius * cos(i * 1.0472), 0, radius * sin(i * 1.0472));
-        
+
+        v += origin;
         v  = trans.InverseTransformPosition(v);
         v  = FRotator(0, 180, 0).RotateVector(v);
         v  = trans.TransformPosition(v);
 
         vertices.Add(v);
+        UV.Add(FVector2d(v.X, v.Z));
     }
 
     UKismetProceduralMeshLibrary::CreateGridMeshTriangles(Lengths.X + 1, Lengths.X + 1, true, triangles);
