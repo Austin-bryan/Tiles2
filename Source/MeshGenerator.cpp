@@ -50,21 +50,35 @@ void AMeshGenerator::hex()
         Log("null other");
         return;
     }
-    
-    auto a = vertices[0] + GetActorLocation();
-    auto b = vertices[posx] + Other->GetActorLocation();
-    auto avg = (a + b) / 2;
-    vertices[0] = avg - GetActorLocation();
-    Other->vertices[posx] = avg - Other->GetActorLocation();
-    
-    a = vertices[1] + GetActorLocation();
-    b = vertices[posy] + Other->GetActorLocation();
-    avg = (a + b) / 2;
-    vertices[1] = avg - GetActorLocation();
-    Other->vertices[posy] = avg - Other->GetActorLocation();
+
+    const auto AverageVerts = [this](const int thisVert, const int otherVert)
+    {
+        const auto a = vertices[thisVert] + GetActorLocation();
+        const auto b = vertices[otherVert] + Other->GetActorLocation();
+        const auto avg = (a + b) / 2;
+        vertices[thisVert] = avg - GetActorLocation();
+        Other->vertices[otherVert] = avg - Other->GetActorLocation();
+    };
+
+    for (int i = 0; i < 6; i++)
+    {
+        for (int j = 0; j < 6; j++)
+        {
+            if (FVector::Distance(vertices[i] + GetActorLocation(), Other->vertices[j] + Other->GetActorLocation()) > 40)
+            {
+                Log(fstr(i) + PAIR + fstr(j) + LIST + "Distance too big"_f, FColor::Red);
+            }
+            else
+            {
+                Log(fstr(i) + PAIR + fstr(j) + LIST + "Distance just right"_f, FColor::Green);
+                AverageVerts(i, j);
+            }
+        }
+    }
+
+    // AverageVerts(1, posy);
 
     Other->Mesh->CreateMeshSection(0, Other->vertices, Other->triangles, Other->normals, Other->UV, Other->colors, Other->tangents, true);
-
     Mesh->WeldTo(Other->Mesh);
     Mesh->CreateMeshSection(0, vertices, triangles, normals, UV, colors, tangents, true);
 }
