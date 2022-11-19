@@ -2,10 +2,12 @@
 #include "CoreMinimal.h"
 #include <sstream>
 
-#define NL fstr("\n")
-#define SPC fstr(" ")
-#define LIST fstr(": ")
-#define PAIR fstr(", ")
+#include "ForwardDeclares.h"
+
+#define NL FString("\n")
+#define SPC FString(" ")
+#define LIST FString(":   ")
+#define PAIR FString(",   ")
 
 struct FParameter;
 
@@ -25,6 +27,16 @@ void Log(FVector,     float time);
 void Log(FString,     float time);	
 void Log(FRotator,    float time);
 void Log(FParameter&, float time);
+
+inline std::ostringstream& operator<<(std::ostringstream& os, const FString& string);
+
+void LogV();
+
+template<typename... Types>
+void LogV(const char* c, const Types&... types);
+
+template <typename T, typename... Types>
+void LogV(const T& firstArg, const Types&... types);
 
 void NullCheck(FString&& label, const void* object, FColor color = defaultColor, float time = defaultTime);
 void NullCheck(const void* object, FColor color = defaultColor, float time = defaultTime);
