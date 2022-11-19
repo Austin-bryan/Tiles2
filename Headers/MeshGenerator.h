@@ -11,8 +11,9 @@ public:
     AMeshGenerator();
     void BeginPlay() override;
 
-    UPROPERTY(EditAnywhere)
-        float Size = 5.5f;
+    UPROPERTY(EditAnywhere) float Size = 5.5f;
+    UPROPERTY(EditAnywhere) int posx = 3;
+    UPROPERTY(EditAnywhere) int posy = 3;
     UPROPERTY(EditAnywhere)
         FVector Lengths = FVector(10, 10, 10);
     UPROPERTY(EditAnywhere)
@@ -21,6 +22,11 @@ public:
         USceneComponent* Root;
     UPROPERTY(VisibleAnywhere)
         UProceduralMeshComponent* Mesh;
+    UPROPERTY(EditAnywhere)
+        AMeshGenerator* Other;
+
+    UFUNCTION(BlueprintCallable)
+        void hex();
 private:
     void DrawHex(int index, FRotator faceAngle, FVector origin);
     void DrawQuad(const int index, const int width, const int height, const FRotator faceAngle, const FVector origin);

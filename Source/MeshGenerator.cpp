@@ -1,8 +1,18 @@
 #include "MeshGenerator.h"
+
 #include "KismetProceduralMeshLibrary.h"
 #include "Logger.h"
 #include "Kismet/KismetMathLibrary.h"
 
+
+/*
+        2       1
+                    
+    3               0
+
+        4       5
+ 
+ */
 AMeshGenerator::AMeshGenerator()
 {
     Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
@@ -11,7 +21,6 @@ AMeshGenerator::AMeshGenerator()
     Mesh = CreateDefaultSubobject<UProceduralMeshComponent>(TEXT("Mesh"));
     Mesh->AttachToComponent(Root, FAttachmentTransformRules::KeepRelativeTransform);
 }
-
 void AMeshGenerator::BeginPlay()
 {
     Super::BeginPlay();
@@ -33,6 +42,33 @@ void AMeshGenerator::BeginPlay()
     DrawQuad(4, Lengths.X, Lengths.Y, FRotator(0, 0, -90), GetOrigin(FVector::UpVector, Lengths.Z));        // Top Quad
     DrawQuad(5, Lengths.X, Lengths.Y, FRotator(0, 0, 90), GetOrigin(FVector::DownVector, Lengths.Z));       // Bottom Quad
 }
+
+void AMeshGenerator::hex()
+{
+    if (!Other)
+    {
+        Log("null other");
+        return;
+    }
+    
+    auto a = vertices[0] + GetActorLocation();
+    auto b = vertices[posx] + Other->GetActorLocation();
+    auto avg = (a + b) / 2;
+    vertices[0] = avg - GetActorLocation();
+    Other->vertices[posx] = avg - Other->GetActorLocation();
+    
+    a = vertices[1] + GetActorLocation();
+    b = vertices[posy] + Other->GetActorLocation();
+    avg = (a + b) / 2;
+    vertices[1] = avg - GetActorLocation();
+    Other->vertices[posy] = avg - Other->GetActorLocation();
+
+    Other->Mesh->CreateMeshSection(0, Other->vertices, Other->triangles, Other->normals, Other->UV, Other->colors, Other->tangents, true);
+
+    Mesh->WeldTo(Other->Mesh);
+    Mesh->CreateMeshSection(0, vertices, triangles, normals, UV, colors, tangents, true);
+}
+
 void AMeshGenerator::DrawHex(const int index, const FRotator faceAngle, const FVector origin)
 {
     ClearData();
@@ -72,7 +108,6 @@ void AMeshGenerator::DrawQuad(const int index, const int width, const int height
     UKismetProceduralMeshLibrary::CalculateTangentsForMesh(vertices, triangles, UV, normals, tangents);
     Mesh->CreateMeshSection(index, vertices, triangles, normals, UV, colors, tangents, true);
 }
-
 void AMeshGenerator::ClearData()
 {
     vertices.Empty();
