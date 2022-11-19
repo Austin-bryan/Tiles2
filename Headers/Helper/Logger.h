@@ -6,9 +6,10 @@
 
 #define NL FString("\n")
 #define SPC FString(" ")
-#define LIST FString(":   ")
-#define PAIR FString(",   ")
+#define LIST FString(":     ")
+#define PAIR FString(",     ")
 
+class LogParams;
 struct FParameter;
 
 constexpr float defaultTime = 600.0f;
@@ -38,6 +39,9 @@ void LogV(const char* c, const Types&... types);
 template <typename T, typename... Types>
 void LogV(const T& firstArg, const Types&... types);
 
+template <typename... Types>
+void LogV(const LogParams& params, const Types&... types);
+
 void NullCheck(FString&& label, const void* object, FColor color = defaultColor, float time = defaultTime);
 void NullCheck(const void* object, FColor color = defaultColor, float time = defaultTime);
 
@@ -52,6 +56,20 @@ inline FString operator"" _f(const char c)
     const std::string s(1, c);
     return FString(s.c_str()); 
 }
+
+class LogParams
+{
+public:
+    LogParams() : color{ defaultColor }, time{ defaultTime } { }
+    explicit LogParams(const FColor color, const float time = defaultTime) : color{ color }, time{ time } { }
+    explicit LogParams(const float time) : time{ time } { }
+
+    FColor Color() const { return color; }
+    float Time()   const { return time; }
+private:
+    FColor color;
+    float time;
+};
 
 FString fstr(const float f);
 FString fstr(const int i);

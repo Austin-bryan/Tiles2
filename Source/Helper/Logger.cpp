@@ -1,7 +1,5 @@
 #include "Logger.h"
 #include <string>
-
-#include "Coord.h"
 #include "ParameterParseState.h"
 
 void Log(const FString s,  const FColor color, const float time) { GEngine->AddOnScreenDebugMessage(-1, time, color, s); }
@@ -27,11 +25,12 @@ inline std::ostringstream& operator<<(std::ostringstream& os, const FString& str
 }
 
 FString logText;
+LogParams logParams;
 
 void LogV()
 {
 	logText.RemoveFromEnd(PAIR);
-	Log(logText);
+	Log(logText, logParams.Color(), logParams.Time());
 	logText = "";
 }
 
@@ -49,6 +48,12 @@ void LogV(const T& firstArg, const Types&... types)
 	oss << firstArg;
 	
 	logText += FString(oss.str().c_str()) + PAIR;
+	LogV(types...);
+}
+template <typename... Types>
+void LogV(const LogParams& params, const Types&... types)
+{
+	logParams = params;
 	LogV(types...);
 }
 
