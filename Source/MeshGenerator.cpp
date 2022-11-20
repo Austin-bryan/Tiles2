@@ -57,31 +57,23 @@ void AMeshGenerator::Merge()
             continue;
         neighbors.Empty();
 
+        int count = 0;
+        FVector sum = FVector::Zero();
         for (auto& vertexB : UniversalVertices)
         {
             if (!vertexB.IsMerged()
               && FVector::Distance(vertexA.GetWorldPosition(), vertexB.GetWorldPosition()) <= 40)
+            {
                 neighbors.Add(&vertexB);
+                sum += vertexB.GetWorldPosition();
+                count++;
+            }
         }
-
         if (neighbors.Num() < 2)
             continue;
-        FVector sum = FVector::Zero(); int count = 0;
         for (const auto& neighbor : neighbors)
         {
-            sum += neighbor->GetWorldPosition();
-            count++;
-        }
-
-        const FVector average = sum / count;
-        
-        for (const auto& neighbor : neighbors)
-        {
-            if (!neighbor)
-            {
-                Log("null neighbor vertex");
-                return;
-            }
+            const FVector average = sum / count;
             neighbor->SetWorldPosition(average);
         }
     }
