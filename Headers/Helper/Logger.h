@@ -5,8 +5,8 @@
 
 #define NL FString("\n")
 #define SPC FString(" ")
-#define LIST FString(":     ")
-#define PAIR FString(",     ")
+#define LIST FString(":        ")
+#define PAIR FString(",        ")
 
 class LogParams;
 struct FParameter;
@@ -78,7 +78,7 @@ inline std::ostringstream& operator<<(std::ostringstream& os, const FRotator& ro
 inline std::ostringstream& operator<<(std::ostringstream& os, const FColor& color)
 {
     os << color.ToString();
-    return 
+    return os;
 }
 inline std::ostringstream& operator<<(std::ostringstream& os, const FCoordPtr coord);
 inline std::ostringstream& operator<<(std::ostringstream& os, const FParameter& coord);

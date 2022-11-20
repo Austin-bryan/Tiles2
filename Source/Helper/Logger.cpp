@@ -17,14 +17,16 @@ void Log()
 }
 
 template<typename... Types>
-void Log(const char* c, const Types&... types)
+	void Log(const char* c, const Types&... types)
 {
-	logText += FString(c) + PAIR;
+	const std::string s = c;
+	const bool isList = s.find(':') != 0;
+	
+	logText += FString(c) + (s.find(':') ? "" : PAIR);
 	Log(types...);
 }
-
 template <typename T, typename... Types>
-void Log(const T& firstArg, const Types&... types)
+	void Log(const T& firstArg, const Types&... types)
 {
 	std::ostringstream oss;
 	oss << firstArg;
@@ -33,7 +35,7 @@ void Log(const T& firstArg, const Types&... types)
 	Log(types...);
 }
 template <typename... Types>
-void Log(const LogParams& params, const Types&... types)
+	void Log(const LogParams& params, const Types&... types)
 {
 	logParams = params;
 	Log(types...);
@@ -70,5 +72,3 @@ inline std::ostringstream& operator<<(std::ostringstream& os, const FParameter& 
 	os << coord.ToString();
 	return os;
 }
-
-//96
