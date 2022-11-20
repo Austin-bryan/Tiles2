@@ -3,17 +3,19 @@
 #include "ProceduralMeshComponent.h"
 #include "MeshGenerator.generated.h"
 
+class Vertex;
+
 UCLASS()
 class TILES2_API AMeshGenerator : public AActor
 {
+    friend class Vertex;
     GENERATED_BODY()
 public:
     AMeshGenerator();
     void BeginPlay() override;
 
-    UPROPERTY(EditAnywhere) float Size = 5.5f;
-    UPROPERTY(EditAnywhere) int posx = 3;
-    UPROPERTY(EditAnywhere) int posy = 3;
+    UPROPERTY(EditAnywhere)
+        float Size = 5.5f;
     UPROPERTY(EditAnywhere)
         FVector Lengths = FVector(10, 10, 10);
     UPROPERTY(EditAnywhere)
@@ -23,13 +25,15 @@ public:
     UPROPERTY(VisibleAnywhere)
         UProceduralMeshComponent* Mesh;
     UPROPERTY(EditAnywhere)
-        AMeshGenerator* Other;
-
+        TArray<AMeshGenerator*> Others;
+    
     UFUNCTION(BlueprintCallable)
-        void hex();
+        static void Merge();
+    static TArray<Vertex> UniversalVertices;
 private:
     void DrawHex(int index, FRotator faceAngle, FVector origin);
     void DrawQuad(const int index, const int width, const int height, const FRotator faceAngle, const FVector origin);
+    void UpdateMesh(int index);
     void ClearData();
 
     TArray<FVector> vertices;

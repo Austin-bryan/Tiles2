@@ -2,8 +2,9 @@
 
 #include "KismetProceduralMeshLibrary.h"
 #include "Logger.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
-
+#include "Vertex.h"
 
 /*
         2       1
@@ -13,6 +14,9 @@
         4       5
  
  */
+
+TArray<Vertex> AMeshGenerator::UniversalVertices;
+
 AMeshGenerator::AMeshGenerator()
 {
     Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
@@ -20,6 +24,7 @@ AMeshGenerator::AMeshGenerator()
 
     Mesh = CreateDefaultSubobject<UProceduralMeshComponent>(TEXT("Mesh"));
     Mesh->AttachToComponent(Root, FAttachmentTransformRules::KeepRelativeTransform);
+    UniversalVertices.Empty();
 }
 void AMeshGenerator::BeginPlay()
 {
@@ -34,66 +39,72 @@ void AMeshGenerator::BeginPlay()
     DrawHex(0, FRotator::ZeroRotator, GetOrigin(FVector::RightVector, Lengths.Y));
 
     return;
-    DrawQuad(0, Lengths.X, Lengths.Z, FRotator(0, 0, 0), GetOrigin(FVector::RightVector, Lengths.Y));       // Front Quad
-    
-    DrawQuad(1, Lengths.X, Lengths.Z, FRotator(0, 180, 0), GetOrigin(FVector::LeftVector, Lengths.Y));      // Back Quad
-    DrawQuad(2, Lengths.Y, Lengths.Z, FRotator(0, -90, 0), GetOrigin(FVector::ForwardVector, Lengths.X));   // Right Quad
-    DrawQuad(3, Lengths.Y, Lengths.Z, FRotator(0, 90, 0), GetOrigin(FVector::BackwardVector, Lengths.X));   // Left Quad
-    DrawQuad(4, Lengths.X, Lengths.Y, FRotator(0, 0, -90), GetOrigin(FVector::UpVector, Lengths.Z));        // Top Quad
-    DrawQuad(5, Lengths.X, Lengths.Y, FRotator(0, 0, 90), GetOrigin(FVector::DownVector, Lengths.Z));       // Bottom Quad
+    DrawQuad(0, Lengths.X, Lengths.Z, FRotator(0, 0, 0),   GetOrigin(FVector::RightVector, Lengths.Y));       // Front Quad
+    DrawQuad(1, Lengths.X, Lengths.Z, FRotator(0, 180, 0), GetOrigin(FVector::LeftVector, Lengths.Y));        // Back Quad
+    DrawQuad(2, Lengths.Y, Lengths.Z, FRotator(0, -90, 0), GetOrigin(FVector::ForwardVector, Lengths.X));     // Right Quad
+    DrawQuad(3, Lengths.Y, Lengths.Z, FRotator(0, 90, 0),  GetOrigin(FVector::BackwardVector, Lengths.X));    // Left Quad
+    DrawQuad(4, Lengths.X, Lengths.Y, FRotator(0, 0, -90), GetOrigin(FVector::UpVector, Lengths.Z));          // Top Quad
+    DrawQuad(5, Lengths.X, Lengths.Y, FRotator(0, 0, 90),  GetOrigin(FVector::DownVector, Lengths.Z));        // Bottom Quad
 }
 
-void AMeshGenerator::hex()
+void AMeshGenerator::Merge()
 {
-    if (!Other)
-    {
-        Log("null other");
-        return;
-    }
+    TArray<Vertex*> neighbors;
 
-    const auto AverageVerts = [this](const int thisVert, const int otherVert)
+    for (auto& vertexA : UniversalVertices)
     {
-        const auto a = vertices[thisVert] + GetActorLocation();
-        const auto b = vertices[otherVert] + Other->GetActorLocation();
-        const auto avg = (a + b) / 2;
-        vertices[thisVert] = avg - GetActorLocation();
-        Other->vertices[otherVert] = avg - Other->GetActorLocation();
-    };
+        if (vertexA.IsMerged())
+            continue;
+        neighbors.Empty();
 
-    for (int i = 0; i < 6; i++)
-    {
-        for (int j = 0; j < 6; j++)
+        for (auto& vertexB : UniversalVertices)
         {
-            if (FVector::Distance(vertices[i] + GetActorLocation(), Other->vertices[j] + Other->GetActorLocation()) > 40)
+            if (!vertexB.IsMerged()
+              && FVector::Distance(vertexA.GetWorldPosition(), vertexB.GetWorldPosition()) <= 40)
+                neighbors.Add(&vertexB);
+        }
+
+        if (neighbors.Num() < 2)
+            continue;
+        FVector sum = FVector::Zero(); int count = 0;
+        for (const auto& neighbor : neighbors)
+        {
+            sum += neighbor->GetWorldPosition();
+            count++;
+        }
+
+        const FVector average = sum / count;
+        
+        for (const auto& neighbor : neighbors)
+        {
+            if (!neighbor)
             {
-                Log(fstr(i) + PAIR + fstr(j) + LIST + "Distance too big"_f, FColor::Red);
+                Log("null neighbor vertex");
+                return;
             }
-            else
-            {
-                Log(fstr(i) + PAIR + fstr(j) + LIST + "Distance just right"_f, FColor::Green);
-                AverageVerts(i, j);
-            }
+            neighbor->SetWorldPosition(average);
         }
     }
+}
 
-    // AverageVerts(1, posy);
-
-    Other->Mesh->CreateMeshSection(0, Other->vertices, Other->triangles, Other->normals, Other->UV, Other->colors, Other->tangents, true);
-    Mesh->WeldTo(Other->Mesh);
-    Mesh->CreateMeshSection(0, vertices, triangles, normals, UV, colors, tangents, true);
+void AMeshGenerator::UpdateMesh(const int index)
+{
+    UKismetProceduralMeshLibrary::CreateGridMeshTriangles(Lengths.X + 1, Lengths.X + 1, false, triangles);
+    UKismetProceduralMeshLibrary::CalculateTangentsForMesh(vertices, triangles, UV, normals, tangents);
+    Mesh->CreateMeshSection(index, vertices, triangles, normals, UV, colors, tangents, true);
 }
 
 void AMeshGenerator::DrawHex(const int index, const FRotator faceAngle, const FVector origin)
 {
     ClearData();
     const double radius = Lengths.X * Size;
-    const FTransform trans{ origin };
 
     for (int i = 0; i < 6; i++)
+    {
         vertices.Add(FVector(radius * UKismetMathLibrary::DegCos(i * 60), 0, radius * UKismetMathLibrary::DegSin(i * 60)));
-    UKismetProceduralMeshLibrary::CreateGridMeshTriangles(Lengths.X + 1, Lengths.X + 1, false, triangles);
-    UKismetProceduralMeshLibrary::CalculateTangentsForMesh(vertices, triangles, UV, normals, tangents);
-    Mesh->CreateMeshSection(index, vertices, triangles, normals, UV, colors, tangents, true);
+        UniversalVertices.Add(Vertex(i, vertices[i], this));
+    }
+    UpdateMesh(index);
 }
 void AMeshGenerator::DrawQuad(const int index, const int width, const int height, const FRotator faceAngle, const FVector origin)
 {
