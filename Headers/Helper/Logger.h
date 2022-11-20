@@ -1,7 +1,6 @@
 #pragma once
 #include "CoreMinimal.h"
 #include <sstream>
-
 #include "ForwardDeclares.h"
 
 #define NL FString("\n")
@@ -14,48 +13,6 @@ struct FParameter;
 
 constexpr float defaultTime = 600.0f;
 const FColor defaultColor = FColor::Cyan;
-
-void Log(int,         FColor color = defaultColor, float time = defaultTime);
-void Log(float,       FColor color = defaultColor, float time = defaultTime);
-void Log(FVector,     FColor color = defaultColor, float time = defaultTime);
-void Log(FString,     FColor color = defaultColor, float time = defaultTime);	
-void Log(FRotator,    FColor color = defaultColor, float time = defaultTime);
-void Log(FParameter&, FColor color = defaultColor, float time = defaultTime);
-
-void Log(int,         float time);
-void Log(float,       float time);
-void Log(FVector,     float time);
-void Log(FString,     float time);	
-void Log(FRotator,    float time);
-void Log(FParameter&, float time);
-
-inline std::ostringstream& operator<<(std::ostringstream& os, const FString& string);
-
-void LogV();
-
-template<typename... Types>
-void LogV(const char* c, const Types&... types);
-
-template <typename T, typename... Types>
-void LogV(const T& firstArg, const Types&... types);
-
-template <typename... Types>
-void LogV(const LogParams& params, const Types&... types);
-
-void NullCheck(FString&& label, const void* object, FColor color = defaultColor, float time = defaultTime);
-void NullCheck(const void* object, FColor color = defaultColor, float time = defaultTime);
-
-void Path(int n, FColor color = defaultColor, float time = defaultTime);
-void Path(int n, float time);
-
-inline FString operator"" _f(const long double f)            { return FString::SanitizeFloat(f); }
-inline FString operator"" _f(const char* s, std::size_t)     { return FString(s); }
-inline FString operator"" _f(const unsigned long long int i) { return FString::FromInt(i); }
-inline FString operator"" _f(const char c)
-{
-    const std::string s(1, c);
-    return FString(s.c_str()); 
-}
 
 class LogParams
 {
@@ -71,11 +28,30 @@ private:
     float time;
 };
 
-FString fstr(const float f);
-FString fstr(const int i);
-FString fstr(const char* c);
-FString fstr(const bool b);
-FString fstr(const char c);
+void Log();
+template<typename... Types>
+    void Log(const char* c, const Types&... types);
+template <typename T, typename... Types>
+    void Log(const T& firstArg, const Types&... types);
+template <typename... Types>
+    void Log(const LogParams& params, const Types&... types);
+
+void Path(int n, float time);
+void Path(int n, FColor color = defaultColor, float time = defaultTime);
+
+void NullCheck(FString&& label, const void* object, FColor color = defaultColor, float time = defaultTime);
+void NullCheck(const void* object, FColor color = defaultColor, float time = defaultTime);
+
+inline FString operator"" _f(const long double f)            { return FString::SanitizeFloat(f); }
+inline FString operator"" _f(const char* s, std::size_t)     { return FString(s); }
+inline FString operator"" _f(const unsigned long long int i) { return FString::FromInt(i); }
+inline FString operator"" _f(const char c)                   { return FString(std::string(1, c).c_str()); }
+
+inline FString fstr(const float f) { return FString::SanitizeFloat(f); } 
+inline FString fstr(const int i)   { return FString::FromInt(i); } 
+inline FString fstr(const char* c) { return FString(c); } 
+inline FString fstr(const bool b)  { return b ? FString("true") : FString("false"); } 
+inline FString fstr(const char c)  { return FString(std::string(1, c).c_str()); }
 
 inline FString operator+(const FString& lhs, const int rhs);
 inline FString operator+(const FString& lhs, const float rhs);
@@ -83,3 +59,26 @@ inline FString operator+(const FString& lhs, const char* rhs);
 inline FString operator+(const FString& lhs, const bool rhs);
 inline FString operator+(const FString& lhs, const char rhs);
 inline FString operator+(const FString& lhs, const FVector rhs);
+
+inline std::ostringstream& operator<<(std::ostringstream& os, const FString& string)
+{
+    os << static_cast<std::string>(TCHAR_TO_UTF8(*string));
+    return os;
+}
+inline std::ostringstream& operator<<(std::ostringstream& os, const FVector& string)
+{
+    os << string.ToString();
+    return os;
+}
+inline std::ostringstream& operator<<(std::ostringstream& os, const FRotator& rotator)
+{
+    os << rotator.ToString();
+    return os;
+}
+inline std::ostringstream& operator<<(std::ostringstream& os, const FColor& color)
+{
+    os << color.ToString();
+    return 
+}
+inline std::ostringstream& operator<<(std::ostringstream& os, const FCoordPtr coord);
+inline std::ostringstream& operator<<(std::ostringstream& os, const FParameter& coord);

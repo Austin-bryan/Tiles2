@@ -44,9 +44,20 @@ void ACreatorBoard::BeginPlay()
     float y = 23.69f;
     // LogV("swag"_f, x, y, f);
 
-    LogV("dooppppeee", "swag"_f, x, y, f, LogParams(FColor::Red, 30));
-    LogV("swag"_f, x, "swags", y, x, f, f, "dopeodopepdope", f, f, "dswagp", "swagds", "swaopsd", LogParams(FColor::Green, 10));
-    LogV(23, 1, location.ToString(), 23.01243f, f, LogParams(FColor::Black, 3));
+    Log("dooppppeee", "swag"_f, x, y, f, LogParams(FColor::Red, 30));
+    Log("swag"_f, x, "swags", y, x, f, f, "dopeodopepdope", f, f, "dswagp", "swagds", "swaopsd", LogParams(FColor::Green, 10));
+    Log(23, 1, location.ToString(), 23.01243f, f, LogParams(FColor::Black, 3));
+    Log(23);
+    Log(234, "sag", LogParams(FColor::White), "test"_f, 1211);
+    Log(234, "sag", LogParams(FColor::Cyan), "test"_f, 1211);
+    Log(location);
+    Log(location + location);
+    Log(location, FRotator(23, 2000, 1), "swag");
+
+    Log(23, LogParams(FColor::Blue, 2));
+    Log(location, LogParams(FColor::Green, 100));
+    Log(LogParams(FColor::Purple), location + location);
+    Log(location, FRotator(23, 2000, 1), LogParams(FColor::White), "swag");
 
     const auto deselectBoard = GetWorld()->SpawnActor(
         ADeselectBoard::StaticClass(),
