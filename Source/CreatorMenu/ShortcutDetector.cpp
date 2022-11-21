@@ -1,11 +1,13 @@
 #pragma once
 #include "ShortcutDetector.h"
 
+#include "CreatorBoard.h"
 #include "CreatorMenu.h"
 #include "Logger.h"
 #include "TileColor.h"
 #include "CreatorRotator.h"
 #include "DragSelect.h"
+#include "MeshGenerator.h"
 #include "SelectionAngle.h"
 #include "ToggleButton.h"
 
@@ -55,6 +57,12 @@ void UShortcutDetector::BeginPlay()
            { EKeys::Q,     [this, SetSelectionType]  { SetSelectionType(ESelectionAngle::Downhill); } },
            { EKeys::W,     [this, SetSelectionType]  { SetSelectionType(ESelectionAngle::Flat); } },
            { EKeys::E,     [this, SetSelectionType]  { SetSelectionType(ESelectionAngle::Uphill); } },
+           { EKeys::M,     [this]
+           {
+              UMeshGenerator::TilesToMerge.Empty();
+              UMeshGenerator::TilesToMerge = creatorBoard->GetTiles();
+              UMeshGenerator::Merge();
+           } },
        }),
        // Shift
        new ModifiedShortcuts

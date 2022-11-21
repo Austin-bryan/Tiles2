@@ -1,8 +1,10 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "ProceduralMeshComponent.h"
+#include "TilesMap.h"
 #include "MeshGenerator.generated.h"
 
+class ATile;
 //#define SHOW_VERTICES
 class Vertex;
 
@@ -30,6 +32,8 @@ public:
     UFUNCTION(BlueprintCallable)
         static void Merge();
     static TArray<Vertex> UniversalVertices;
+    static TArray<UMeshGenerator*> Generators;
+    static Tiles TilesToMerge;
 private:
     void DrawHex(int index, FRotator faceAngle, FVector origin);
     void DrawQuad(const int index, const int width, const int height, const FRotator faceAngle, const FVector origin);

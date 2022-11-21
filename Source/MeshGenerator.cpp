@@ -5,8 +5,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Vertex.h"
-#include "RuntimeMeshComponent.h"
-#include "AssetDir.h"
+#include "Tile.h"
 
 /*
      2  1
@@ -15,6 +14,7 @@
  */
 
 TArray<Vertex> UMeshGenerator::UniversalVertices;
+TArray<UMeshGenerator*> UMeshGenerator::Generators;
 const float UMeshGenerator::distance = 10.0f;
 
 UMeshGenerator::UMeshGenerator()
@@ -46,10 +46,15 @@ void UMeshGenerator::TickComponent(const float DeltaTime, const ELevelTick TickT
 void UMeshGenerator::Merge()
 {
     TArray<Vertex*> neighbors;
-    int callCount = 0;
+    int genCount = 0;
+    Generators.Empty();
+
+    int loop = 0;
+    int distanceCheck = 0;
 
     for (auto& vertexA : UniversalVertices)
     {
+        loop++;
         if (vertexA.IsMerged())
             continue;
         neighbors.Empty();
@@ -58,6 +63,7 @@ void UMeshGenerator::Merge()
         FVector sum = FVector::Zero();
         for (auto& vertexB : UniversalVertices)
         {
+            distanceCheck++;
             if (!vertexB.IsMerged()
               && FVector::Distance(vertexA.GetWorldPosition(), vertexB.GetWorldPosition()) <= distance)
             {
@@ -75,6 +81,8 @@ void UMeshGenerator::Merge()
             neighbor->SetPosition(average);
         }
     }
+    for (const auto& generator : Generators)
+        generator->UpdateMesh(0);
 }
 void UMeshGenerator::UpdateMesh(const int index)
 {

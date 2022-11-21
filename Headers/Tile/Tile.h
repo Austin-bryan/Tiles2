@@ -40,8 +40,6 @@ protected:
 		ABoard* board;
 	UPROPERTY(VisibleAnywhere, BlueprintReadonly)
 		USceneComponent* Root;
-	// UPROPERTY(VisibleAnywhere, BlueprintReadonly)
-		// UStaticMeshComponent* Mesh;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		UMeshGenerator* MeshGenerator;
 	
