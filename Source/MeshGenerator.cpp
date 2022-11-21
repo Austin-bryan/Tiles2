@@ -7,12 +7,9 @@
 #include "Vertex.h"
 
 /*
-        2       1
-                    
-    3               0
-
-        4       5
- 
+     2  1
+   3      0
+     4  5
  */
 
 TArray<Vertex> AMeshGenerator::UniversalVertices;
@@ -78,7 +75,6 @@ void AMeshGenerator::Merge()
         }
     }
 }
-
 void AMeshGenerator::UpdateMesh(const int index)
 {
     UKismetProceduralMeshLibrary::CreateGridMeshTriangles(Lengths.X + 1, Lengths.X + 1, false, triangles);

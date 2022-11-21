@@ -11,21 +11,16 @@ class TILES2_API AMeshGenerator : public AActor
     friend class Vertex;
     GENERATED_BODY()
 public:
-    AMeshGenerator();
+    AMeshGenerator(); 
     void BeginPlay() override;
 
-    UPROPERTY(EditAnywhere)
-        float Size = 5.5f;
-    UPROPERTY(EditAnywhere)
-        FVector Lengths = FVector(10, 10, 10);
-    UPROPERTY(EditAnywhere)
-        FVector pos;
+    float Size = 5.5f;
+    FVector Lengths = FVector(10, 10, 10);
+    
     UPROPERTY(VisibleAnywhere)
         USceneComponent* Root;
     UPROPERTY(VisibleAnywhere)
         UProceduralMeshComponent* Mesh;
-    UPROPERTY(EditAnywhere)
-        TArray<AMeshGenerator*> Others;
     
     UFUNCTION(BlueprintCallable)
         static void Merge();

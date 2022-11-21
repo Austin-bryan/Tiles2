@@ -3,10 +3,11 @@
 
 FLinearColor UColorCast::TileColorToLinearColor(const ETileColor color)
 {
+    const float whiteShade = 1, blackShade = 0.0025f;
     switch(color)
     {
     case ETileColor::None:    return FLinearColor(0, 0, 0, 0);
-    case ETileColor::White:   return FLinearColor(1, 1, 1, 1);
+    case ETileColor::White:   return FLinearColor(whiteShade, whiteShade, whiteShade, 1);
     case ETileColor::Red:     return FLinearColor(0.8, 0.03f, 0.01f, 1);
     case ETileColor::Orange:  return FLinearColor(0.8, 0.15f, 0, 1);
     case ETileColor::Yellow:  return FLinearColor(0.6f, 0.6f, 0, 1);
@@ -17,7 +18,7 @@ FLinearColor UColorCast::TileColorToLinearColor(const ETileColor color)
     case ETileColor::Pink:    return FLinearColor(0.65f, 0, 0.1f, 1);
     case ETileColor::Magenta: return FLinearColor(0.6f, 0, 0.6f, 1);
     case ETileColor::Brown:   return FLinearColor(0.2f, 0.0f, 0.05f, 1);
-    case ETileColor::Black:   return FLinearColor(0.01f, 0.01f, 0.01f, 1);
+    case ETileColor::Black:   return FLinearColor(blackShade, blackShade, blackShade, 1);
     default: throw std::invalid_argument("Invalid tile color enum.");
     }
 }
