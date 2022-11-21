@@ -4,11 +4,11 @@
 #include "ForwardDeclares.h"
 #include "Tile.generated.h"
 
-class UMaterialInstanceConstant;
-class UBoxComponent;
-class UTextRenderComponent;
 class ABoard;
 class UMeshGenerator;
+class UBoxComponent;
+class UTextRenderComponent;
+class UMaterialInstanceConstant;
 enum class EBoardShape;
 enum class ETileColor : uint8;
 
@@ -40,8 +40,8 @@ protected:
 		ABoard* board;
 	UPROPERTY(VisibleAnywhere, BlueprintReadonly)
 		USceneComponent* Root;
-	UPROPERTY(VisibleAnywhere, BlueprintReadonly)
-		UStaticMeshComponent* Mesh;
+	// UPROPERTY(VisibleAnywhere, BlueprintReadonly)
+		// UStaticMeshComponent* Mesh;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		UMeshGenerator* MeshGenerator;
 	UPROPERTY(VisibleAnywhere, BlueprintReadonly)

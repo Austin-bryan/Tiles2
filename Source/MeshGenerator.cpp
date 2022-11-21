@@ -12,6 +12,16 @@
      4  5
  */
 
+
+/*
+ * TODO:: look into RuntimeMeshComponent to see if this has the solution
+ *
+    What I can suggest if you’re only concerned about the rendering performance of the ProceduralMesh is to use the
+    RuntimeMeshComponent instead. It renders at almost identical speed to the static mesh while allowing runtime updates,
+    and far more features than the PMC.
+ *
+ *
+ */
 TArray<Vertex> UMeshGenerator::UniversalVertices;
 float UMeshGenerator::distance;
 
@@ -55,6 +65,7 @@ void UMeshGenerator::TickComponent(const float DeltaTime, const ELevelTick TickT
 void UMeshGenerator::Merge()
 {
     TArray<Vertex*> neighbors;
+    int callCount = 0;
 
     for (auto& vertexA : UniversalVertices)
     {

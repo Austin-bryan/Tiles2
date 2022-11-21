@@ -2,6 +2,7 @@
 #include "CoreMinimal.h"
 #include "ActorAnimator.h"
 #include "Tile.h"
+#include "MeshGenerator.h"
 #include "CreatorTile.generated.h"
 
 /**
@@ -30,6 +31,6 @@ private:
 	bool wasDragSelected;
 
 	ActorAnimator* activeAnimation;
-	ActorAnimator animPress{Mesh, FVector::One(), FVector(0.75f), EAnimMode::Scale, 8};
-	ActorAnimator animHover{Mesh, FVector::One(), FVector(1.05f), EAnimMode::Scale, 8};
+	ActorAnimator animPress{MeshGenerator, FVector::One(), FVector(0.75f), EAnimMode::Scale, 8};
+	ActorAnimator animHover{MeshGenerator, FVector::One(), FVector(1.05f), EAnimMode::Scale, 8};
 };

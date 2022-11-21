@@ -7,7 +7,6 @@
 #include "TileColor.h"
 #include "MeshGenerator.h"
 #include "Materials/MaterialInstanceConstant.h"
-#include "Components/TextRenderComponent.h"
 
 //#define ShowDebugText
 #ifdef ShowDebugText
@@ -24,12 +23,12 @@ ATile::ATile()
 	Root = CreateDefaultSubobject<USceneComponent>(FName("Root"));
 	RootComponent = Root;
 	
-	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
-	Mesh->SetWorldRotation(FRotator(0, -90, 0));
-	Mesh->AttachToComponent(Root, FAttachmentTransformRules::KeepRelativeTransform);
-	Mesh->SetCollisionProfileName("BlockAll");
-	Mesh->SetGenerateOverlapEvents(false);
-	Mesh->SetWorldScale3D(FVector(0.1f));
+	// Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
+	// Mesh->SetWorldRotation(FRotator(0, -90, 0));
+	// Mesh->AttachToComponent(Root, FAttachmentTransformRules::KeepRelativeTransform);
+	// Mesh->SetCollisionProfileName("BlockAll");
+	// Mesh->SetGenerateOverlapEvents(false);
+	// Mesh->SetWorldScale3D(FVector(0.1f));
 
 	MeshGenerator = CreateDefaultSubobject<UMeshGenerator>(TEXT("Mesh Generator"));
 	MeshGenerator->AttachToComponent(Root, FAttachmentTransformRules::KeepRelativeTransform);
@@ -74,7 +73,8 @@ void ATile::SetColor(const ETileColor color)
 		instance = UMaterialInstanceDynamic::Create(mat, this);
 	}
 	instance->SetVectorParameterValue(FName("Color"), UColorCast::TileColorToLinearColor(color));
-	Mesh->SetMaterial(0, instance);
+	// Mesh->SetMaterial(0, instance);
+	MeshGenerator->Mesh->SetMaterial(0, instance);
 }
 void ATile::SetBoard(ABoard* newBoard)
 {
@@ -111,7 +111,7 @@ void ATile::SetShape(const EBoardShape boardShape) const
 	case EBoardShape::Hex:      meshDir = HEX_TILE;      break;
 	}
 	const auto tileMesh = Cast<UStaticMesh>(StaticLoadObject(UStaticMesh::StaticClass(), nullptr, *meshDir));
-	Mesh->SetStaticMesh(tileMesh);
+	// Mesh->SetStaticMesh(tileMesh);
 	Collider->SetStaticMesh(tileMesh);
 }
 void ATile::NotifyActorOnClicked(FKey buttonPressed) 
