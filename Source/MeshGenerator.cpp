@@ -67,10 +67,10 @@ void UMeshGenerator::Merge()
         for (auto& vertexB : UniversalVertices)
         {
             if (!vertexB.IsMerged()
-              && FVector::Distance(vertexA.GetWorldPosition(), vertexB.GetWorldPosition()) <= distance)
+              && FVector::Distance(vertexA.GetPosition(), vertexB.GetPosition()) <= distance)
             {
                 neighbors.Add(&vertexB);
-                sum += vertexB.GetWorldPosition();
+                sum += vertexB.GetPosition();
                 count++;
             }
         }
@@ -79,7 +79,7 @@ void UMeshGenerator::Merge()
         for (const auto& neighbor : neighbors)
         {
             const FVector average = sum / count;
-            neighbor->SetWorldPosition(average);
+            neighbor->SetPosition(average);
         }
     }
 }
