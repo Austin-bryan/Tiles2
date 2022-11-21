@@ -3,6 +3,7 @@
 #include "CreatorTile.h"
 #include "DeselectBoard.h"
 #include "DragSelect.h"
+#include "MeshGenerator.h"
 #include "ShortcutDetector.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -32,7 +33,11 @@ ACreatorBoard::ACreatorBoard()
     
     rand = FMath::RandRange(0, 100000);
 }
-ACreatorBoard::~ACreatorBoard() { ACreatorTile::EmptySelectedTiles(); }
+ACreatorBoard::~ACreatorBoard()
+{
+    UMeshGenerator::UniversalVertices.Empty();
+    ACreatorTile::EmptySelectedTiles();
+}
 
 void ACreatorBoard::BeginPlay()
 {

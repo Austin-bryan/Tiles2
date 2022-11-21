@@ -3,10 +3,11 @@
 #include "Board.h"
 #include "Logger.h"
 #include "Enums.h"
-#include "Materials/MaterialInstanceConstant.h"
-#include "Components/TextRenderComponent.h"
 #include "TileModule.h"
 #include "TileColor.h"
+#include "MeshGenerator.h"
+#include "Materials/MaterialInstanceConstant.h"
+#include "Components/TextRenderComponent.h"
 
 //#define ShowDebugText
 #ifdef ShowDebugText
@@ -28,6 +29,15 @@ ATile::ATile()
 	Mesh->AttachToComponent(Root, FAttachmentTransformRules::KeepRelativeTransform);
 	Mesh->SetCollisionProfileName("BlockAll");
 	Mesh->SetGenerateOverlapEvents(false);
+	Mesh->SetWorldScale3D(FVector(0.1f));
+
+	MeshGenerator = CreateDefaultSubobject<UMeshGenerator>(TEXT("Mesh Generator"));
+	MeshGenerator->AttachToComponent(Root, FAttachmentTransformRules::KeepRelativeTransform);
+	MeshGenerator->PrimaryComponentTick.bCanEverTick = true;
+	MeshGenerator->PrimaryComponentTick.bStartWithTickEnabled = true;
+	MeshGenerator->RegisterComponent();
+	MeshGenerator->SetComponentTickEnabled(true);
+	MeshGenerator->RegisterComponent();
 
 	// By avoiding using the mesh as the collider, several scale related bugs are avoided
 	Collider = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Collider"));
@@ -49,7 +59,10 @@ ATile::ATile()
 #endif
 }
 
-void ATile::BeginPlay() { Super::BeginPlay(); }
+void ATile::BeginPlay()
+{
+	Super::BeginPlay();
+}
 void ATile::SetColor(const ETileColor color)
 {
 	const FString path = "MaterialInstanceConstant'/Game/Materials/TileColors/MI_TileColor.MI_TileColor'"_f;
@@ -101,7 +114,6 @@ void ATile::SetShape(const EBoardShape boardShape) const
 	Mesh->SetStaticMesh(tileMesh);
 	Collider->SetStaticMesh(tileMesh);
 }
-
 void ATile::NotifyActorOnClicked(FKey buttonPressed) 
 {
 	//Log(*Coord);

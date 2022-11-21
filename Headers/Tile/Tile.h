@@ -8,6 +8,7 @@ class UMaterialInstanceConstant;
 class UBoxComponent;
 class UTextRenderComponent;
 class ABoard;
+class UMeshGenerator;
 enum class EBoardShape;
 enum class ETileColor : uint8;
 
@@ -25,7 +26,7 @@ public:
 	void SetBoard(ABoard* newBoard);
 	void SetCoord(FCoordPtr coord);
 
-	ABoard* Board()			    { return board; }
+	ABoard* Board()       const { return board; }
 	int ID()			  const { return id; }
 	FCoordPtr GetCoord()  const { return Coord; }
 
@@ -41,6 +42,8 @@ protected:
 		USceneComponent* Root;
 	UPROPERTY(VisibleAnywhere, BlueprintReadonly)
 		UStaticMeshComponent* Mesh;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+		UMeshGenerator* MeshGenerator;
 	UPROPERTY(VisibleAnywhere, BlueprintReadonly)
 		UStaticMeshComponent* Collider;
 	UPROPERTY(VisibleAnywhere, BlueprintReadonly)

@@ -9,6 +9,10 @@ sqr (3, 4) | n/n/n/ g/g/g/ b/b/b/ c/c/c;
 sqr (4, 3) | r/o/y/g/ g/c/b/p/ n/k/w/r;
 sqr (3, 4) | r/o/y/ g/c/b/ p/n/k/ w/m/r;
 
+hex (1, 1, 3) | b/b/g;
+hex (5, 5, 5) | r/r/r/ b/b/b/b/ g/g/g/g/g/ n/n/n/n/ k/k/k;
+
+
 hex (5, 5, 5) | r/r/r/ b/b/b/b/ g/g/g{bnd((0, 1, -1), (0, -1, 1))}/g/g/ n/n/n/n/ k/k/k;
 hex (5, 5, 5) | r/r/r/ b/b/b/b/ g/g/g{bnd((0, 1, -1), (0, -1, 1), (0, -1, 1))}/g/g/ n/n/n/n/ k/k/k;
 

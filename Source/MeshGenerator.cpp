@@ -12,22 +12,21 @@
      4  5
  */
 
-TArray<Vertex> AMeshGenerator::UniversalVertices;
+TArray<Vertex> UMeshGenerator::UniversalVertices;
+float UMeshGenerator::distance;
 
-AMeshGenerator::AMeshGenerator()
+UMeshGenerator::UMeshGenerator()
 {
-    Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
-    SetRootComponent(Root);
-
     Mesh = CreateDefaultSubobject<UProceduralMeshComponent>(TEXT("Mesh"));
     Mesh->AttachToComponent(Root, FAttachmentTransformRules::KeepRelativeTransform);
-    UniversalVertices.Empty();
 }
-void AMeshGenerator::BeginPlay()
+void UMeshGenerator::BeginPlay()
 {
     Super::BeginPlay();
     ClearData();
 
+    if (MeshDistance)
+        distance = MeshDistance;
     const auto GetOrigin = [this](const FVector normal, float length)
     {
         length = Size / 2 * length;
@@ -43,8 +42,17 @@ void AMeshGenerator::BeginPlay()
     DrawQuad(4, Lengths.X, Lengths.Y, FRotator(0, 0, -90), GetOrigin(FVector::UpVector, Lengths.Z));          // Top Quad
     DrawQuad(5, Lengths.X, Lengths.Y, FRotator(0, 0, 90),  GetOrigin(FVector::DownVector, Lengths.Z));        // Bottom Quad
 }
+#ifdef SHOW_VERTICES
+void UMeshGenerator::TickComponent(const float DeltaTime, const ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+{
+    Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-void AMeshGenerator::Merge()
+    for (int i = 0; i < vertices.Num(); i++)
+        DrawDebugSphere(GetWorld(), vertices[i], 2, 64, FColor::White);
+}
+#endif
+
+void UMeshGenerator::Merge()
 {
     TArray<Vertex*> neighbors;
 
@@ -59,7 +67,7 @@ void AMeshGenerator::Merge()
         for (auto& vertexB : UniversalVertices)
         {
             if (!vertexB.IsMerged()
-              && FVector::Distance(vertexA.GetWorldPosition(), vertexB.GetWorldPosition()) <= 40)
+              && FVector::Distance(vertexA.GetWorldPosition(), vertexB.GetWorldPosition()) <= distance)
             {
                 neighbors.Add(&vertexB);
                 sum += vertexB.GetWorldPosition();
@@ -75,14 +83,14 @@ void AMeshGenerator::Merge()
         }
     }
 }
-void AMeshGenerator::UpdateMesh(const int index)
+void UMeshGenerator::UpdateMesh(const int index)
 {
     UKismetProceduralMeshLibrary::CreateGridMeshTriangles(Lengths.X + 1, Lengths.X + 1, false, triangles);
     UKismetProceduralMeshLibrary::CalculateTangentsForMesh(vertices, triangles, UV, normals, tangents);
     Mesh->CreateMeshSection(index, vertices, triangles, normals, UV, colors, tangents, true);
 }
 
-void AMeshGenerator::DrawHex(const int index, const FRotator faceAngle, const FVector origin)
+void UMeshGenerator::DrawHex(const int index, const FRotator faceAngle, const FVector origin)
 {
     ClearData();
     const double radius = Lengths.X * Size;
@@ -90,11 +98,12 @@ void AMeshGenerator::DrawHex(const int index, const FRotator faceAngle, const FV
     for (int i = 0; i < 6; i++)
     {
         vertices.Add(FVector(radius * UKismetMathLibrary::DegCos(i * 60), 0, radius * UKismetMathLibrary::DegSin(i * 60)));
+        vertices[i] += GetOwner()->GetActorLocation();
         UniversalVertices.Add(Vertex(i, vertices[i], this));
     }
     UpdateMesh(index);
 }
-void AMeshGenerator::DrawQuad(const int index, const int width, const int height, const FRotator faceAngle, const FVector origin)
+void UMeshGenerator::DrawQuad(const int index, const int width, const int height, const FRotator faceAngle, const FVector origin)
 {
     ClearData();
     const FTransform trans { origin };
@@ -121,7 +130,7 @@ void AMeshGenerator::DrawQuad(const int index, const int width, const int height
     UKismetProceduralMeshLibrary::CalculateTangentsForMesh(vertices, triangles, UV, normals, tangents);
     Mesh->CreateMeshSection(index, vertices, triangles, normals, UV, colors, tangents, true);
 }
-void AMeshGenerator::ClearData()
+void UMeshGenerator::ClearData()
 {
     vertices.Empty();
     triangles.Empty();
