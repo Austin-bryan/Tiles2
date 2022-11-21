@@ -44,6 +44,7 @@ protected:
 		// UStaticMeshComponent* Mesh;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		UMeshGenerator* MeshGenerator;
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadonly)
 		UStaticMeshComponent* Collider;
 	UPROPERTY(VisibleAnywhere, BlueprintReadonly)

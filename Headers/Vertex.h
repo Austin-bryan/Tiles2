@@ -10,7 +10,8 @@ public:
     Vertex(const int _vertexIndex, const FVector vertexPos, UMeshGenerator* _generator);
     
     bool IsMerged() const;
-    FVector GetPosition() const;
+    FVector GetWorldPosition() const;
+    FVector GetLocalPosition() const;
     void SetPosition(const FVector newPosition);
 private:
     int vertexIndex;

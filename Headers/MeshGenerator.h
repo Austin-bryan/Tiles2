@@ -3,6 +3,7 @@
 #include "ProceduralMeshComponent.h"
 #include "MeshGenerator.generated.h"
 
+//#define SHOW_VERTICES
 class Vertex;
 
 UCLASS()
@@ -13,19 +14,18 @@ class TILES2_API UMeshGenerator : public USceneComponent
 public:
     UMeshGenerator(); 
     void BeginPlay() override;
+    
+    float Size = 5.5f;
+    FVector Lengths = FVector(10, 10, 10);
 
-        float Size = 5.5f;
-        FVector Lengths = FVector(10, 10, 10);
 #ifdef SHOW_VERTICES 
     void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 #endif
     UPROPERTY(VisibleAnywhere)
-        USceneComponent* Root;
-    UPROPERTY(VisibleAnywhere)
-        UProceduralMeshComponent* Mesh;
+        UProceduralMeshComponent* ProceduralMesh;
     UPROPERTY(EditAnywhere, Category="Mesh Generation")
         float MeshDistance = 0;
-    static float distance;
+    const static float distance;
 
     UFUNCTION(BlueprintCallable)
         static void Merge();

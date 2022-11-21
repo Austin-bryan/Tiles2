@@ -21,6 +21,7 @@ ATile::ATile()
 	
 	id   = tileCount++;
 	Root = CreateDefaultSubobject<USceneComponent>(FName("Root"));
+	Root->SetRelativeLocation(FVector::ZeroVector);
 	RootComponent = Root;
 	
 	// Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
@@ -34,9 +35,11 @@ ATile::ATile()
 	MeshGenerator->AttachToComponent(Root, FAttachmentTransformRules::KeepRelativeTransform);
 	MeshGenerator->PrimaryComponentTick.bCanEverTick = true;
 	MeshGenerator->PrimaryComponentTick.bStartWithTickEnabled = true;
-	MeshGenerator->RegisterComponent();
 	MeshGenerator->SetComponentTickEnabled(true);
+	MeshGenerator->SetupAttachment(Root);
 	MeshGenerator->RegisterComponent();
+	MeshGenerator->ProceduralMesh->SetupAttachment(Root);
+	MeshGenerator->ProceduralMesh->AttachToComponent(Root, FAttachmentTransformRules::KeepRelativeTransform);
 
 	// By avoiding using the mesh as the collider, several scale related bugs are avoided
 	Collider = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Collider"));
@@ -74,7 +77,7 @@ void ATile::SetColor(const ETileColor color)
 	}
 	instance->SetVectorParameterValue(FName("Color"), UColorCast::TileColorToLinearColor(color));
 	// Mesh->SetMaterial(0, instance);
-	MeshGenerator->Mesh->SetMaterial(0, instance);
+	MeshGenerator->ProceduralMesh->SetMaterial(0, instance);
 }
 void ATile::SetBoard(ABoard* newBoard)
 {
