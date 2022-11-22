@@ -4,12 +4,12 @@
 #include "TilesMap.h"
 #include "MeshGenerator.generated.h"
 
-class ATile;
 //#define SHOW_VERTICES
+class ATile;
 class Vertex;
 
 UCLASS()
-class TILES2_API UMeshGenerator : public USceneComponent
+class TILES2_API UMeshGenerator : public UActorComponent
 {
     friend class Vertex;
     GENERATED_BODY()
@@ -25,8 +25,6 @@ public:
 #endif
     UPROPERTY(VisibleAnywhere)
         UProceduralMeshComponent* ProceduralMesh;
-    UPROPERTY(EditAnywhere, Category="Mesh Generation")
-        float MeshDistance = 0;
     const static float distance;
 
     UFUNCTION(BlueprintCallable)

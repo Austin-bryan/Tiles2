@@ -31,6 +31,6 @@ private:
 	bool wasDragSelected;
 
 	ActorAnimator* activeAnimation;
-	ActorAnimator animPress{MeshGenerator, FVector::One(), FVector(0.75f), EAnimMode::Scale, 8};
-	ActorAnimator animHover{MeshGenerator, FVector::One(), FVector(1.05f), EAnimMode::Scale, 8};
+	ActorAnimator animPress{ProcMesh, FVector::One(), FVector(0.75f), EAnimMode::Scale, 8};
+	ActorAnimator animHover{ProcMesh, FVector::One(), FVector(1.05f), EAnimMode::Scale, 8};
 };

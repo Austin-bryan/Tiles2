@@ -4,6 +4,7 @@
 #include "ForwardDeclares.h"
 #include "Tile.generated.h"
 
+class UProceduralMeshComponent;
 class ABoard;
 class UMeshGenerator;
 class UBoxComponent;
@@ -40,7 +41,9 @@ protected:
 		ABoard* board;
 	UPROPERTY(VisibleAnywhere, BlueprintReadonly)
 		USceneComponent* Root;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere)
+		UProceduralMeshComponent* ProcMesh; 
+	UPROPERTY()
 		UMeshGenerator* MeshGenerator;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadonly)

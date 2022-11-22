@@ -15,11 +15,11 @@
 
 TArray<Vertex> UMeshGenerator::UniversalVertices;
 TArray<UMeshGenerator*> UMeshGenerator::Generators;
+Tiles UMeshGenerator::TilesToMerge;
 const float UMeshGenerator::distance = 10.0f;
 
 UMeshGenerator::UMeshGenerator()
 {
-    ProceduralMesh = CreateDefaultSubobject<UProceduralMeshComponent>(TEXT("Procedural Mesh"));
 }
 void UMeshGenerator::BeginPlay()
 {

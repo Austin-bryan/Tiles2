@@ -59,7 +59,6 @@ void UShortcutDetector::BeginPlay()
            { EKeys::E,     [this, SetSelectionType]  { SetSelectionType(ESelectionAngle::Uphill); } },
            { EKeys::M,     [this]
            {
-              UMeshGenerator::TilesToMerge.Empty();
               UMeshGenerator::TilesToMerge = creatorBoard->GetTiles();
               UMeshGenerator::Merge();
            } },

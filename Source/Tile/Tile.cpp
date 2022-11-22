@@ -30,16 +30,16 @@ ATile::ATile()
 	// Mesh->SetCollisionProfileName("BlockAll");
 	// Mesh->SetGenerateOverlapEvents(false);
 	// Mesh->SetWorldScale3D(FVector(0.1f));
+	ProcMesh = CreateDefaultSubobject<UProceduralMeshComponent>(TEXT("Procedural Mesh"));
+	ProcMesh->SetupAttachment(Root);
+	ProcMesh->AttachToComponent(Root, FAttachmentTransformRules::KeepRelativeTransform);
 
 	MeshGenerator = CreateDefaultSubobject<UMeshGenerator>(TEXT("Mesh Generator"));
-	MeshGenerator->AttachToComponent(Root, FAttachmentTransformRules::KeepRelativeTransform);
 	MeshGenerator->PrimaryComponentTick.bCanEverTick = true;
 	MeshGenerator->PrimaryComponentTick.bStartWithTickEnabled = true;
 	MeshGenerator->SetComponentTickEnabled(true);
-	MeshGenerator->SetupAttachment(Root);
 	MeshGenerator->RegisterComponent();
-	MeshGenerator->ProceduralMesh->SetupAttachment(Root);
-	MeshGenerator->ProceduralMesh->AttachToComponent(Root, FAttachmentTransformRules::KeepRelativeTransform);
+	MeshGenerator->ProceduralMesh = ProcMesh;
 
 	// By avoiding using the mesh as the collider, several scale related bugs are avoided
 	Collider = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Collider"));
