@@ -8,6 +8,19 @@
 #define LIST FString(":        ")
 #define PAIR FString(",        ")
 
+#define RED LogParams(FColor::Red)
+#define ORANGE LogParams(FColor::Orange)
+#define YELLOW LogParams(FColor::Yellow)
+#define GREEN LogParams(FColor::Green)
+#define CYAN LogParams(FColor::Cyan)
+#define BLUE LogPARAMS(FColor::Blue)
+#define WHITE LogParams(FColor::White)
+#define BLACK LogParams(FColor::Black)
+#define TURQUOISE LogParams(FColor::Turquise)
+#define EMERALD LogParams(FColor::Emerald)
+#define MAGENTA LogParams(FColor::Magenta)
+#define PURPLE LogParams(FColor::Purple)
+
 class LogParams;
 struct FParameter;
 
