@@ -52,17 +52,17 @@ void UShortcutDetector::BeginPlay()
            { EKeys::Enter, [] { Log("Return"); } },
            { EKeys::Escape, [] { Log("Escape"); } },
            { EKeys::Delete, [] { Log("Delete"); } },
-           { EKeys::One,   [this, SetSelectionShape] { SetSelectionShape(ESelectionShape::Triangle); } },
-           { EKeys::Two,   [this, SetSelectionShape] { SetSelectionShape(ESelectionShape::Square); } },
-           { EKeys::Three, [this, SetSelectionShape] { SetSelectionShape(ESelectionShape::Circle); } },
-           { EKeys::Q,     [this, SetSelectionType]  { SetSelectionType(ESelectionAngle::Downhill); } },
-           { EKeys::W,     [this, SetSelectionType]  { SetSelectionType(ESelectionAngle::Flat); } },
-           { EKeys::E,     [this, SetSelectionType]  { SetSelectionType(ESelectionAngle::Uphill); } },
            { EKeys::M,     [this]
            {
               UMeshGenerator::TilesToMerge = ACreatorTile::SelectedTiles;
               UMeshGenerator::Merge();
            } },
+           { EKeys::Q, [this, SetSelectionShape] { SetSelectionShape(ESelectionShape::Triangle); } },
+           { EKeys::W, [this, SetSelectionShape] { SetSelectionShape(ESelectionShape::Square); } },
+           { EKeys::E, [this, SetSelectionShape] { SetSelectionShape(ESelectionShape::Circle); } },
+           { EKeys::A, [this, SetSelectionType]  { SetSelectionType(ESelectionAngle::Downhill); } },
+           { EKeys::S, [this, SetSelectionType]  { SetSelectionType(ESelectionAngle::Flat); } },
+           { EKeys::D, [this, SetSelectionType]  { SetSelectionType(ESelectionAngle::Uphill); } },
        }),
        // Shift
        new ModifiedShortcuts
