@@ -13,7 +13,7 @@
 #define YELLOW LogParams(FColor::Yellow)
 #define GREEN LogParams(FColor::Green)
 #define CYAN LogParams(FColor::Cyan)
-#define BLUE LogPARAMS(FColor::Blue)
+#define BLUE LogParams(FColor::Blue)
 #define WHITE LogParams(FColor::White)
 #define BLACK LogParams(FColor::Black)
 #define TURQUOISE LogParams(FColor::Turquise)
@@ -21,6 +21,7 @@
 #define MAGENTA LogParams(FColor::Magenta)
 #define PURPLE LogParams(FColor::Purple)
 
+class Vertex;
 class LogParams;
 struct FParameter;
 
@@ -95,3 +96,4 @@ inline std::ostringstream& operator<<(std::ostringstream& os, const FColor& colo
 }
 inline std::ostringstream& operator<<(std::ostringstream& os, const FCoordPtr coord);
 inline std::ostringstream& operator<<(std::ostringstream& os, const FParameter& coord);
+inline std::ostringstream& operator<<(std::ostringstream& os, const Vertex& vertex);

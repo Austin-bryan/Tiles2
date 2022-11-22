@@ -2,6 +2,7 @@
 #include <string>
 #include "ParameterParseState.h"
 #include "Coord.h"
+#include "Vertex.h"
 
 void AddOnScreenMessage(const FString string, const FColor color, const float time) { GEngine->AddOnScreenDebugMessage(-1, time, color, string); }
 
@@ -62,7 +63,7 @@ inline FString operator+(const FString& lhs, const bool rhs)    { return lhs + f
 inline FString operator+(const FString& lhs, const char rhs)    { return lhs + fstr(rhs); }
 inline FString operator+(const FString& lhs, const FVector rhs) { return lhs + rhs.ToString(); }
 
-std::ostringstream& operator<<(std::ostringstream& os, const FCoordPtr coord)
+inline std::ostringstream& operator<<(std::ostringstream& os, const FCoordPtr coord)
 {
 	os << coord->ToString();
 	return os;
@@ -70,5 +71,10 @@ std::ostringstream& operator<<(std::ostringstream& os, const FCoordPtr coord)
 inline std::ostringstream& operator<<(std::ostringstream& os, const FParameter& coord)
 {
 	os << coord.ToString();
+	return os;
+}
+inline std::ostringstream& operator<<(std::ostringstream& os, const Vertex& vertex)
+{
+	os << vertex.GetWorldPosition();
 	return os;
 }
