@@ -1,5 +1,6 @@
 #include "MeshGenerator.h"
 
+#include "CreatorTile.h"
 #include "KismetProceduralMeshLibrary.h"
 #include "Logger.h"
 #include "Kismet/GameplayStatics.h"
@@ -15,12 +16,10 @@
 
 TArray<Vertex> UMeshGenerator::UniversalVertices;
 TArray<UMeshGenerator*> UMeshGenerator::Generators;
-Tiles UMeshGenerator::TilesToMerge;
+TArray<ACreatorTile*> UMeshGenerator::TilesToMerge;
 const float UMeshGenerator::distance = 10.0f;
 
-UMeshGenerator::UMeshGenerator()
-{
-}
+UMeshGenerator::UMeshGenerator() { }
 void UMeshGenerator::BeginPlay()
 {
     Super::BeginPlay();
@@ -52,7 +51,8 @@ void UMeshGenerator::Merge()
     int loop = 0;
     int distanceCheck = 0;
 
-    for (auto& vertexA : UniversalVertices)
+    for (const auto& creatorTileA : TilesToMerge)
+    for (auto& vertexA : creatorTileA->MeshGenerator->vertices)
     {
         loop++;
         if (vertexA.IsMerged())
@@ -61,15 +61,27 @@ void UMeshGenerator::Merge()
 
         int count = 0;
         FVector sum = FVector::Zero();
-        for (auto& vertexB : UniversalVertices)
+
+        for (const auto& creatorTileB : TilesToMerge)
         {
-            distanceCheck++;
-            if (!vertexB.IsMerged()
-              && FVector::Distance(vertexA.GetWorldPosition(), vertexB.GetWorldPosition()) <= distance)
+            Log(creatorTileB->ID(), creatorTileB->GetIsSelected());
+
+            FString text;
+            if (!creatorTileB->GetIsSelected())
             {
-                neighbors.Add(&vertexB);
-                sum += vertexB.GetWorldPosition();
-                count++;
+                Log(creatorTileB->ID(), creatorTileB->GetIsSelected());
+                continue;
+            }
+            for (auto& vertexB : creatorTileB->MeshGenerator->vertices)
+            {
+                distanceCheck++;
+                if (!vertexB.IsMerged()
+                  && FVector::Distance(vertexA.GetWorldPosition(), vertexB.GetWorldPosition()) <= distance)
+                {
+                    neighbors.Add(&vertexB);
+                    sum += vertexB.GetWorldPosition();
+                    count++;
+                }
             }
         }
         if (neighbors.Num() < 2)
@@ -87,8 +99,8 @@ void UMeshGenerator::Merge()
 void UMeshGenerator::UpdateMesh(const int index)
 {
     UKismetProceduralMeshLibrary::CreateGridMeshTriangles(Lengths.X + 1, Lengths.X + 1, false, triangles);
-    UKismetProceduralMeshLibrary::CalculateTangentsForMesh(vertices, triangles, UV, normals, tangents);
-    ProceduralMesh->CreateMeshSection(index, vertices, triangles, normals, UV, colors, tangents, true);
+    UKismetProceduralMeshLibrary::CalculateTangentsForMesh(vertexPositions, triangles, UV, normals, tangents);
+    ProceduralMesh->CreateMeshSection(index, vertexPositions, triangles, normals, UV, colors, tangents, true);
 }
 
 void UMeshGenerator::DrawHex(const int index, const FRotator faceAngle, const FVector origin)
@@ -98,8 +110,8 @@ void UMeshGenerator::DrawHex(const int index, const FRotator faceAngle, const FV
 
     for (int i = 0; i < 6; i++)
     {
-        vertices.Add(FVector(radius * UKismetMathLibrary::DegCos(i * 60), 0, radius * UKismetMathLibrary::DegSin(i * 60)));
-        UniversalVertices.Add(Vertex(i, vertices[i], this));
+        vertexPositions.Add(FVector(radius * UKismetMathLibrary::DegCos(i * 60), 0, radius * UKismetMathLibrary::DegSin(i * 60)));
+        vertices.Add(Vertex(i, vertexPositions[i], this));
     }
     UpdateMesh(index);
 }
@@ -123,16 +135,16 @@ void UMeshGenerator::DrawQuad(const int index, const int width, const int height
         v  = faceAngle.RotateVector(v);
         v  = trans.TransformPosition(v);
 
-        vertices.Add(v);
+        vertexPositions.Add(v);
         UV.Add(FVector2d(w, h));
     }
     UKismetProceduralMeshLibrary::CreateGridMeshTriangles(width + 1, height + 1, true, triangles);
-    UKismetProceduralMeshLibrary::CalculateTangentsForMesh(vertices, triangles, UV, normals, tangents);
-    ProceduralMesh->CreateMeshSection(index, vertices, triangles, normals, UV, colors, tangents, true);
+    UKismetProceduralMeshLibrary::CalculateTangentsForMesh(vertexPositions, triangles, UV, normals, tangents);
+    ProceduralMesh->CreateMeshSection(index, vertexPositions, triangles, normals, UV, colors, tangents, true);
 }
 void UMeshGenerator::ClearData()
 {
-    vertices.Empty();
+    vertexPositions.Empty();
     triangles.Empty();
     UV.Empty();
 }

@@ -19,9 +19,9 @@ public:
 	static ACreatorTile* FirstSelectedTile() { return firstSelectedTile; }
 
 	ACreatorTile();
+	bool GetIsSelected() const { return isSelected; }
 	void Tick(float deltaSeconds) override;
 	void NotifyActorOnClicked(FKey ButtonPressed) override;
-
 	void Select(bool _isSelected, bool isDragSelecting = false);
 private:
 	static ACreatorTile* firstSelectedTile;

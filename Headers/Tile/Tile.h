@@ -33,6 +33,8 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadonly)
 		UTextRenderComponent* CoordText;
+	UPROPERTY()
+		UMeshGenerator* MeshGenerator;
 protected:
 	void BeginPlay() override;
 	FCoordPtr Coord;
@@ -43,9 +45,6 @@ protected:
 		USceneComponent* Root;
 	UPROPERTY(VisibleAnywhere)
 		UProceduralMeshComponent* ProcMesh; 
-	UPROPERTY()
-		UMeshGenerator* MeshGenerator;
-	
 	UPROPERTY(VisibleAnywhere, BlueprintReadonly)
 		UStaticMeshComponent* Collider;
 	UPROPERTY(VisibleAnywhere, BlueprintReadonly)

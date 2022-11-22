@@ -6,6 +6,7 @@
 #include "TileModule.h"
 #include "TileColor.h"
 #include "MeshGenerator.h"
+#include "Components/TextRenderComponent.h"
 #include "Materials/MaterialInstanceConstant.h"
 
 //#define ShowDebugText
@@ -53,8 +54,8 @@ ATile::ATile()
 	if (!CoordText)
 		return;
 	CoordText->SetText(FText::FromString(TEXT("swag")));
-	CoordText->AttachToComponent(Mesh, FAttachmentTransformRules::KeepRelativeTransform);
-	CoordText->SetRelativeLocation(FVector::ZeroVector + GetActorForwardVector() - 17);
+	CoordText->AttachToComponent(Root, FAttachmentTransformRules::KeepRelativeTransform);
+	CoordText->SetRelativeLocation(FVector::ZeroVector + GetActorForwardVector() + 17);
 	CoordText->SetRelativeRotation(FRotator(0, 0, 0));
 	CoordText->HorizontalAlignment = EHorizTextAligment::EHTA_Center;
 	CoordText->SetWorldSize(18);

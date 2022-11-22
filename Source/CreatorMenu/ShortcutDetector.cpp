@@ -6,6 +6,7 @@
 #include "Logger.h"
 #include "TileColor.h"
 #include "CreatorRotator.h"
+#include "CreatorTile.h"
 #include "DragSelect.h"
 #include "MeshGenerator.h"
 #include "SelectionAngle.h"
@@ -59,7 +60,7 @@ void UShortcutDetector::BeginPlay()
            { EKeys::E,     [this, SetSelectionType]  { SetSelectionType(ESelectionAngle::Uphill); } },
            { EKeys::M,     [this]
            {
-              UMeshGenerator::TilesToMerge = creatorBoard->GetTiles();
+              UMeshGenerator::TilesToMerge = ACreatorTile::SelectedTiles;
               UMeshGenerator::Merge();
            } },
        }),

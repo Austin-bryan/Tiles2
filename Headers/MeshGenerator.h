@@ -2,8 +2,10 @@
 #include "CoreMinimal.h"
 #include "ProceduralMeshComponent.h"
 #include "TilesMap.h"
+#include "Vertex.h"
 #include "MeshGenerator.generated.h"
 
+class ACreatorTile;
 //#define SHOW_VERTICES
 class ATile;
 class Vertex;
@@ -31,14 +33,15 @@ public:
         static void Merge();
     static TArray<Vertex> UniversalVertices;
     static TArray<UMeshGenerator*> Generators;
-    static Tiles TilesToMerge;
+    static TArray<ACreatorTile*> TilesToMerge;
 private:
     void DrawHex(int index, FRotator faceAngle, FVector origin);
     void DrawQuad(const int index, const int width, const int height, const FRotator faceAngle, const FVector origin);
     void UpdateMesh(int index);
     void ClearData();
 
-    TArray<FVector> vertices;
+    TArray<Vertex> vertices;
+    TArray<FVector> vertexPositions;
     TArray<int> triangles;
     TArray<FVector> normals;
     TArray<FVector2D> UV;

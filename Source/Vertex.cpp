@@ -15,6 +15,6 @@ void Vertex::SetPosition(const FVector newPosition)
 {
     position = newPosition - generator->GetOwner()->GetActorLocation(), hasBeenMerged = true;
     position.Y = 0;
-    generator->vertices[vertexIndex] = position;
+    generator->vertexPositions[vertexIndex] = position;
     UMeshGenerator::Generators.AddUnique(generator);
 }
