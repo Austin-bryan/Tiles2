@@ -10,6 +10,12 @@ class ATile;
 class UCreatorMenu;
 enum class EBoardShape;
 
+UENUM()
+enum class EVertexMode : uint8
+{
+	PrevPrev, PrevNext, NextNext, NextPrev
+};
+
 UCLASS()
 class TILES2_API ACreatorBoard : public ABoard
 {
@@ -28,6 +34,9 @@ public:
 		UCreatorRotator* GetCreatorRotator() const;
 	UFUNCTION(BlueprintCallable, Category="Default")
 		void SetCreatorMenu(UCreatorMenu* _creatorMenu);
+		
+	UPROPERTY(EditAnywhere)
+		EVertexMode VertexMode;
 protected:
 	UShortcutDetector* shortcutDetector;
 	UDragSelect* dragSelect;

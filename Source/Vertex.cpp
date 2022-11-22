@@ -14,15 +14,8 @@ FVector Vertex::GetLocalPosition() const { return position; }
 Vertex Vertex::NextVertex() const { return generator->vertices[(vertexIndex + 1) % 6]; }
 Vertex Vertex::PrevVertex() const { return generator->vertices[(FMath::Abs(vertexIndex - 1)) % 6]; }
 
-void Vertex::QueuePosition(const FVector newPosition)
-{
-    queuedPosition = newPosition;
-}
-
-void Vertex::ApplyPosition()
-{
-    SetPosition(queuedPosition);
-}
+void Vertex::ApplyPosition() { SetPosition(queuedPosition); }
+void Vertex::QueuePosition(const FVector newPosition) { hasBeenMerged = true, queuedPosition = newPosition; }
 
 void Vertex::SetPosition(const FVector newPosition)
 {

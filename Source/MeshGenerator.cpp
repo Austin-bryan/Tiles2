@@ -2,6 +2,7 @@
 // ReSharper disable CppLocalVariableMayBeConst
 #include "MeshGenerator.h"
 
+#include "Board.h"
 #include "CreatorTile.h"
 #include "KismetProceduralMeshLibrary.h"
 #include "Logger.h"
@@ -9,6 +10,8 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Vertex.h"
 #include "Tile.h"
+#include "CreatorTile.h"
+#include "CreatorBoard.h"
 
 /*
      2  1
@@ -40,7 +43,7 @@ void UMeshGenerator::TickComponent(const float DeltaTime, const ELevelTick TickT
     Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
     for (int i = 0; i < vertices.Num(); i++)
-        DrawDebugSphere(GetWorld(), vertices[i].GetWorldPosition(), 2, 16, FColor::White);
+        DrawDebugSphere(GetWorld(), vertices[i].GetWorldPosition(), 1, 16, FColor::White);
 }
 #endif
 
@@ -85,6 +88,35 @@ void UMeshGenerator::Merge()
 
     TArray<Vertex*> queuedVertices;
 
+    const auto GetEnd = [](const Vertex start, const Vertex end)
+    {
+        const FVector startPos = start.GetWorldPosition();
+        const FTransform startTrans{ startPos };
+        FVector transformed = startTrans.InverseTransformPosition(end.GetWorldPosition());
+        transformed.Normalize();
+        return end.GetWorldPosition() + transformed * 20;
+    };
+    const auto foo = [GetEnd](const UWorld* worldContext, const Vertex startA, const Vertex endA, const Vertex startB, const Vertex endB, FVector& intersection)
+    {
+        const FVector lineAStart = startA.GetWorldPosition(), lineAEnd = GetEnd(startA, endA);
+        const FVector lineBStart = startB.GetWorldPosition(), lineBEnd = GetEnd(startB, endB);
+
+#ifdef DRAW_DEBUG
+        DrawDebugLine(worldContext, lineAStart, lineAEnd, FColor::Green, true, 100, 100);
+        DrawDebugLine(worldContext, lineBStart, lineBEnd, FColor::White, true, 100, 100);
+#endif
+        bool result = lineLineIntersection(lineAStart, lineAEnd, lineBStart, lineBEnd, intersection);
+
+                        
+        // Log(FVector::Distance(lineAStart, lineAEnd), FVector::Distance(lineBStart, lineBEnd), WHITE);
+        if (intersection.Length() > 1000)
+        {
+            // Log(FVector::Distance(lineAStart, lineAEnd), FVector::Distance(lineBStart, lineBEnd), RED);
+            return false;
+        }
+        return result;
+    };
+
     for (const auto& creatorTileA : TilesToMerge)
     for (auto& vertexA : creatorTileA->MeshGenerator->vertices)
     {
@@ -101,51 +133,35 @@ void UMeshGenerator::Merge()
             if (creatorTileB == creatorTileA)
                 continue;
             for (auto& vertexB : creatorTileB->MeshGenerator->vertices)
+            if (!vertexA.IsMerged() && !vertexB.IsMerged() && FVector::Distance(vertexA.GetWorldPosition(), vertexB.GetWorldPosition()) <= distance)
             {
-                if (!vertexB.IsMerged() && FVector::Distance(vertexA.GetWorldPosition(), vertexB.GetWorldPosition()) <= distance)
+                neighbors.Add(&vertexB);
+                sum += vertexB.GetWorldPosition();
+                count++;
+
+                FVector intersection;
+                neighbors.Add(&vertexA);
+
+                Log(vertexB, neighbors.Num(), (bool)vertexB.IsMerged(), RED);
+                if (neighbors.Num() != 2)
+                    continue;
+                
+                Log("Here");
+                const auto vertexMode = Cast<ACreatorBoard>(creatorTileA->Board())->VertexMode;
+                if (
+                    vertexMode == EVertexMode::NextNext && foo(creatorTileA->GetWorld(), vertexA.NextVertex(), vertexA, vertexB.NextVertex(), vertexB, intersection)
+                 || vertexMode == EVertexMode::NextPrev && foo(creatorTileA->GetWorld(), vertexA.NextVertex(), vertexA, vertexB.PrevVertex(), vertexB, intersection)
+                 || vertexMode == EVertexMode::PrevNext && foo(creatorTileA->GetWorld(), vertexA.PrevVertex(), vertexA, vertexB.NextVertex(), vertexB, intersection)
+                 || vertexMode == EVertexMode::PrevPrev && foo(creatorTileA->GetWorld(), vertexA.PrevVertex(), vertexA, vertexB.PrevVertex(), vertexB, intersection)
+                    )
                 {
-                    neighbors.Add(&vertexB);
-                    sum += vertexB.GetWorldPosition();
-                    count++;
-
-                    FVector intersection;
-                    
-                    const auto GetEnd = [](const Vertex start, const Vertex end)
-                    {
-                        const FVector startPos = start.GetWorldPosition();
-                        const FTransform startTrans{ startPos };
-                        FVector transformed = startTrans.InverseTransformPosition(end.GetWorldPosition());
-                        transformed.Normalize();
-                        return end.GetWorldPosition() + transformed * 20;
-                    };
-                    const auto foo = [GetEnd, &intersection](const UWorld* worldContext, const Vertex startA, const Vertex endA, const Vertex startB, const Vertex endB)
-                    {
-                        const FVector lineAStart = startA.GetWorldPosition(), lineAEnd = GetEnd(startA, endA);
-                        const FVector lineBStart = startB.GetWorldPosition(), lineBEnd = GetEnd(startB, endB);
-
 #ifdef DRAW_DEBUG
-                        DrawDebugLine(worldContext, lineAStart, lineAEnd, FColor::Yellow, true, 100, 100);
-                        DrawDebugLine(worldContext, lineBStart, lineBEnd, FColor::White, true, 100, 100);
+                    DrawDebugSphere(creatorTileA->GetWorld(), intersection, 2, 64, FColor::Red, true);
 #endif
-                        bool result = lineLineIntersection(lineBStart, lineBEnd, lineAStart, lineAEnd, intersection);
-                        if (intersection.Length() > 1000)
-                            return false;
-                        return result;
-                    };
-                    neighbors.Add(&vertexA);
-
-                    if (neighbors.Num() != 2)
-                        continue;
-                    if (foo(creatorTileA->GetWorld(), vertexA.NextVertex(), vertexA, vertexB.PrevVertex(), vertexB))
-                    {
-#ifdef DRAW_DEBUG
-                        DrawDebugSphere(creatorTileA->GetWorld(), intersection, 5, 64, FColor::Red, true);
-#endif
-                        vertexA.QueuePosition(intersection);
-                        vertexB.QueuePosition(intersection);
-                        queuedVertices.Add(&vertexA);
-                        queuedVertices.Add(&vertexB);
-                    }
+                    vertexA.QueuePosition(intersection);
+                    vertexB.QueuePosition(intersection);
+                    queuedVertices.Add(&vertexA);
+                    queuedVertices.Add(&vertexB);
                 }
             }
         }

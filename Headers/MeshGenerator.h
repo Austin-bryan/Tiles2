@@ -4,11 +4,11 @@
 #include "Vertex.h"
 #include "MeshGenerator.generated.h"
 
-//#define DRAW_DEBUG
+#define DRAW_DEBUG
 
-class ACreatorTile;
 class ATile;
 class Vertex;
+class ACreatorTile;
 
 UCLASS()
 class TILES2_API UMeshGenerator : public UActorComponent
