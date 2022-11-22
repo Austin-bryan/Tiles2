@@ -1,3 +1,5 @@
+// ReSharper disable CppParameterMayBeConst
+// ReSharper disable CppLocalVariableMayBeConst
 #include "MeshGenerator.h"
 
 #include "CreatorTile.h"
@@ -17,7 +19,7 @@
 TArray<Vertex> UMeshGenerator::UniversalVertices;
 TArray<UMeshGenerator*> UMeshGenerator::Generators;
 TArray<ACreatorTile*> UMeshGenerator::TilesToMerge;
-const float UMeshGenerator::distance = 10.0f;
+const float UMeshGenerator::distance = 10;
 
 UMeshGenerator::UMeshGenerator() { }
 void UMeshGenerator::BeginPlay()
@@ -32,15 +34,44 @@ void UMeshGenerator::BeginPlay()
     };
     DrawHex(0, FRotator::ZeroRotator, GetOrigin(FVector::RightVector, Lengths.Y));
 }
-#ifdef SHOW_VERTICES
+#ifdef DRAW_DEBUG
 void UMeshGenerator::TickComponent(const float DeltaTime, const ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
     Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
     for (int i = 0; i < vertices.Num(); i++)
-        DrawDebugSphere(GetWorld(), vertices[i] + GetOwner()->GetActorLocation(), 2, 64, FColor::White);
+        DrawDebugSphere(GetWorld(), vertices[i].GetWorldPosition(), 2, 16, FColor::White);
 }
 #endif
+
+bool lineLineIntersection(FVector A, FVector B, FVector C, FVector D, FVector& out_intersection)
+{
+    // Line AB represented as a1x + b1y = c1
+    double a1 = B.Z - A.Z;
+    double b1 = A.X - B.X;
+    double c1 = a1 * (A.X) + b1 * (A.Z);
+ 
+    // Line CD represented as a2x + b2y = c2
+    double a2 = D.Z - C.Z;
+    double b2 = C.X - D.X;
+    double c2 = a2 * (C.X) + b2 * (C.Z);
+ 
+    double determinant = a1 * b2 - a2 * b1;
+ 
+    if (determinant == 0)
+    {
+        // The lines are parallel. This is simplified
+        // by returning a pair of FLT_MAX
+        return false;
+    }
+    
+    double x = (b2 * c1 - b1 * c2) / determinant;
+    double z = (a1 * c2 - a2 * c1) / determinant;
+
+    out_intersection = FVector(x, 0, z);
+    Log("intersection: ", out_intersection);
+    return true;
+}
 
 void UMeshGenerator::Merge()
 {
@@ -50,6 +81,9 @@ void UMeshGenerator::Merge()
 
     int loop = 0;
     int distanceCheck = 0;
+    int test = 0;
+
+    TArray<Vertex*> queuedVertices;
 
     for (const auto& creatorTileA : TilesToMerge)
     for (auto& vertexA : creatorTileA->MeshGenerator->vertices)
@@ -64,27 +98,59 @@ void UMeshGenerator::Merge()
 
         for (const auto& creatorTileB : TilesToMerge)
         {
-            Log(creatorTileB->ID(), creatorTileB->GetIsSelected());
-
-            FString text;
-            if (!creatorTileB->GetIsSelected())
-            {
-                Log(creatorTileB->ID(), creatorTileB->GetIsSelected());
+            if (creatorTileB == creatorTileA)
                 continue;
-            }
             for (auto& vertexB : creatorTileB->MeshGenerator->vertices)
             {
-                distanceCheck++;
-                if (!vertexB.IsMerged()
-                  && FVector::Distance(vertexA.GetWorldPosition(), vertexB.GetWorldPosition()) <= distance)
+                if (!vertexB.IsMerged() && FVector::Distance(vertexA.GetWorldPosition(), vertexB.GetWorldPosition()) <= distance)
                 {
                     neighbors.Add(&vertexB);
                     sum += vertexB.GetWorldPosition();
                     count++;
+
+                    FVector intersection;
+                    
+                    const auto GetEnd = [](const Vertex start, const Vertex end)
+                    {
+                        const FVector startPos = start.GetWorldPosition();
+                        const FTransform startTrans{ startPos };
+                        FVector transformed = startTrans.InverseTransformPosition(end.GetWorldPosition());
+                        transformed.Normalize();
+                        return end.GetWorldPosition() + transformed * 20;
+                    };
+                    const auto foo = [GetEnd, &intersection](const UWorld* worldContext, const Vertex startA, const Vertex endA, const Vertex startB, const Vertex endB)
+                    {
+                        const FVector lineAStart = startA.GetWorldPosition(), lineAEnd = GetEnd(startA, endA);
+                        const FVector lineBStart = startB.GetWorldPosition(), lineBEnd = GetEnd(startB, endB);
+
+#ifdef DRAW_DEBUG
+                        DrawDebugLine(worldContext, lineAStart, lineAEnd, FColor::Yellow, true, 100, 100);
+                        DrawDebugLine(worldContext, lineBStart, lineBEnd, FColor::White, true, 100, 100);
+#endif
+                        bool result = lineLineIntersection(lineBStart, lineBEnd, lineAStart, lineAEnd, intersection);
+                        if (intersection.Length() > 1000)
+                            return false;
+                        return result;
+                    };
+                    neighbors.Add(&vertexA);
+
+                    if (neighbors.Num() != 2)
+                        continue;
+                    if (foo(creatorTileA->GetWorld(), vertexA.NextVertex(), vertexA, vertexB.PrevVertex(), vertexB))
+                    {
+#ifdef DRAW_DEBUG
+                        DrawDebugSphere(creatorTileA->GetWorld(), intersection, 5, 64, FColor::Red, true);
+#endif
+                        vertexA.QueuePosition(intersection);
+                        vertexB.QueuePosition(intersection);
+                        queuedVertices.Add(&vertexA);
+                        queuedVertices.Add(&vertexB);
+                    }
                 }
             }
         }
-        if (neighbors.Num() < 2)
+
+        if (neighbors.Num() <= 2)
             continue;
         for (const auto& neighbor : neighbors)
         {
@@ -93,6 +159,8 @@ void UMeshGenerator::Merge()
             neighbor->SetPosition(average);
         }
     }
+    for (auto& vertex : queuedVertices)
+        vertex->ApplyPosition();
     for (const auto& generator : Generators)
         generator->UpdateMesh(0);
 }

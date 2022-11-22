@@ -12,10 +12,16 @@ public:
     bool IsMerged() const;
     FVector GetWorldPosition() const;
     FVector GetLocalPosition() const;
+    Vertex NextVertex() const;
+    Vertex PrevVertex() const;
+
+    void QueuePosition(const FVector newPosition);
+    void ApplyPosition();
+
     void SetPosition(const FVector newPosition);
 private:
     int vertexIndex;
     UMeshGenerator* generator;
-    FVector position;
+    FVector position, queuedPosition;
     bool hasBeenMerged = false;
 };

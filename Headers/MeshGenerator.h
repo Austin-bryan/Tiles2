@@ -1,12 +1,12 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "ProceduralMeshComponent.h"
-#include "TilesMap.h"
 #include "Vertex.h"
 #include "MeshGenerator.generated.h"
 
+//#define DRAW_DEBUG
+
 class ACreatorTile;
-//#define SHOW_VERTICES
 class ATile;
 class Vertex;
 
@@ -22,7 +22,7 @@ public:
     float Size = 5.5f;
     FVector Lengths = FVector(10, 10, 10);
 
-#ifdef SHOW_VERTICES 
+#ifdef DRAW_DEBUG 
     void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 #endif
     UPROPERTY(VisibleAnywhere)
