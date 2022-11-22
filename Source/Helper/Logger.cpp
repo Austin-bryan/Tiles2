@@ -41,6 +41,12 @@ template <typename... Types>
 	logParams = params;
 	Log(types...);
 }
+template <typename ... Types>
+	void Log(const bool b, const Types&... types)
+{
+	logText += b ? "true"_f : "false"_f;
+	Log(types...);
+}
 
 void Path(const int n, const float time) { Path(n, defaultColor, time); }
 void Path(const int n, const FColor color, const float time) { AddOnScreenMessage(FString("Path: ") + FString::FromInt(n), color, time); }

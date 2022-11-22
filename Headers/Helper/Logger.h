@@ -49,6 +49,8 @@ template <typename T, typename... Types>
     void Log(const T& firstArg, const Types&... types);
 template <typename... Types>
     void Log(const LogParams& params, const Types&... types);
+template<typename... Types>
+    void Log(const bool b, const Types&... types);
 
 void Path(int n, float time);
 void Path(int n, FColor color = defaultColor, float time = defaultTime);
