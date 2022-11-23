@@ -94,31 +94,28 @@ FVector UMeshGenerator::GetEndVertex(Vertex start, Vertex end)
     return end.GetWorldPosition() + transformed * 20;
 }
 
+bool UMeshGenerator::GetIntersection(UWorld* worldContext, Vertex startA, Vertex endA, Vertex startB, Vertex endB, FVector& intersection)
+{
+    const FVector lineAStart = startA.GetWorldPosition(), lineAEnd = GetEndVertex(startA, endA);
+    const FVector lineBStart = startB.GetWorldPosition(), lineBEnd = GetEndVertex(startB, endB);
+
+#ifdef DRAW_DEBUG
+    DrawDebugLine(worldContext, lineAStart, lineAEnd, FColor::Green, true, 100, 100);
+    DrawDebugLine(worldContext, lineBStart, lineBEnd, FColor::White, true, 100, 100);
+#endif
+    bool result = lineLineIntersection(lineAStart, lineAEnd, lineBStart, lineBEnd, intersection);
+
+    if (intersection.Length() > 1000)
+        return false;
+    return result;
+}
+
 void UMeshGenerator::Merge()
 {
     TArray<Vertex*> neighbors;
     Generators.Empty();
 
     TArray<Vertex*> queuedVertices;
-
-    const auto foo = [](const UWorld* worldContext, const Vertex startA, const Vertex endA, const Vertex startB, const Vertex endB, FVector& intersection)
-    {
-        const FVector lineAStart = startA.GetWorldPosition(), lineAEnd = GetEndVertex(startA, endA);
-        const FVector lineBStart = startB.GetWorldPosition(), lineBEnd = GetEndVertex(startB, endB);
-
-#ifdef DRAW_DEBUG
-        DrawDebugLine(worldContext, lineAStart, lineAEnd, FColor::Green, true, 100, 100);
-        DrawDebugLine(worldContext, lineBStart, lineBEnd, FColor::White, true, 100, 100);
-#endif
-        bool result = lineLineIntersection(lineAStart, lineAEnd, lineBStart, lineBEnd, intersection);
-
-        if (intersection.Length() > 1000)
-        {
-            // Log(FVector::Distance(lineAStart, lineAEnd), FVector::Distance(lineBStart, lineBEnd), RED);
-            return false;
-        }
-        return result;
-    };
 
     for (const auto& creatorTileA : TilesToMerge)
     for (auto& vertexA : creatorTileA->MeshGenerator->vertices)
@@ -151,10 +148,10 @@ void UMeshGenerator::Merge()
                 Log("Here");
                 const auto vertexMode = Cast<ACreatorBoard>(creatorTileA->Board())->VertexMode;
                 if (
-                    vertexMode == EVertexMode::NextNext && foo(creatorTileA->GetWorld(), vertexA.NextVertex(), vertexA, vertexB.NextVertex(), vertexB, intersection)
-                 || vertexMode == EVertexMode::NextPrev && foo(creatorTileA->GetWorld(), vertexA.NextVertex(), vertexA, vertexB.PrevVertex(), vertexB, intersection)
-                 || vertexMode == EVertexMode::PrevNext && foo(creatorTileA->GetWorld(), vertexA.PrevVertex(), vertexA, vertexB.NextVertex(), vertexB, intersection)
-                 || vertexMode == EVertexMode::PrevPrev && foo(creatorTileA->GetWorld(), vertexA.PrevVertex(), vertexA, vertexB.PrevVertex(), vertexB, intersection)
+                    vertexMode == EVertexMode::NextNext && GetIntersection(creatorTileA->GetWorld(), vertexA.NextVertex(), vertexA, vertexB.NextVertex(), vertexB, intersection)
+                 || vertexMode == EVertexMode::NextPrev && GetIntersection(creatorTileA->GetWorld(), vertexA.NextVertex(), vertexA, vertexB.PrevVertex(), vertexB, intersection)
+                 || vertexMode == EVertexMode::PrevNext && GetIntersection(creatorTileA->GetWorld(), vertexA.PrevVertex(), vertexA, vertexB.NextVertex(), vertexB, intersection)
+                 || vertexMode == EVertexMode::PrevPrev && GetIntersection(creatorTileA->GetWorld(), vertexA.PrevVertex(), vertexA, vertexB.PrevVertex(), vertexB, intersection)
                     )
                 {
 #ifdef DRAW_DEBUG

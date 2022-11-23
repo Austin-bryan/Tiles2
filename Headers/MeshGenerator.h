@@ -45,6 +45,13 @@ public:
     static FVector GetEndVertex(
         Vertex start,
         Vertex end);
+    static bool GetIntersection(
+        UWorld* worldContext,
+        Vertex startA,
+        Vertex endA,
+        Vertex startB,
+        Vertex endB,
+        FVector& intersection);
 private:
     void DrawHex(
         int index,
