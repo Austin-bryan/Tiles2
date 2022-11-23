@@ -65,6 +65,13 @@ public:
         Vertex& vertexA,
         Vertex& vertexB,
         FVector intersection);
+    static void MergeWithTile(
+        TArray<Vertex*>& neighbors,
+        TArray<Vertex*>& queuedVertices,
+        ACreatorTile* const& creatorTileA,
+        Vertex& vertexA, int& count,
+        FVector& sum,
+        ACreatorTile* const& creatorTileB);
 private:
     void DrawHex(
         int index,

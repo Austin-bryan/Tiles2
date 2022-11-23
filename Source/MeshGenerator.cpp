@@ -129,6 +129,28 @@ void UMeshGenerator::QueueVertices(TArray<Vertex*>& queuedVertices, ACreatorTile
     queuedVertices.Add(&vertexB);
 }
 
+void UMeshGenerator::MergeWithTile(TArray<Vertex*>& neighbors, TArray<Vertex*>& queuedVertices, ACreatorTile* const& creatorTileA, Vertex& vertexA, int& count, FVector& sum, ACreatorTile* const& creatorTileB)
+{
+    for (auto& vertexB : creatorTileB->MeshGenerator->vertices)
+    {
+        // Merge vertices if vertices have yet to be merged, and are close enough
+        if (!vertexA.IsMerged() && !vertexB.IsMerged() && FVector::Distance(vertexA.GetWorldPosition(), vertexB.GetWorldPosition()) <= distance)
+        {
+            neighbors.Add(&vertexB);
+            sum += vertexB.GetWorldPosition();
+            count++;
+
+            FVector intersection;
+            neighbors.Add(&vertexA);
+
+            if (neighbors.Num() != 2)
+                continue;
+            if (IsIntersectionValid(Cast<ACreatorBoard>(creatorTileA->Board())->VertexMode, creatorTileA, vertexA, vertexB, intersection))
+                QueueVertices(queuedVertices, creatorTileA, vertexA, vertexB, intersection);
+        }
+    }
+}
+
 void UMeshGenerator::Merge()
 {
     TArray<Vertex*> neighbors;
@@ -147,26 +169,8 @@ void UMeshGenerator::Merge()
         FVector sum = FVector::Zero();
 
         for (const auto& creatorTileB : TilesToMerge)
-        {
-            if (creatorTileB == creatorTileA)
-                continue;
-            for (auto& vertexB : creatorTileB->MeshGenerator->vertices)
-            if (!vertexA.IsMerged() && !vertexB.IsMerged() && FVector::Distance(vertexA.GetWorldPosition(), vertexB.GetWorldPosition()) <= distance)
-            {
-                neighbors.Add(&vertexB);
-                sum += vertexB.GetWorldPosition();
-                count++;
-
-                FVector intersection;
-                neighbors.Add(&vertexA);
-
-                if (neighbors.Num() != 2)
-                    continue;
-                if (IsIntersectionValid(Cast<ACreatorBoard>(creatorTileA->Board())->VertexMode, creatorTileA, vertexA, vertexB, intersection))
-                    QueueVertices(queuedVertices, creatorTileA, vertexA, vertexB, intersection);
-            }
-        }
-
+            if (creatorTileB != creatorTileA)
+                MergeWithTile(neighbors, queuedVertices, creatorTileA, vertexA, count, sum, creatorTileB);
         if (neighbors.Num() <= 2)
             continue;
         AverageVertices(neighbors, count, sum);
