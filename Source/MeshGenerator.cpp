@@ -74,11 +74,11 @@ bool lineLineIntersection(FVector A, FVector B, FVector C, FVector D, FVector& o
     return true;
 }
 
-void UMeshGenerator::AverageVertices(TArray<Vertex*> neighbors, int count, FVector sum)
+void UMeshGenerator::AverageVertices(TArray<Vertex*> neighbors, FVector sum)
 {
     for (const auto& neighbor : neighbors)
     {
-        FVector average = sum / count;
+        FVector average = sum / neighbors.Num();
         average.Y = 0;
         neighbor->SetPosition(average);
     }
@@ -129,25 +129,46 @@ void UMeshGenerator::QueueVertices(TArray<Vertex*>& queuedVertices, ACreatorTile
     queuedVertices.Add(&vertexB);
 }
 
-void UMeshGenerator::MergeWithTile(TArray<Vertex*>& neighbors, TArray<Vertex*>& queuedVertices, ACreatorTile* const& creatorTileA, Vertex& vertexA, int& count, FVector& sum, ACreatorTile* const& creatorTileB)
+bool UMeshGenerator::ShouldMergeVertices(const Vertex& vertexA, const Vertex& vertexB)
 {
+    return !vertexA.IsMerged() && !vertexB.IsMerged() && FVector::Distance(vertexA.GetWorldPosition(), vertexB.GetWorldPosition()) <= distance;
+}
+
+void UMeshGenerator::MergeWithNeighbor(TArray<Vertex*>& neighbors, TArray<Vertex*>& queuedVertices, ACreatorTile* const& creatorTileA, Vertex& vertexA, FVector& sum, ACreatorTile* const& creatorTileB)
+{
+    neighbors.Add(&vertexA);
+
     for (auto& vertexB : creatorTileB->MeshGenerator->vertices)
     {
-        // Merge vertices if vertices have yet to be merged, and are close enough
-        if (!vertexA.IsMerged() && !vertexB.IsMerged() && FVector::Distance(vertexA.GetWorldPosition(), vertexB.GetWorldPosition()) <= distance)
-        {
-            neighbors.Add(&vertexB);
-            sum += vertexB.GetWorldPosition();
-            count++;
+        if (!ShouldMergeVertices(vertexA, vertexB))
+            continue;
+        neighbors.Add(&vertexB);
+        sum += vertexB.GetWorldPosition();
 
-            FVector intersection;
-            neighbors.Add(&vertexA);
+        FVector intersection;
 
-            if (neighbors.Num() != 2)
-                continue;
-            if (IsIntersectionValid(Cast<ACreatorBoard>(creatorTileA->Board())->VertexMode, creatorTileA, vertexA, vertexB, intersection))
-                QueueVertices(queuedVertices, creatorTileA, vertexA, vertexB, intersection);
-        }
+        if (neighbors.Num() != 2)
+            continue;
+        if (IsIntersectionValid(Cast<ACreatorBoard>(creatorTileA->Board())->VertexMode, creatorTileA, vertexA, vertexB, intersection))
+            QueueVertices(queuedVertices, creatorTileA, vertexA, vertexB, intersection);
+    }
+}
+
+void UMeshGenerator::MergeWithNeighbors(TArray<Vertex*>& neighbors, TArray<Vertex*>& queuedVertices, ACreatorTile* const& creatorTileA)
+{
+    for (auto& vertexA : creatorTileA->MeshGenerator->vertices)
+    {
+        if (vertexA.IsMerged())
+            continue;
+        neighbors.Empty();
+        FVector sum = FVector::Zero();
+
+        for (const auto& creatorTileB : TilesToMerge)
+            if (creatorTileB != creatorTileA)
+                MergeWithNeighbor(neighbors, queuedVertices, creatorTileA, vertexA, sum, creatorTileB);
+        if (neighbors.Num() <= 2)
+            continue;
+        AverageVertices(neighbors, sum);
     }
 }
 
@@ -155,26 +176,10 @@ void UMeshGenerator::Merge()
 {
     TArray<Vertex*> neighbors;
     Generators.Empty();
-
     TArray<Vertex*> queuedVertices;
 
     for (const auto& creatorTileA : TilesToMerge)
-    for (auto& vertexA : creatorTileA->MeshGenerator->vertices)
-    {
-        if (vertexA.IsMerged())
-            continue;
-        neighbors.Empty();
-
-        int count = 0;
-        FVector sum = FVector::Zero();
-
-        for (const auto& creatorTileB : TilesToMerge)
-            if (creatorTileB != creatorTileA)
-                MergeWithTile(neighbors, queuedVertices, creatorTileA, vertexA, count, sum, creatorTileB);
-        if (neighbors.Num() <= 2)
-            continue;
-        AverageVertices(neighbors, count, sum);
-    }
+        MergeWithNeighbors(neighbors, queuedVertices, creatorTileA);
     for (auto& vertex : queuedVertices)
         vertex->ApplyPosition();
     for (const auto& generator : Generators)

@@ -41,7 +41,6 @@ public:
     static TArray<ACreatorTile*> TilesToMerge;
     static void AverageVertices(
         TArray<Vertex*> neighbors,
-        int count,
         FVector sum);
     static FVector GetEndVertex(
         Vertex start,
@@ -65,13 +64,20 @@ public:
         Vertex& vertexA,
         Vertex& vertexB,
         FVector intersection);
-    static void MergeWithTile(
+    static bool ShouldMergeVertices(
+        const Vertex& vertexA,
+        const Vertex& vertexB);
+    static void MergeWithNeighbor(
         TArray<Vertex*>& neighbors,
         TArray<Vertex*>& queuedVertices,
         ACreatorTile* const& creatorTileA,
-        Vertex& vertexA, int& count,
+        Vertex& vertexA,
         FVector& sum,
         ACreatorTile* const& creatorTileB);
+    static void MergeWithNeighbors(
+        TArray<Vertex*>& neighbors,
+        TArray<Vertex*>& queuedVertices,
+        ACreatorTile* const& creatorTileA);
 private:
     void DrawHex(
         int index,
