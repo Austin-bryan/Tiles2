@@ -16,7 +16,7 @@
 #define BLUE LogParams(FColor::Blue)
 #define WHITE LogParams(FColor::White)
 #define BLACK LogParams(FColor::Black)
-#define TURQUOISE LogParams(FColor::Turquise)
+#define TURQUOISE LogParams(FColor::Turquoise)
 #define EMERALD LogParams(FColor::Emerald)
 #define MAGENTA LogParams(FColor::Magenta)
 #define PURPLE LogParams(FColor::Purple)
