@@ -76,6 +76,16 @@ bool lineLineIntersection(FVector A, FVector B, FVector C, FVector D, FVector& o
     return true;
 }
 
+void UMeshGenerator::AverageVertices(TArray<Vertex*> neighbors, int count, FVector sum)
+{
+    for (const auto& neighbor : neighbors)
+    {
+        FVector average = sum / count;
+        average.Y = 0;
+        neighbor->SetPosition(average);
+    }
+}
+
 void UMeshGenerator::Merge()
 {
     TArray<Vertex*> neighbors;
@@ -168,12 +178,7 @@ void UMeshGenerator::Merge()
 
         if (neighbors.Num() <= 2)
             continue;
-        for (const auto& neighbor : neighbors)
-        {
-            FVector average = sum / count;
-            average.Y = 0;
-            neighbor->SetPosition(average);
-        }
+        AverageVertices(neighbors, count, sum);
     }
     for (auto& vertex : queuedVertices)
         vertex->ApplyPosition();

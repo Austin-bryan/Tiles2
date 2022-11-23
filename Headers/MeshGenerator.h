@@ -23,7 +23,11 @@ public:
     FVector Lengths = FVector(10, 10, 10);
 
 #ifdef DRAW_DEBUG 
-    void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+    void TickComponent(
+        float DeltaTime,
+        ELevelTick TickType,
+        FActorComponentTickFunction* ThisTickFunction)
+    override;
 #endif
     UPROPERTY(VisibleAnywhere)
         UProceduralMeshComponent* ProceduralMesh;
@@ -34,9 +38,21 @@ public:
     static TArray<Vertex> UniversalVertices;
     static TArray<UMeshGenerator*> Generators;
     static TArray<ACreatorTile*> TilesToMerge;
+    static void AverageVertices(
+        TArray<Vertex*> neighbors,
+        int count,
+        FVector sum);
 private:
-    void DrawHex(int index, FRotator faceAngle, FVector origin);
-    void DrawQuad(const int index, const int width, const int height, const FRotator faceAngle, const FVector origin);
+    void DrawHex(
+        int index,
+        FRotator faceAngle,
+        FVector origin);
+    void DrawQuad(
+        const int index,
+        const int width,
+        const int height,
+        const FRotator faceAngle,
+        const FVector origin);
     void UpdateMesh(int index);
     void ClearData();
 
