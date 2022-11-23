@@ -44,7 +44,7 @@ template <typename... Types>
 template <typename ... Types>
 	void Log(const bool b, const Types&... types)
 {
-	logText += b ? "true"_f : "false"_f;
+	logText += b ? "true"_f : "false"_f + PAIR;
 	Log(types...);
 }
 
