@@ -15,9 +15,8 @@ public:
     Vertex NextVertex() const;
     Vertex PrevVertex() const;
 
-    void QueuePosition(const FVector newPosition);
     void ApplyPosition();
-
+    void QueuePosition(const FVector newPosition);
     void SetPosition(const FVector newPosition);
 private:
     int vertexIndex;
@@ -25,3 +24,10 @@ private:
     FVector position, queuedPosition;
     bool hasBeenMerged = false;
 };
+
+inline bool operator==(
+    const Vertex& rhs,
+    const Vertex& lhs)
+{
+    return rhs.GetWorldPosition() == lhs.GetWorldPosition();
+}
