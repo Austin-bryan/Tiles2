@@ -118,6 +118,17 @@ bool UMeshGenerator::IsIntersectionValid(EVertexMode vertexMode, const ACreatorT
         || vertexMode == EVertexMode::PrevPrev && GetIntersection(creatorTileA->GetWorld(), vertexA.PrevVertex(), vertexA, vertexB.PrevVertex(), vertexB, intersection);
 }
 
+void UMeshGenerator::QueueVertices(TArray<Vertex*>& queuedVertices, ACreatorTile* const& creatorTileA, Vertex& vertexA, Vertex& vertexB, FVector intersection)
+{
+#ifdef DRAW_DEBUG
+    DrawDebugSphere(creatorTileA->GetWorld(), intersection, 2, 64, FColor::Red, true);
+#endif
+    vertexA.QueuePosition(intersection);
+    vertexB.QueuePosition(intersection);
+    queuedVertices.Add(&vertexA);
+    queuedVertices.Add(&vertexB);
+}
+
 void UMeshGenerator::Merge()
 {
     TArray<Vertex*> neighbors;
@@ -152,15 +163,7 @@ void UMeshGenerator::Merge()
                 if (neighbors.Num() != 2)
                     continue;
                 if (IsIntersectionValid(Cast<ACreatorBoard>(creatorTileA->Board())->VertexMode, creatorTileA, vertexA, vertexB, intersection))
-                {
-#ifdef DRAW_DEBUG
-                    DrawDebugSphere(creatorTileA->GetWorld(), intersection, 2, 64, FColor::Red, true);
-#endif
-                    vertexA.QueuePosition(intersection);
-                    vertexB.QueuePosition(intersection);
-                    queuedVertices.Add(&vertexA);
-                    queuedVertices.Add(&vertexB);
-                }
+                    QueueVertices(queuedVertices, creatorTileA, vertexA, vertexB, intersection);
             }
         }
 

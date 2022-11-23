@@ -58,8 +58,13 @@ public:
         const ACreatorTile* const creatorTileA,
         const Vertex& vertexA,
         const Vertex& vertexB,
-        FVector& intersection
-        );
+        FVector& intersection);
+    static void QueueVertices(
+        TArray<Vertex*>& queuedVertices,
+        ACreatorTile* const& creatorTileA,
+        Vertex& vertexA,
+        Vertex& vertexB,
+        FVector intersection);
 private:
     void DrawHex(
         int index,
