@@ -55,6 +55,7 @@ public:
     static bool IsIntersectionValid(
         EVertexMode vertexMode,
         const ACreatorTile* const creatorTileA,
+        const ACreatorTile* const creatorTileB,
         const Vertex& vertexA,
         const Vertex& vertexB,
         FVector& intersection);

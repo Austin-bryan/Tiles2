@@ -70,7 +70,7 @@ bool LineLineIntersection(FVector A, FVector B, FVector C, FVector D, FVector& o
     double z = (a1 * c2 - a2 * c1) / determinant;
 
     out_intersection = FVector(x, 0, z);
-    Log("intersection: ", out_intersection);
+    Log("intersection: ", out_intersection, TURQUOISE);
     return true;
 }
 
@@ -116,16 +116,17 @@ void UMeshGenerator::MergeWithNeighbor(TArray<Vertex*>& neighbors, TArray<Vertex
         sum += vertexB.GetWorldPosition();
 
         FVector intersection;
-
         if (neighbors.Num() != 2)
             continue;
-        if (IsIntersectionValid(Cast<ACreatorBoard>(creatorTileA->Board())->VertexMode, creatorTileA, vertexA, vertexB, intersection))
+        if (IsIntersectionValid(Cast<ACreatorBoard>(creatorTileA->Board())->VertexMode, creatorTileA, creatorTileB, vertexA, vertexB, intersection))
             QueueVertices(queuedVertices, creatorTileA, vertexA, vertexB, intersection);
     }
 }
 bool UMeshGenerator::ShouldMergeVertices(const Vertex& vertexA, const Vertex& vertexB)
 {
-    return !vertexA.IsMerged() && !vertexB.IsMerged() && FVector::Distance(vertexA.GetWorldPosition(), vertexB.GetWorldPosition()) <= distance;
+    if (vertexA.IsMerged() || vertexB.IsMerged())
+        return false;
+    return FVector::Distance(vertexA.GetWorldPosition(), vertexB.GetWorldPosition()) <= distance;
 }
 void UMeshGenerator::QueueVertices(TArray<Vertex*>& queuedVertices, ACreatorTile* const& creatorTileA, Vertex& vertexA, Vertex& vertexB, FVector intersection)
 {
@@ -137,12 +138,38 @@ void UMeshGenerator::QueueVertices(TArray<Vertex*>& queuedVertices, ACreatorTile
     queuedVertices.Add(&vertexA);
     queuedVertices.Add(&vertexB);
 }
-bool UMeshGenerator::IsIntersectionValid(EVertexMode vertexMode, const ACreatorTile* const creatorTileA, const Vertex& vertexA, const Vertex& vertexB, FVector& intersection)
+bool UMeshGenerator::IsIntersectionValid(
+    EVertexMode vertexMode,
+    const ACreatorTile* const creatorTileA,
+    const ACreatorTile* const creatorTileB,
+    const Vertex& vertexA,
+    const Vertex& vertexB,
+    FVector& intersection)
 {
-    return vertexMode == EVertexMode::NextNext && GetIntersection(creatorTileA->GetWorld(), vertexA.NextVertex(), vertexA, vertexB.NextVertex(), vertexB, intersection)
+    const double location1 = FVector::Distance(creatorTileB->GetActorLocation(), vertexA.NextVertex().GetWorldPosition());
+    const double location2 = FVector::Distance(creatorTileB->GetActorLocation(), vertexA.PrevVertex().GetWorldPosition());
+    const double location3 = FVector::Distance(creatorTileA->GetActorLocation(), vertexB.NextVertex().GetWorldPosition());
+    const double location4 = FVector::Distance(creatorTileA->GetActorLocation(), vertexB.PrevVertex().GetWorldPosition());
+    
+    // Log("VertexA.Next: ", vertexA.NextVertex(), "VertexB: ", vertexB, "VertexA.Prev: ", vertexA.PrevVertex());
+    // Log("VertexB.Next: ", vertexB.NextVertex(), "VertexA: ", vertexA, "VertexB.Prev: ", vertexB.PrevVertex());
+    
+    // Log("VertexA.Next == B: ", vertexA.NextVertex() == vertexB,"VertexA.Prev == B: ", vertexA.PrevVertex() == vertexB);
+    // Log("VertexB.Next == B: ", vertexA.NextVertex() == vertexB,"VertexB.Prev == B: ", vertexB.PrevVertex() == vertexA);
+    // Log(vertexA.NextVertex() == vertexB, vertexA.PrevVertex() == vertexB,
+        // vertexB.NextVertex() == vertexA, vertexB.PrevVertex() == vertexA);
+
+    Vertex vA = location1 > 100 ? vertexA.NextVertex() : vertexA.PrevVertex();
+    Vertex vB = location3 > 100 ? vertexB.NextVertex() : vertexB.PrevVertex();
+
+    return GetIntersection(creatorTileA->GetWorld(), vertexA, vA, vertexB, vB, intersection);
+
+    return
+           vertexMode == EVertexMode::PrevNext && GetIntersection(creatorTileA->GetWorld(), vertexA.PrevVertex(), vertexA, vertexB.NextVertex(), vertexB, intersection)
         || vertexMode == EVertexMode::NextPrev && GetIntersection(creatorTileA->GetWorld(), vertexA.NextVertex(), vertexA, vertexB.PrevVertex(), vertexB, intersection)
-        || vertexMode == EVertexMode::PrevNext && GetIntersection(creatorTileA->GetWorld(), vertexA.PrevVertex(), vertexA, vertexB.NextVertex(), vertexB, intersection)
-        || vertexMode == EVertexMode::PrevPrev && GetIntersection(creatorTileA->GetWorld(), vertexA.PrevVertex(), vertexA, vertexB.PrevVertex(), vertexB, intersection);
+        || vertexMode == EVertexMode::NextNext && GetIntersection(creatorTileA->GetWorld(), vertexA.NextVertex(), vertexA, vertexB.NextVertex(), vertexB, intersection)
+        || vertexMode == EVertexMode::PrevPrev && GetIntersection(creatorTileA->GetWorld(), vertexA.PrevVertex(), vertexA, vertexB.PrevVertex(), vertexB, intersection)
+    ;
 }
 bool UMeshGenerator::GetIntersection(UWorld* worldContext, Vertex startA, Vertex endA, Vertex startB, Vertex endB, FVector& intersection)
 {
