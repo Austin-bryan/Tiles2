@@ -110,6 +110,14 @@ bool UMeshGenerator::GetIntersection(UWorld* worldContext, Vertex startA, Vertex
     return result;
 }
 
+bool UMeshGenerator::IsIntersectionValid(EVertexMode vertexMode, const ACreatorTile* const creatorTileA, const Vertex& vertexA, const Vertex& vertexB, FVector& intersection)
+{
+    return vertexMode == EVertexMode::NextNext && GetIntersection(creatorTileA->GetWorld(), vertexA.NextVertex(), vertexA, vertexB.NextVertex(), vertexB, intersection)
+        || vertexMode == EVertexMode::NextPrev && GetIntersection(creatorTileA->GetWorld(), vertexA.NextVertex(), vertexA, vertexB.PrevVertex(), vertexB, intersection)
+        || vertexMode == EVertexMode::PrevNext && GetIntersection(creatorTileA->GetWorld(), vertexA.PrevVertex(), vertexA, vertexB.NextVertex(), vertexB, intersection)
+        || vertexMode == EVertexMode::PrevPrev && GetIntersection(creatorTileA->GetWorld(), vertexA.PrevVertex(), vertexA, vertexB.PrevVertex(), vertexB, intersection);
+}
+
 void UMeshGenerator::Merge()
 {
     TArray<Vertex*> neighbors;
@@ -141,18 +149,9 @@ void UMeshGenerator::Merge()
                 FVector intersection;
                 neighbors.Add(&vertexA);
 
-                Log(vertexB, neighbors.Num(), (bool)vertexB.IsMerged(), RED);
                 if (neighbors.Num() != 2)
                     continue;
-                
-                Log("Here");
-                const auto vertexMode = Cast<ACreatorBoard>(creatorTileA->Board())->VertexMode;
-                if (
-                    vertexMode == EVertexMode::NextNext && GetIntersection(creatorTileA->GetWorld(), vertexA.NextVertex(), vertexA, vertexB.NextVertex(), vertexB, intersection)
-                 || vertexMode == EVertexMode::NextPrev && GetIntersection(creatorTileA->GetWorld(), vertexA.NextVertex(), vertexA, vertexB.PrevVertex(), vertexB, intersection)
-                 || vertexMode == EVertexMode::PrevNext && GetIntersection(creatorTileA->GetWorld(), vertexA.PrevVertex(), vertexA, vertexB.NextVertex(), vertexB, intersection)
-                 || vertexMode == EVertexMode::PrevPrev && GetIntersection(creatorTileA->GetWorld(), vertexA.PrevVertex(), vertexA, vertexB.PrevVertex(), vertexB, intersection)
-                    )
+                if (IsIntersectionValid(Cast<ACreatorBoard>(creatorTileA->Board())->VertexMode, creatorTileA, vertexA, vertexB, intersection))
                 {
 #ifdef DRAW_DEBUG
                     DrawDebugSphere(creatorTileA->GetWorld(), intersection, 2, 64, FColor::Red, true);

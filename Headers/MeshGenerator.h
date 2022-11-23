@@ -1,5 +1,6 @@
 #pragma once
 #include "CoreMinimal.h"
+#include "CreatorBoard.h"
 #include "ProceduralMeshComponent.h"
 #include "Vertex.h"
 #include "MeshGenerator.generated.h"
@@ -52,6 +53,13 @@ public:
         Vertex startB,
         Vertex endB,
         FVector& intersection);
+    static bool IsIntersectionValid(
+        EVertexMode vertexMode,
+        const ACreatorTile* const creatorTileA,
+        const Vertex& vertexA,
+        const Vertex& vertexB,
+        FVector& intersection
+        );
 private:
     void DrawHex(
         int index,
