@@ -6,11 +6,9 @@
 #include "CreatorTile.h"
 #include "KismetProceduralMeshLibrary.h"
 #include "Logger.h"
-#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Vertex.h"
 #include "Tile.h"
-#include "CreatorTile.h"
 #include "CreatorBoard.h"
 
 /*
@@ -86,30 +84,27 @@ void UMeshGenerator::AverageVertices(TArray<Vertex*> neighbors, int count, FVect
     }
 }
 
+FVector UMeshGenerator::GetEndVertex(Vertex start, Vertex end)
+{
+    const FVector startPos = start.GetWorldPosition();
+    const FTransform startTrans{ startPos };
+    FVector transformed = startTrans.InverseTransformPosition(end.GetWorldPosition());
+    transformed.Normalize();
+        
+    return end.GetWorldPosition() + transformed * 20;
+}
+
 void UMeshGenerator::Merge()
 {
     TArray<Vertex*> neighbors;
-    int genCount = 0;
     Generators.Empty();
-
-    int loop = 0;
-    int distanceCheck = 0;
-    int test = 0;
 
     TArray<Vertex*> queuedVertices;
 
-    const auto GetEnd = [](const Vertex start, const Vertex end)
+    const auto foo = [](const UWorld* worldContext, const Vertex startA, const Vertex endA, const Vertex startB, const Vertex endB, FVector& intersection)
     {
-        const FVector startPos = start.GetWorldPosition();
-        const FTransform startTrans{ startPos };
-        FVector transformed = startTrans.InverseTransformPosition(end.GetWorldPosition());
-        transformed.Normalize();
-        return end.GetWorldPosition() + transformed * 20;
-    };
-    const auto foo = [GetEnd](const UWorld* worldContext, const Vertex startA, const Vertex endA, const Vertex startB, const Vertex endB, FVector& intersection)
-    {
-        const FVector lineAStart = startA.GetWorldPosition(), lineAEnd = GetEnd(startA, endA);
-        const FVector lineBStart = startB.GetWorldPosition(), lineBEnd = GetEnd(startB, endB);
+        const FVector lineAStart = startA.GetWorldPosition(), lineAEnd = GetEndVertex(startA, endA);
+        const FVector lineBStart = startB.GetWorldPosition(), lineBEnd = GetEndVertex(startB, endB);
 
 #ifdef DRAW_DEBUG
         DrawDebugLine(worldContext, lineAStart, lineAEnd, FColor::Green, true, 100, 100);
@@ -117,8 +112,6 @@ void UMeshGenerator::Merge()
 #endif
         bool result = lineLineIntersection(lineAStart, lineAEnd, lineBStart, lineBEnd, intersection);
 
-                        
-        // Log(FVector::Distance(lineAStart, lineAEnd), FVector::Distance(lineBStart, lineBEnd), WHITE);
         if (intersection.Length() > 1000)
         {
             // Log(FVector::Distance(lineAStart, lineAEnd), FVector::Distance(lineBStart, lineBEnd), RED);
@@ -130,7 +123,6 @@ void UMeshGenerator::Merge()
     for (const auto& creatorTileA : TilesToMerge)
     for (auto& vertexA : creatorTileA->MeshGenerator->vertices)
     {
-        loop++;
         if (vertexA.IsMerged())
             continue;
         neighbors.Empty();

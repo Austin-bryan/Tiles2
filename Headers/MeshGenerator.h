@@ -42,6 +42,9 @@ public:
         TArray<Vertex*> neighbors,
         int count,
         FVector sum);
+    static FVector GetEndVertex(
+        Vertex start,
+        Vertex end);
 private:
     void DrawHex(
         int index,
