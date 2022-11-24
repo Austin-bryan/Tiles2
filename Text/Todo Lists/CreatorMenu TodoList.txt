@@ -37,6 +37,8 @@
         Expand
         Icon
         
+bug where slant selection entirely breaks vertices
+ 
  ==== Polish ====
  Animations
     Animate hover opacity

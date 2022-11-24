@@ -69,14 +69,12 @@ public:
         const Vertex& vertexA,
         const Vertex& vertexB);
     static void MergeWithNeighbor(
-        TArray<Vertex*>& neighbors,
         TArray<Vertex*>& queuedVertices,
         ACreatorTile* const& creatorTileA,
         Vertex& vertexA,
         FVector& sum,
         ACreatorTile* const& creatorTileB);
     static void MergeWithNeighbors(
-        TArray<Vertex*>& neighbors,
         TArray<Vertex*>& queuedVertices,
         ACreatorTile* const& creatorTileA);
 private:
