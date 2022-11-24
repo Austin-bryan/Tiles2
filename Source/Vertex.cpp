@@ -8,8 +8,8 @@ Vertex::Vertex(const int _vertexIndex, const FVector vertexPos, UMeshGenerator* 
 }
 bool Vertex::IsMerged() const { return hasBeenMerged; }
 
-Vertex Vertex::PrevVertex() const { return generator->vertices[(FMath::Abs(vertexIndex - 1)) % 6]; }
-Vertex Vertex::NextVertex() const { return generator->vertices[(vertexIndex + 1) % 6]; }
+Vertex  Vertex::PrevVertex()       const { return generator->vertices[(FMath::Abs(vertexIndex - 1 + 6) % 6)]; }
+Vertex  Vertex::NextVertex()       const { return generator->vertices[(vertexIndex + 1) % 6]; }
 FVector Vertex::GetWorldPosition() const { return position + generator->GetOwner()->GetActorLocation(); }
 FVector Vertex::GetLocalPosition() const { return position; }
 

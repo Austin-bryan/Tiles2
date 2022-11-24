@@ -2,6 +2,7 @@
 // ReSharper disable CppLocalVariableMayBeConst
 #include "MeshGenerator.h"
 
+#include "ActiveSocket.h"
 #include "Board.h"
 #include "CreatorTile.h"
 #include "KismetProceduralMeshLibrary.h"
@@ -151,25 +152,10 @@ bool UMeshGenerator::IsIntersectionValid(
     const double location3 = FVector::Distance(creatorTileA->GetActorLocation(), vertexB.NextVertex().GetWorldPosition());
     const double location4 = FVector::Distance(creatorTileA->GetActorLocation(), vertexB.PrevVertex().GetWorldPosition());
     
-    // Log("VertexA.Next: ", vertexA.NextVertex(), "VertexB: ", vertexB, "VertexA.Prev: ", vertexA.PrevVertex());
-    // Log("VertexB.Next: ", vertexB.NextVertex(), "VertexA: ", vertexA, "VertexB.Prev: ", vertexB.PrevVertex());
-    
-    // Log("VertexA.Next == B: ", vertexA.NextVertex() == vertexB,"VertexA.Prev == B: ", vertexA.PrevVertex() == vertexB);
-    // Log("VertexB.Next == B: ", vertexA.NextVertex() == vertexB,"VertexB.Prev == B: ", vertexB.PrevVertex() == vertexA);
-    // Log(vertexA.NextVertex() == vertexB, vertexA.PrevVertex() == vertexB,
-        // vertexB.NextVertex() == vertexA, vertexB.PrevVertex() == vertexA);
+    Vertex vA = location1 >= location2 ? vertexA.NextVertex() : vertexA.PrevVertex();
+    Vertex vB = location3 >= location4 ? vertexB.NextVertex() : vertexB.PrevVertex();
 
-    Vertex vA = location1 > 100 ? vertexA.NextVertex() : vertexA.PrevVertex();
-    Vertex vB = location3 > 100 ? vertexB.NextVertex() : vertexB.PrevVertex();
-
-    return GetIntersection(creatorTileA->GetWorld(), vertexA, vA, vertexB, vB, intersection);
-
-    return
-           vertexMode == EVertexMode::PrevNext && GetIntersection(creatorTileA->GetWorld(), vertexA.PrevVertex(), vertexA, vertexB.NextVertex(), vertexB, intersection)
-        || vertexMode == EVertexMode::NextPrev && GetIntersection(creatorTileA->GetWorld(), vertexA.NextVertex(), vertexA, vertexB.PrevVertex(), vertexB, intersection)
-        || vertexMode == EVertexMode::NextNext && GetIntersection(creatorTileA->GetWorld(), vertexA.NextVertex(), vertexA, vertexB.NextVertex(), vertexB, intersection)
-        || vertexMode == EVertexMode::PrevPrev && GetIntersection(creatorTileA->GetWorld(), vertexA.PrevVertex(), vertexA, vertexB.PrevVertex(), vertexB, intersection)
-    ;
+    return GetIntersection(creatorTileA->GetWorld(), vA, vertexA, vB, vertexB, intersection);
 }
 bool UMeshGenerator::GetIntersection(UWorld* worldContext, Vertex startA, Vertex endA, Vertex startB, Vertex endB, FVector& intersection)
 {

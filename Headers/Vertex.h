@@ -18,8 +18,8 @@ public:
     void ApplyPosition();
     void QueuePosition(const FVector newPosition);
     void SetPosition(const FVector newPosition);
-private:
     int vertexIndex;
+private:
     UMeshGenerator* generator;
     FVector position, queuedPosition;
     bool hasBeenMerged = false;
