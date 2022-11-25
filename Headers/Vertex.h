@@ -1,13 +1,15 @@
 #pragma once
 #include "CoreMinimal.h"
-#include "MeshGenerator.h"
+#include "Vertex.generated.h"
 
 class UMeshGenerator;
 
-class TILES2_API Vertex
+UCLASS()
+class TILES2_API AVertex : public AActor
 {
+    GENERATED_BODY()
 public:
-    Vertex(
+    void Init(
         const int _vertexIndex,
         const int _sideCount,
         const FVector _position,
@@ -16,12 +18,14 @@ public:
     bool IsMerged() const;
     FVector GetWorldPosition() const;
     FVector GetLocalPosition() const;
-    Vertex NextVertex() const;
-    Vertex PrevVertex() const;
+    AVertex* NextVertex() const;
+    AVertex* PrevVertex() const;
 
     void ApplyPosition();
     void QueuePosition(const FVector newPosition);
     void SetPosition(const FVector newPosition);
+protected:
+    
 private:
     int vertexIndex, sideCount;
     UMeshGenerator* generator;
@@ -30,8 +34,8 @@ private:
 };
 
 inline bool operator==(
-    const Vertex& rhs,
-    const Vertex& lhs)
+    const AVertex& rhs,
+    const AVertex& lhs)
 {
     return rhs.GetWorldPosition() == lhs.GetWorldPosition();
 }

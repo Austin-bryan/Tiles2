@@ -79,7 +79,7 @@ inline std::ostringstream& operator<<(std::ostringstream& os, const FParameter& 
 	os << coord.ToString();
 	return os;
 }
-inline std::ostringstream& operator<<(std::ostringstream& os, const Vertex& vertex)
+inline std::ostringstream& operator<<(std::ostringstream& os, const AVertex& vertex)
 {
 	os << vertex.GetWorldPosition();
 	return os;

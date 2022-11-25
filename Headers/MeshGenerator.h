@@ -2,19 +2,18 @@
 #include "CoreMinimal.h"
 #include "CreatorBoard.h"
 #include "ProceduralMeshComponent.h"
-#include "Vertex.h"
 #include "MeshGenerator.generated.h"
 
-#define DRAW_DEBUG
+// #define DRAW_DEBUG
 
 class ATile;
-class Vertex;
+class AVertex;
 class ACreatorTile;
 
 UCLASS()
 class TILES2_API UMeshGenerator : public UActorComponent
 {
-    friend class Vertex;
+    friend class AVertex;
     GENERATED_BODY()
 public:
     UMeshGenerator(); 
@@ -31,46 +30,46 @@ public:
 
     UFUNCTION(BlueprintCallable)
         static void Merge();
-    static TArray<Vertex> UniversalVertices;
+    static TArray<AVertex> UniversalVertices;
     static TArray<UMeshGenerator*> Generators;
     static TArray<ACreatorTile*> TilesToMerge;
     static void AverageVertices(
-        TArray<Vertex*> neighbors,
+        TArray<AVertex*> neighbors,
         FVector sum);
     static FVector GetEndVertex(
-        Vertex start,
-        Vertex end);
+        const AVertex* start,
+        const AVertex* end);
     static bool GetIntersection(
         UWorld* worldContext,
-        Vertex startA,
-        Vertex endA,
-        Vertex startB,
-        Vertex endB,
+        const AVertex* startA,
+        const AVertex* endA,
+        const AVertex* startB,
+        const AVertex* endB,
         FVector& intersection);
     static bool IsIntersectionValid(
         EVertexMode vertexMode,
         const ACreatorTile* const creatorTileA,
         const ACreatorTile* const creatorTileB,
-        const Vertex& vertexA,
-        const Vertex& vertexB,
+        const AVertex* vertexA,
+        const AVertex* vertexB,
         FVector& intersection);
     static void QueueVertices(
-        TArray<Vertex*>& queuedVertices,
+        TArray<AVertex*>& queuedVertices,
         ACreatorTile* const& creatorTileA,
-        Vertex& vertexA,
-        Vertex& vertexB,
+        AVertex* vertexA,
+        AVertex* vertexB,
         FVector intersection);
     static bool ShouldMergeVertices(
-        const Vertex& vertexA,
-        const Vertex& vertexB);
+        const AVertex* vertexA,
+        const AVertex* vertexB);
     static void MergeWithNeighbor(
-        TArray<Vertex*>& queuedVertices,
+        TArray<AVertex*>& queuedVertices,
         ACreatorTile* const& creatorTileA,
-        Vertex& vertexA,
+        AVertex* vertexA,
         FVector& sum,
         ACreatorTile* const& creatorTileB);
     static void MergeWithNeighbors(
-        TArray<Vertex*>& queuedVertices,
+        TArray<AVertex*>& queuedVertices,
         ACreatorTile* const& creatorTileA);
 
     void Init(
@@ -83,7 +82,7 @@ private:
     void UpdateMesh();
     void ClearData();
 
-    TArray<Vertex> vertices;
+    TArray<AVertex*> vertices;
     TArray<FVector> vertexPositions;
     TArray<int> triangles;
     TArray<FVector> normals;
