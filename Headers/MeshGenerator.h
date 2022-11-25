@@ -18,11 +18,6 @@ class TILES2_API UMeshGenerator : public UActorComponent
     GENERATED_BODY()
 public:
     UMeshGenerator(); 
-    void BeginPlay() override;
-    
-    float Size = 5.5f;
-    FVector Lengths = FVector(10, 10, 10);
-
 #ifdef DRAW_DEBUG 
     void TickComponent(
         float DeltaTime,
@@ -77,18 +72,15 @@ public:
     static void MergeWithNeighbors(
         TArray<Vertex*>& queuedVertices,
         ACreatorTile* const& creatorTileA);
+
+    void Init(
+        int _radius,
+        int _vertexCount,
+        int _angleOffset,
+        int _angle);
 private:
-    void DrawHex(
-        int index,
-        FRotator faceAngle,
-        FVector origin);
-    void DrawQuad(
-        const int index,
-        const int width,
-        const int height,
-        const FRotator faceAngle,
-        const FVector origin);
-    void UpdateMesh(int index);
+    void Draw();
+    void UpdateMesh();
     void ClearData();
 
     TArray<Vertex> vertices;
@@ -98,4 +90,6 @@ private:
     TArray<FVector2D> UV;
     TArray<FColor> colors;
     TArray<FProcMeshTangent> tangents;
+    
+    int radius, angle, vertexCount, angleOffset;
 };

@@ -12,6 +12,7 @@ UDragSelect::UDragSelect()
     UActorComponent::SetComponentTickEnabled(true);
     lineBatchComponent = CreateDefaultSubobject<ULineBatchComponent>(FName("Line Batch"));
 }
+
 void UDragSelect::BeginPlay()
 {
     selectionBox = GetWorld()->SpawnActor<ASelectionBox>(
@@ -21,18 +22,14 @@ void UDragSelect::BeginPlay()
     Super::BeginPlay();
     ChangeSelectionShape(ESelectionShape::Square);
 }
-
-void UDragSelect::TickComponent(const float deltaTime, const ELevelTick tickType
-    , FActorComponentTickFunction* ThisTickFunction)
+void UDragSelect::TickComponent(const float deltaTime, const ELevelTick tickType, FActorComponentTickFunction* ThisTickFunction)
 {
     Super::TickComponent(deltaTime, tickType, ThisTickFunction);
 
-    if (!board) { Log("Board is null", 0); return; }
-    if (!board->GetWorld()) { Log("World is null", 0); return; }
-    if (!board->GetWorld()->GetFirstPlayerController()) { Log("Controller is null", 0); return; }
+    if (!board) { Log("Board is null", LogParams(0)); return; }
+    if (!board->GetWorld()) { Log("World is null", LogParams(0)); return; }
+    if (!board->GetWorld()->GetFirstPlayerController()) { Log("Controller is null", LogParams(0)); return; }
 
-    if (!board || !board->GetWorld() || !board->GetWorld()->GetFirstPlayerController())
-        return;
     const auto controller = board->GetWorld()->GetFirstPlayerController();
     auto GetScreenToWorld = [this, controller]
     {
@@ -68,6 +65,7 @@ void UDragSelect::TickComponent(const float deltaTime, const ELevelTick tickType
         selectionBox->SetVisibility(true);
     }
 }
+void UDragSelect::SetBoard(ACreatorBoard* _board) { board = _board; }
 void UDragSelect::OnRotate() const { selectionBox->SetVisibility(false, true); }
 void UDragSelect::ChangeSelectionShape(const ESelectionShape mode)
 {

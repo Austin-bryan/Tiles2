@@ -21,21 +21,9 @@
 TArray<Vertex> UMeshGenerator::UniversalVertices;
 TArray<UMeshGenerator*> UMeshGenerator::Generators;
 TArray<ACreatorTile*> UMeshGenerator::TilesToMerge;
-const float UMeshGenerator::distance = 10;
+const float UMeshGenerator::distance = 20;
 
 UMeshGenerator::UMeshGenerator() { }
-void UMeshGenerator::BeginPlay()
-{
-    Super::BeginPlay();
-    ClearData();
-
-    const auto GetOrigin = [this](const FVector normal, float length)
-    {
-        length = Size / 2 * length;
-        return FVector(length, length, length) * normal;
-    };
-    DrawHex(0, FRotator::ZeroRotator, GetOrigin(FVector::RightVector, Lengths.Y));
-}
 #ifdef DRAW_DEBUG
 void UMeshGenerator::TickComponent(const float DeltaTime, const ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
@@ -85,7 +73,7 @@ void UMeshGenerator::Merge()
     for (auto& vertex : queuedVertices)
         vertex->ApplyPosition();
     for (const auto& generator : Generators)
-        generator->UpdateMesh(0);
+        generator->UpdateMesh();
 }
 void UMeshGenerator::MergeWithNeighbors(TArray<Vertex*>& queuedVertices, ACreatorTile* const& creatorTileA)
 {
@@ -102,6 +90,13 @@ void UMeshGenerator::MergeWithNeighbors(TArray<Vertex*>& queuedVertices, ACreato
             // continue;
         // AverageVertices(neighbors, sum);
     }
+}
+
+void UMeshGenerator::Init(int _radius, int _vertexCount, int _angleOffset, int _angle)
+{
+    radius = _radius, vertexCount = _vertexCount, angleOffset = _angleOffset, angle = _angle;
+    ClearData();
+    Draw();
 }
 void UMeshGenerator::MergeWithNeighbor(TArray<Vertex*>& queuedVertices, ACreatorTile* const& creatorTileA, Vertex& vertexA, FVector& sum, ACreatorTile* const& creatorTileB)
 {
@@ -194,50 +189,21 @@ FVector UMeshGenerator::GetEndVertex(Vertex start, Vertex end)
     return end.GetWorldPosition() + transformed * 20;
 }
 
-void UMeshGenerator::UpdateMesh(const int index)
+void UMeshGenerator::UpdateMesh()
 {
-    UKismetProceduralMeshLibrary::CreateGridMeshTriangles(Lengths.X + 1, Lengths.X + 1, false, triangles);
+    UKismetProceduralMeshLibrary::CreateGridMeshTriangles(11, 11, false, triangles);
     UKismetProceduralMeshLibrary::CalculateTangentsForMesh(vertexPositions, triangles, UV, normals, tangents);
-    ProceduralMesh->CreateMeshSection(index, vertexPositions, triangles, normals, UV, colors, tangents, true);
+    ProceduralMesh->CreateMeshSection(0, vertexPositions, triangles, normals, UV, colors, tangents, true);
 }
-void UMeshGenerator::DrawHex(const int index, const FRotator faceAngle, const FVector origin)
+void UMeshGenerator::Draw()
 {
     ClearData();
-    const double radius = Lengths.X * Size;
-
-    for (int i = 0; i < 6; i++)
+    for (int i = 0; i < vertexCount; i++)
     {
-        vertexPositions.Add(FVector(radius * UKismetMathLibrary::DegCos(i * 60), 0, radius * UKismetMathLibrary::DegSin(i * 60)));
-        vertices.Add(Vertex(i, vertexPositions[i], this));
+        vertexPositions.Add(FVector(radius * UKismetMathLibrary::DegCos(i * angle + angleOffset), 0, radius * UKismetMathLibrary::DegSin(i * angle + angleOffset)));
+        vertices.Add(Vertex(i, vertexCount, vertexPositions[i], this));
     }
-    UpdateMesh(index);
-}
-void UMeshGenerator::DrawQuad(const int index, const int width, const int height, const FRotator faceAngle, const FVector origin)
-{
-    ClearData();
-    const FTransform trans { origin };
-
-    for(int w = 0; w <= width; w++)
-    for(int h = 0; h <= height; h++)
-    {
-        // Centers mesh
-        const auto GetVertex = [this](const int n, const float length)
-        {
-            return n * Size - Size * length / 2;
-        };
-        auto v =  FVector(GetVertex(w, width), 0, GetVertex(h, height));
-        
-        v += origin;
-        v  = trans.InverseTransformPosition(v);
-        v  = faceAngle.RotateVector(v);
-        v  = trans.TransformPosition(v);
-
-        vertexPositions.Add(v);
-        UV.Add(FVector2d(w, h));
-    }
-    UKismetProceduralMeshLibrary::CreateGridMeshTriangles(width + 1, height + 1, true, triangles);
-    UKismetProceduralMeshLibrary::CalculateTangentsForMesh(vertexPositions, triangles, UV, normals, tangents);
-    ProceduralMesh->CreateMeshSection(index, vertexPositions, triangles, normals, UV, colors, tangents, true);
+    UpdateMesh();
 }
 void UMeshGenerator::ClearData()
 {

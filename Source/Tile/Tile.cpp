@@ -25,12 +25,6 @@ ATile::ATile()
 	Root->SetRelativeLocation(FVector::ZeroVector);
 	RootComponent = Root;
 	
-	// Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
-	// Mesh->SetWorldRotation(FRotator(0, -90, 0));
-	// Mesh->AttachToComponent(Root, FAttachmentTransformRules::KeepRelativeTransform);
-	// Mesh->SetCollisionProfileName("BlockAll");
-	// Mesh->SetGenerateOverlapEvents(false);
-	// Mesh->SetWorldScale3D(FVector(0.1f));
 	ProcMesh = CreateDefaultSubobject<UProceduralMeshComponent>(TEXT("Procedural Mesh"));
 	ProcMesh->SetupAttachment(Root);
 	ProcMesh->AttachToComponent(Root, FAttachmentTransformRules::KeepRelativeTransform);
@@ -60,11 +54,6 @@ ATile::ATile()
 	CoordText->HorizontalAlignment = EHorizTextAligment::EHTA_Center;
 	CoordText->SetWorldSize(18);
 #endif
-}
-
-void ATile::BeginPlay()
-{
-	Super::BeginPlay();
 }
 void ATile::SetColor(const ETileColor color)
 {
@@ -110,9 +99,18 @@ void ATile::SetShape(const EBoardShape boardShape) const
 	FString meshDir;
 	switch (boardShape)
 	{
-	case EBoardShape::Square:   meshDir = SQUARE_TILE;   break;
-	case EBoardShape::Triangle: meshDir = TRIANGLE_TILE; break;
-	case EBoardShape::Hex:      meshDir = HEX_TILE;      break;
+	case EBoardShape::Square:
+		meshDir = SQUARE_TILE;
+		MeshGenerator->Init(70, 4, 45, 90);
+		break;
+	case EBoardShape::Triangle:
+		meshDir = TRIANGLE_TILE;
+		MeshGenerator->Init(70, 3, -30, 120);
+		break;
+	case EBoardShape::Hex:
+		meshDir = HEX_TILE; 
+		MeshGenerator->Init(55, 6, 0, 60);
+		break;
 	}
 	const auto tileMesh = Cast<UStaticMesh>(StaticLoadObject(UStaticMesh::StaticClass(), nullptr, *meshDir));
 	// Mesh->SetStaticMesh(tileMesh);

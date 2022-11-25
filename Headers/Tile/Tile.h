@@ -36,7 +36,6 @@ public:
 	UPROPERTY()
 		UMeshGenerator* MeshGenerator;
 protected:
-	void BeginPlay() override;
 	FCoordPtr Coord;
 	
 	UPROPERTY()

@@ -7,7 +7,11 @@ class UMeshGenerator;
 class TILES2_API Vertex
 {
 public:
-    Vertex(const int _vertexIndex, const FVector vertexPos, UMeshGenerator* _generator);
+    Vertex(
+        const int _vertexIndex,
+        const int _sideCount,
+        const FVector _position,
+        UMeshGenerator* _generator);
     
     bool IsMerged() const;
     FVector GetWorldPosition() const;
@@ -18,8 +22,8 @@ public:
     void ApplyPosition();
     void QueuePosition(const FVector newPosition);
     void SetPosition(const FVector newPosition);
-    int vertexIndex;
 private:
+    int vertexIndex, sideCount;
     UMeshGenerator* generator;
     FVector position, queuedPosition;
     bool hasBeenMerged = false;

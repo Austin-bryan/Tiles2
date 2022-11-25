@@ -23,7 +23,7 @@ public:
 
     void BeginPlay() override;
     void TickComponent(float deltaTime, ELevelTick tickType, FActorComponentTickFunction* ThisTickFunction) override;
-    void SetBoard(ACreatorBoard* _board) { board = _board; }
+    void SetBoard(ACreatorBoard* _board);
     void OnRotate() const;
 
     UFUNCTION(BlueprintCallable, Category="Default")
