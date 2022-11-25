@@ -30,31 +30,30 @@ void UMeshGenerator::TickComponent(const float DeltaTime, const ELevelTick TickT
     Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
     for (int i = 0; i < vertices.Num(); i++)
-        DrawDebugSphere(GetWorld(), vertices[i].GetWorldPosition(), 1, 16, FColor::White);
+        DrawDebugSphere(GetWorld(), vertices[i].GetWorldPosition(), 1, 4, FColor::White);
 }
 #endif
 
-bool LineLineIntersection(FVector A, FVector B, FVector C, FVector D, FVector& out_intersection)
+bool LineLineIntersection(FVector startA, FVector endA, FVector startB, FVector endB, FVector& out_intersection)
 {
     // Line AB represented as a1x + b1y = c1
-    double a1 = B.Z - A.Z;
-    double b1 = A.X - B.X;
-    double c1 = a1 * (A.X) + b1 * (A.Z);
+    double a1 = endA.Z - startA.Z;
+    double b1 = startA.X - endA.X;
+    double c1 = a1 * (startA.X) + b1 * (startA.Z);
  
     // Line CD represented as a2x + b2y = c2
-    double a2 = D.Z - C.Z;
-    double b2 = C.X - D.X;
-    double c2 = a2 * (C.X) + b2 * (C.Z);
+    double a2 = endB.Z - startB.Z;
+    double b2 = startB.X - endB.X;
+    double c2 = a2 * (startB.X) + b2 * (startB.Z);
  
     double determinant = a1 * b2 - a2 * b1;
- 
-    if (determinant == 0)
+
+    // Lines are parallel. Only occurs in squares, so we can just average the vertices
+    if (FMath::Abs(determinant) < 0.01f)
     {
-        // The lines are parallel. This is simplified
-        // by returning a pair of FLT_MAX
-        return false;
+        out_intersection = (startA + startB) / 2;
+        return true;
     }
-    
     double x = (b2 * c1 - b1 * c2) / determinant;
     double z = (a1 * c2 - a2 * c1) / determinant;
 
@@ -181,11 +180,13 @@ void UMeshGenerator::AverageVertices(TArray<Vertex*> neighbors, FVector sum)
 }
 FVector UMeshGenerator::GetEndVertex(Vertex start, Vertex end)
 {
+    // This function isn't technically needed, as the intersection uses lines, not line segments,
+    // but it makes the visualization easier
     const FVector startPos = start.GetWorldPosition();
     const FTransform startTrans{ startPos };
     FVector transformed = startTrans.InverseTransformPosition(end.GetWorldPosition());
     transformed.Normalize();
-        
+
     return end.GetWorldPosition() + transformed * 20;
 }
 
