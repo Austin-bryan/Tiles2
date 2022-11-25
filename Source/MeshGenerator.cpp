@@ -127,7 +127,7 @@ bool UMeshGenerator::ShouldMergeVertices(const Vertex& vertexA, const Vertex& ve
 void UMeshGenerator::QueueVertices(TArray<Vertex*>& queuedVertices, ACreatorTile* const& creatorTileA, Vertex& vertexA, Vertex& vertexB, FVector intersection)
 {
 #ifdef DRAW_DEBUG
-    DrawDebugSphere(creatorTileA->GetWorld(), intersection, 2, 8, FColor::Red, true);
+    DrawDebugSphere(creatorTileA->GetWorld(), intersection, 5, 16, FColor::Green, true);
 #endif
     vertexA.QueuePosition(intersection);
     vertexB.QueuePosition(intersection);

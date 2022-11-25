@@ -15,7 +15,7 @@ void Vertex::ApplyPosition() { SetPosition(queuedPosition); }
 void Vertex::QueuePosition(const FVector newPosition) { hasBeenMerged = true, queuedPosition = newPosition; }
 void Vertex::SetPosition(const FVector newPosition)
 {
-    position = newPosition - generator->GetOwner()->GetActorLocation(), hasBeenMerged = true;
+    position = generator->GetOwner()->GetTransform().InverseTransformPosition(newPosition), hasBeenMerged = true;
     position.Y = 0;
     generator->vertexPositions[vertexIndex] = position;
     UMeshGenerator::Generators.AddUnique(generator);
