@@ -25,9 +25,9 @@ public:
         FActorComponentTickFunction* ThisTickFunction)
     override;
 #endif
+
     UPROPERTY(VisibleAnywhere)
         UProceduralMeshComponent* ProceduralMesh;
-    const static float distance;
 
     UFUNCTION(BlueprintCallable)
         static void Merge();
@@ -38,35 +38,35 @@ public:
         TArray<Vertex*> neighbors,
         FVector sum);
     static FVector GetEndVertex(
-        Vertex start,
-        Vertex end);
+        const Vertex* start,
+        const Vertex* end);
     static bool GetIntersection(
-        UWorld* worldContext,
-        Vertex startA,
-        Vertex endA,
-        Vertex startB,
-        Vertex endB,
+        const UWorld* worldContext,
+        const Vertex* startA,
+        const Vertex* endA,
+        const Vertex* startB,
+        const Vertex* endB,
         FVector& intersection);
     static bool IsIntersectionValid(
         EVertexMode vertexMode,
         const ACreatorTile* const creatorTileA,
         const ACreatorTile* const creatorTileB,
-        const Vertex& vertexA,
-        const Vertex& vertexB,
+        const Vertex* vertexA,
+        const Vertex* vertexB,
         FVector& intersection);
     static void QueueVertices(
         TArray<Vertex*>& queuedVertices,
         ACreatorTile* const& creatorTileA,
-        Vertex& vertexA,
-        Vertex& vertexB,
+        Vertex* vertexA,
+        Vertex* vertexB,
         FVector intersection);
     static bool ShouldMergeVertices(
-        const Vertex& vertexA,
-        const Vertex& vertexB);
+        const Vertex* vertexA,
+        const Vertex* vertexB);
     static void MergeWithNeighbor(
         TArray<Vertex*>& queuedVertices,
         ACreatorTile* const& creatorTileA,
-        Vertex& vertexA,
+        Vertex* vertexA,
         FVector& sum,
         ACreatorTile* const& creatorTileB);
     static void MergeWithNeighbors(
@@ -83,7 +83,7 @@ private:
     void UpdateMesh();
     void ClearData();
 
-    TArray<Vertex> vertices;
+    TArray<Vertex*> vertices;
     TArray<FVector> vertexPositions;
     TArray<int> triangles;
     TArray<FVector> normals;

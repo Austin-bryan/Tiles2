@@ -34,7 +34,6 @@ public:
 		UCreatorRotator* GetCreatorRotator() const;
 	UFUNCTION(BlueprintCallable, Category="Default")
 		void SetCreatorMenu(UCreatorMenu* _creatorMenu);
-		
 	UPROPERTY(EditAnywhere)
 		EVertexMode VertexMode;
 protected:

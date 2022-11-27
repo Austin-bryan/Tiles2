@@ -117,17 +117,17 @@ void UShortcutDetector::BeginPlay()
        // Shift Alt
        new ModifiedShortcuts
        ({
-          { EKeys::Z, []{ Log("Shift Alt Z"); } }, 
+          { EKeys::Z, [] { Log("Shift Alt Z"); } }, 
        }),
        // Ctrl Alt
        new ModifiedShortcuts
        ({
-          { EKeys::Z, []{ Log("Ctrl Alt Z"); } }, 
+          { EKeys::Z, [] { Log("Ctrl Alt Z"); } }, 
        }),
        // Shift Ctrl Alt
        new ModifiedShortcuts
        ({
-          { EKeys::Z, []{ Log("Shift Ctrl Alt Z"); } }, 
+          { EKeys::Z, [] { Log("Shift Ctrl Alt Z"); } }, 
        }),
    };
 }

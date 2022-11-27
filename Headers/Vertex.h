@@ -1,5 +1,6 @@
 #pragma once
 #include "CoreMinimal.h"
+#include "Logger.h"
 #include "MeshGenerator.h"
 
 class UMeshGenerator;
@@ -14,24 +15,34 @@ public:
         UMeshGenerator* _generator);
     
     bool IsMerged() const;
-    FVector GetWorldPosition() const;
+    Vertex* NextVertex() const;
+    Vertex* PrevVertex() const;
     FVector GetLocalPosition() const;
-    Vertex NextVertex() const;
-    Vertex PrevVertex() const;
+    FVector GetWorldPosition() const;
 
+    void LinkVertices();
     void ApplyPosition();
     void QueuePosition(const FVector newPosition);
     void SetPosition(const FVector newPosition);
-private:
+
+    static bool AreNeighbors(
+        const Vertex* a,
+        const Vertex* b);
+    bool operator==(
+        const Vertex* rhs) const;
+    bool operator==(
+        const Vertex rhs) const;
+    
+    static TArray<Vertex*> Vertices;
+    TArray<Vertex*> linkedVertices;
     int vertexIndex, sideCount;
     UMeshGenerator* generator;
     FVector position, queuedPosition;
     bool hasBeenMerged = false;
+    static int Count;
+
+private:
+    int ID;
+
 };
 
-inline bool operator==(
-    const Vertex& rhs,
-    const Vertex& lhs)
-{
-    return rhs.GetWorldPosition() == lhs.GetWorldPosition();
-}

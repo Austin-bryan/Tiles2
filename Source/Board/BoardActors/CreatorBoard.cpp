@@ -37,8 +37,9 @@ ACreatorBoard::~ACreatorBoard()
 {
     UMeshGenerator::UniversalVertices.Empty();
     ACreatorTile::EmptySelectedTiles();
+    Vertex::Vertices.Empty();
+    Vertex::Count = 0;
 }
-
 void ACreatorBoard::BeginPlay()
 {
     Super::BeginPlay();
@@ -48,6 +49,14 @@ void ACreatorBoard::BeginPlay()
         ADeselectBoard::StaticClass(),
         &location);
     deselectBoard->SetActorScale3D(FVector(200, 1, 200));
+
+    // Vertices need a delay inorder to link up their neighbors correctly
+    FTimerHandle handle;
+    GetWorldTimerManager().SetTimer(handle, [&]()
+    {
+        for (const auto vertex : Vertex::Vertices)
+            vertex->LinkVertices();
+    }, 1, false);
 }
 
 UDragSelect* ACreatorBoard::GetDragSelect() const { return dragSelect; }
