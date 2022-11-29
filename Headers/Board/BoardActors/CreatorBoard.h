@@ -24,7 +24,6 @@ public:
 	UClass* TileClass() const override;
 	ACreatorBoard();
 	~ACreatorBoard();
-
 	void BeginPlay() override;
 
 	// todo:: can these be protected?
