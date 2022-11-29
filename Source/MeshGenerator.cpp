@@ -2,15 +2,15 @@
 // ReSharper disable CppLocalVariableMayBeConst
 #include "MeshGenerator.h"
 
-#include "ActiveSocket.h"
 #include "Board.h"
-#include "CreatorTile.h"
-#include "KismetProceduralMeshLibrary.h"
 #include "Logger.h"
-#include "Kismet/KismetMathLibrary.h"
 #include "Vertex.h"
 #include "Tile.h"
+#include "ActiveSocket.h"
+#include "CreatorTile.h"
 #include "CreatorBoard.h"
+#include "KismetProceduralMeshLibrary.h"
+#include "Kismet/KismetMathLibrary.h"
 
 /*
      2  1
@@ -18,19 +18,19 @@
      4  5
  */
 
-TArray<AVertex> UMeshGenerator::UniversalVertices;
+TArray<Vertex> UMeshGenerator::UniversalVertices;
 TArray<UMeshGenerator*> UMeshGenerator::Generators;
 TArray<ACreatorTile*> UMeshGenerator::TilesToMerge;
-const float UMeshGenerator::distance = 20;
 
 UMeshGenerator::UMeshGenerator() { }
+
 #ifdef DRAW_DEBUG
 void UMeshGenerator::TickComponent(const float DeltaTime, const ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
     Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
     for (int i = 0; i < vertices.Num(); i++)
-        DrawDebugSphere(GetWorld(), vertices[i].GetWorldPosition(), 1, 4, FColor::White);
+        DrawDebugSphere(GetWorld(), vertices[i]->GetWorldPosition(), 1, 4, FColor::White);
 }
 #endif
 
@@ -58,20 +58,14 @@ bool LineLineIntersection(FVector startA, FVector endA, FVector startB, FVector 
     double z = (a1 * c2 - a2 * c1) / determinant;
 
     out_intersection = FVector(x, 0, z);
-    Log("intersection: ", out_intersection, TURQUOISE);
+    // Log("intersection: ", out_intersection, TURQUOISE);
     return true;
-}
-void UMeshGenerator::Init(int _radius, int _vertexCount, int _angleOffset, int _angle)
-{
-    radius = _radius, vertexCount = _vertexCount, angleOffset = _angleOffset, angle = _angle;
-    ClearData();
-    Draw();
 }
 
 void UMeshGenerator::Merge()
 {
     Generators.Empty();
-    TArray<AVertex*> queuedVertices;
+    TArray<Vertex*> queuedVertices;
 
     for (const auto& creatorTileA : TilesToMerge)
         MergeWithNeighbors(queuedVertices, creatorTileA);
@@ -79,47 +73,111 @@ void UMeshGenerator::Merge()
         vertex->ApplyPosition();
     for (const auto& generator : Generators)
         generator->UpdateMesh();
+
+    // for (auto v : Vertex::Vertices)
+        // v->SetPosition(FVector::ZeroVector);
+    // for (auto v : Vertex::Vertices)
+        // Log(v->GetWorldPosition(), RED);
+    // for (const auto& generator : Generators)
+    // for (auto& v : generator->vertices)
+        // Log(v.GetWorldPosition(), BLUE);
 }
-void UMeshGenerator::MergeWithNeighbors(TArray<AVertex*>& queuedVertices, ACreatorTile* const& creatorTileA)
+void UMeshGenerator::MergeWithNeighbors(TArray<Vertex*>& queuedVertices, ACreatorTile* const& creatorTileA)
 {
+    for (auto vertexA : creatorTileA->MeshGenerator->vertices)
+    {
+        int selectionCount = 0;
+        const auto GetCreatorTile = [](const Vertex* vertex) { return Cast<ACreatorTile>(vertex->GetTile()); };
+
+        const auto creatorTile = GetCreatorTile(vertexA);
+        if (!creatorTile->GetIsSelected())
+            continue;
+        selectionCount++;
+        for (auto vertexB : vertexA->neighbors)
+        {
+            const auto creatorTileB = GetCreatorTile(vertexB);
+            
+            if (creatorTileB->GetIsSelected())
+                selectionCount++;
+        }
+
+        if (selectionCount == 2)
+        {
+            if (vertexA->IsMerged())
+                continue;
+            for (const auto& creatorTileB : TilesToMerge)
+                if (creatorTileB != creatorTileA)
+                    MergeWithNeighbor(queuedVertices, creatorTileA, vertexA, creatorTileB);
+            Log("Dual Merge: ", selectionCount);
+        }
+        else if (selectionCount > 2)
+        {
+            Log("Group Merge: ", selectionCount);
+            
+            FVector sum = FVector::Zero();
+            TArray<Vertex*> selectedVertices;
+            
+            for (auto vertexB : vertexA->neighbors)
+            {
+                if (!GetCreatorTile(vertexB)->GetIsSelected())
+                    continue;
+                selectedVertices.Add(vertexB);
+                sum += vertexB->GetWorldPosition();
+            }
+            AverageVertices(selectedVertices, sum);
+        }
+        Log("Selection Count: ", selectionCount, *vertexA,
+              selectionCount == 1
+            ? YELLOW
+            : selectionCount == 2
+            ? ORANGE
+            : selectionCount == 3
+            ? RED
+            : selectionCount == 4
+            ? PURPLE
+            : selectionCount == 5
+            ? CYAN
+            : selectionCount == 6
+            ? BLACK
+            : WHITE);
+    }
+    
     for (auto& vertexA : creatorTileA->MeshGenerator->vertices)
     {
-        if (vertexA->IsMerged())
-            continue;
-        FVector sum = FVector::Zero();
-
-        for (const auto& creatorTileB : TilesToMerge)
-            if (creatorTileB != creatorTileA)
-                MergeWithNeighbor(queuedVertices, creatorTileA, vertexA, sum, creatorTileB);
-        // if (neighbors.Num() <= 2)
-            // continue;
-        // AverageVertices(neighbors, sum);
+ 
+      
     }
 }
-void UMeshGenerator::MergeWithNeighbor(TArray<AVertex*>& queuedVertices, ACreatorTile* const& creatorTileA, AVertex* vertexA, FVector& sum, ACreatorTile* const& creatorTileB)
+
+void UMeshGenerator::Init(int _radius, int _vertexCount, int _angleOffset, int _angle)
 {
-    TArray<AVertex*> neighbors;
+    radius = _radius, vertexCount = _vertexCount, angleOffset = _angleOffset, angle = _angle;
+    ClearData();
+    Draw();
+}
+void UMeshGenerator::MergeWithNeighbor(TArray<Vertex*>& queuedVertices, ACreatorTile* const& creatorTileA, Vertex* vertexA, ACreatorTile* const& creatorTileB)
+{
+    TArray<Vertex*> neighbors;
     neighbors.Add(vertexA);
 
-    for (auto vertexB : creatorTileB->MeshGenerator->vertices)
+    for (auto& vertexB : creatorTileB->MeshGenerator->vertices)
     {
         if (!ShouldMergeVertices(vertexA, vertexB))
             continue;
         neighbors.Add(vertexB);
-        sum += vertexB->GetWorldPosition();
 
         FVector intersection;
         if (IsIntersectionValid(Cast<ACreatorBoard>(creatorTileA->Board())->VertexMode, creatorTileA, creatorTileB, vertexA, vertexB, intersection))
             QueueVertices(queuedVertices, creatorTileA, vertexA, vertexB, intersection);
     }
 }
-bool UMeshGenerator::ShouldMergeVertices(const AVertex* vertexA, const AVertex* vertexB)
+bool UMeshGenerator::ShouldMergeVertices(const Vertex* vertexA, const Vertex* vertexB)
 {
     if (vertexA->IsMerged() || vertexB->IsMerged())
         return false;
-    return FVector::Distance(vertexA->GetWorldPosition(), vertexB->GetWorldPosition()) <= distance;
+    return vertexA->neighbors.Contains(vertexB);
 }
-void UMeshGenerator::QueueVertices(TArray<AVertex*>& queuedVertices, ACreatorTile* const& creatorTileA, AVertex* vertexA, AVertex* vertexB, FVector intersection)
+void UMeshGenerator::QueueVertices(TArray<Vertex*>& queuedVertices, ACreatorTile* const& creatorTileA, Vertex* vertexA, Vertex* vertexB, FVector intersection)
 {
 #ifdef DRAW_DEBUG
     DrawDebugSphere(creatorTileA->GetWorld(), intersection, 5, 16, FColor::Green, true);
@@ -129,7 +187,7 @@ void UMeshGenerator::QueueVertices(TArray<AVertex*>& queuedVertices, ACreatorTil
     queuedVertices.Add(vertexA);
     queuedVertices.Add(vertexB);
 }
-bool UMeshGenerator::IsIntersectionValid(EVertexMode vertexMode, const ACreatorTile* const creatorTileA, const ACreatorTile* const creatorTileB, const AVertex* vertexA, const AVertex* vertexB, FVector& intersection)
+bool UMeshGenerator::IsIntersectionValid(EVertexMode vertexMode, const ACreatorTile* const creatorTileA, const ACreatorTile* const creatorTileB, const Vertex* vertexA, const Vertex* vertexB, FVector& intersection)
 {
     // There are two vertexes, prev & next, that can be used as the starting FVector for the intersection line
     // The vertex thats closest to the tile is also being merged, so we want to avoid it
@@ -139,12 +197,12 @@ bool UMeshGenerator::IsIntersectionValid(EVertexMode vertexMode, const ACreatorT
     const double location3 = FVector::Distance(creatorTileA->GetActorLocation(), vertexB->NextVertex()->GetWorldPosition());
     const double location4 = FVector::Distance(creatorTileA->GetActorLocation(), vertexB->PrevVertex()->GetWorldPosition());
     
-    AVertex* vA = location1 >= location2 ? vertexA->NextVertex() : vertexA->PrevVertex();
-    AVertex* vB = location3 >= location4 ? vertexB->NextVertex() : vertexB->PrevVertex();
+    Vertex* vA = location1 >= location2 ? vertexA->NextVertex() : vertexA->PrevVertex();
+    Vertex* vB = location3 >= location4 ? vertexB->NextVertex() : vertexB->PrevVertex();
 
     return GetIntersection(creatorTileA->GetWorld(), vA, vertexA, vB, vertexB, intersection);
 }
-bool UMeshGenerator::GetIntersection(UWorld* worldContext, const AVertex* startA, const AVertex* endA, const AVertex* startB, const AVertex* endB, FVector& intersection)
+bool UMeshGenerator::GetIntersection(const UWorld* worldContext, const Vertex* startA, const Vertex* endA, const Vertex* startB, const Vertex* endB, FVector& intersection)
 {
     const FVector lineAStart = startA->GetWorldPosition(), lineAEnd = GetEndVertex(startA, endA);
     const FVector lineBStart = startB->GetWorldPosition(), lineBEnd = GetEndVertex(startB, endB);
@@ -159,7 +217,7 @@ bool UMeshGenerator::GetIntersection(UWorld* worldContext, const AVertex* startA
         return false;
     return result;
 }
-void UMeshGenerator::AverageVertices(TArray<AVertex*> neighbors, FVector sum)
+void UMeshGenerator::AverageVertices(TArray<Vertex*> neighbors, FVector sum)
 {
     for (const auto& neighbor : neighbors)
     {
@@ -168,7 +226,7 @@ void UMeshGenerator::AverageVertices(TArray<AVertex*> neighbors, FVector sum)
         neighbor->SetPosition(average);
     }
 }
-FVector UMeshGenerator::GetEndVertex(const AVertex* start, const AVertex* end)
+FVector UMeshGenerator::GetEndVertex(const Vertex* start, const Vertex* end)
 {
     // This function isn't technically needed, as the intersection uses lines, not line segments,
     // but it makes the visualization easier
@@ -192,10 +250,7 @@ void UMeshGenerator::Draw()
     for (int i = 0; i < vertexCount; i++)
     {
         vertexPositions.Add(FVector(radius * UKismetMathLibrary::DegCos(i * angle + angleOffset), 0, radius * UKismetMathLibrary::DegSin(i * angle + angleOffset)));
-        const auto vertex = GetWorld()->SpawnActor<AVertex>(AVertex::StaticClass(), FVector::ZeroVector, FRotator::ZeroRotator);
-        vertex->Init(i, vertexCount, vertexPositions[i], this);
-        vertices.Add(vertex);
-        // UniversalVertices.AddUnique(vertices[0]);
+        vertices.Add(new Vertex(i, vertexCount, vertexPositions[i], this));
     }
     UpdateMesh();
 }

@@ -21,8 +21,6 @@ template<typename... Types>
 	void Log(const char* c, const Types&... types)
 {
 	const std::string s = c;
-	const bool isList = s.find(':') != 0;
-	
 	logText += FString(c) + (s.find(':') ? "" : PAIR);
 	Log(types...);
 }
@@ -79,7 +77,7 @@ inline std::ostringstream& operator<<(std::ostringstream& os, const FParameter& 
 	os << coord.ToString();
 	return os;
 }
-inline std::ostringstream& operator<<(std::ostringstream& os, const AVertex& vertex)
+inline std::ostringstream& operator<<(std::ostringstream& os, const Vertex& vertex)
 {
 	os << vertex.GetWorldPosition();
 	return os;

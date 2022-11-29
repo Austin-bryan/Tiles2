@@ -24,7 +24,6 @@ public:
 	UClass* TileClass() const override;
 	ACreatorBoard();
 	~ACreatorBoard();
-
 	void BeginPlay() override;
 
 	// todo:: can these be protected?
@@ -34,7 +33,6 @@ public:
 		UCreatorRotator* GetCreatorRotator() const;
 	UFUNCTION(BlueprintCallable, Category="Default")
 		void SetCreatorMenu(UCreatorMenu* _creatorMenu);
-		
 	UPROPERTY(EditAnywhere)
 		EVertexMode VertexMode;
 protected:

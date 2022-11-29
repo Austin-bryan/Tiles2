@@ -21,7 +21,7 @@
 #define MAGENTA LogParams(FColor::Magenta)
 #define PURPLE LogParams(FColor::Purple)
 
-class AVertex;
+class Vertex;
 class LogParams;
 struct FParameter;
 
@@ -98,4 +98,4 @@ inline std::ostringstream& operator<<(std::ostringstream& os, const FColor& colo
 }
 inline std::ostringstream& operator<<(std::ostringstream& os, const FCoordPtr coord);
 inline std::ostringstream& operator<<(std::ostringstream& os, const FParameter& coord);
-inline std::ostringstream& operator<<(std::ostringstream& os, const AVertex& vertex);
+inline std::ostringstream& operator<<(std::ostringstream& os, const Vertex& vertex);

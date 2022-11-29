@@ -1,41 +1,51 @@
 #pragma once
 #include "CoreMinimal.h"
-#include "Vertex.generated.h"
+#include "Logger.h"
+#include "MeshGenerator.h"
 
 class UMeshGenerator;
 
-UCLASS()
-class TILES2_API AVertex : public AActor
+//TODO:: private the fields that don't need to be public
+
+class TILES2_API Vertex
 {
-    GENERATED_BODY()
 public:
-    void Init(
+    Vertex(
         const int _vertexIndex,
         const int _sideCount,
         const FVector _position,
         UMeshGenerator* _generator);
     
     bool IsMerged() const;
-    FVector GetWorldPosition() const;
+    ATile* GetTile() const;
+    Vertex* NextVertex() const;
+    Vertex* PrevVertex() const;
     FVector GetLocalPosition() const;
-    AVertex* NextVertex() const;
-    AVertex* PrevVertex() const;
+    FVector GetWorldPosition() const;
 
+    void LinkVertices();
     void ApplyPosition();
     void QueuePosition(const FVector newPosition);
     void SetPosition(const FVector newPosition);
-protected:
+
+    static bool AreNeighbors(
+        const Vertex* a,
+        const Vertex* b);
+    bool operator==(
+        const Vertex* rhs) const;
+    bool operator==(
+        const Vertex rhs) const;
     
-private:
+    static TArray<Vertex*> Vertices;
+    TArray<Vertex*> neighbors;
     int vertexIndex, sideCount;
     UMeshGenerator* generator;
     FVector position, queuedPosition;
     bool hasBeenMerged = false;
+    static int Count;
+
+private:
+    int ID;
+
 };
 
-inline bool operator==(
-    const AVertex& rhs,
-    const AVertex& lhs)
-{
-    return rhs.GetWorldPosition() == lhs.GetWorldPosition();
-}
