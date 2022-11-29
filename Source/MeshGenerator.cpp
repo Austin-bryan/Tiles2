@@ -241,7 +241,7 @@ void UMeshGenerator::Draw()
         //todo: use an algorithm to know when the vert is a corner and use math to curve the corner
         //todo: ensure this works with merging
         vertexPositions.Add(FVector(radius * UKismetMathLibrary::DegCos(i * angle + angleOffset), 0, radius * UKismetMathLibrary::DegSin(i * angle + angleOffset)));
-        DrawDebugSphere(GetWorld(), vertexPositions[i] + GetOwner()->GetActorLocation(), 4, 8, FColor::White, true, 100);
+        DrawDebugSphere(GetWorld(), vertexPositions[i] + GetOwner()->GetActorLocation(), 2, 8, FColor::White, true, 100);
         vertices.Add(new Vertex(i, vertexCount, vertexPositions[i], this));
     }
 
@@ -253,22 +253,26 @@ void UMeshGenerator::Draw()
 
     TArray<FVector> circleOrigins;
 
+    const int index = 1;
     for (int i = 0; i < vertexCount; i++)
     {
-        FVector normalizedVertex = vertexPositions[i];
+        FVector normalizedVertex = vertices[i]->GetLocalPosition();
         normalizedVertex.Normalize();
-        FVector circleOrigin = normalizedVertex * circleRadius * FMath::Sqrt(2.0f);
+        FVector circleOrigin = -normalizedVertex * circleRadius * FMath::Sqrt(2.0f) + vertices[i]->GetLocalPosition();
+        // FVector circleOrigin = normalizedVertex * circleRadius * FMath::Sqrt(2.0f) + vertexPositions[i];
         circleOrigins.Add(circleOrigin);
-        
-        for (int j = 0; j < circleCount ; j++)
+
+        // if (i == index)
+        DrawDebugSphere(GetWorld(), circleOrigin + GetOwner()->GetActorLocation(), 1, 8, FColor::Orange, true, 100);
+        for (int j = 0; j < circleCount; j++)
         {
             FVector circleVertex = FVector(
                   circleRadius * UKismetMathLibrary::DegCos(j * (360 / circleCount) + angleOffset), 0
-                , circleRadius * UKismetMathLibrary::DegSin(j * (360 / circleCount) + angleOffset))
-                + vertexPositions[i];
+                , circleRadius * UKismetMathLibrary::DegSin(j * (360 / circleCount) + angleOffset));
             
-            circleOrigins.Add(circleVertex - circleOrigin);
-            FVector world = circleVertex - circleOrigin + GetOwner()->GetActorLocation();
+            FVector world = circleVertex + circleOrigin + GetOwner()->GetActorLocation();
+
+            // if (i == index)
             DrawDebugSphere(GetWorld(), world, 0.5f, 4, FColor::Blue, true, 100);
         }
     }
@@ -281,6 +285,7 @@ void UMeshGenerator::Draw()
     {
         subdividedPositions.AddUnique(vertexPositions[i]);
         FVector circleOrigin = circleOrigins[i];
+        DrawDebugSphere(GetWorld(), circleOrigin + GetOwner()->GetActorLocation(), 1, 16, FColor::Red, true, 100);
         
         for (int j = 1; j < subdivide; j++)
         {
@@ -293,13 +298,31 @@ void UMeshGenerator::Draw()
 
             // TODO:: circle origin and radius are already cached;
             // todo: all thats left is to check if this vertex is has a greater distance from tile origin than the circle does
+            // Log(nextPos + GetOwner()->GetActorLocation(), circleOrigin + GetOwner()->GetActorLocation(), GREEN);
+            Log("NextPos: ", nextPos.Length(), "Origin: ", circleOrigin.Length(), circleOrigin.Length() + circleRadius);
             if (nextPos.Length() > circleOrigin.Length() + circleRadius)
+            // if (nextPos.Length() > circleOrigin.Length())
             {
-                nextPos = nextPos * circleRadius / nextPos.Length();
+                FVector normalizedNextPos = nextPos;
+                normalizedNextPos.Normalize();
+            
+                int inf = 1000;
+                while (nextPos.Length() > circleOrigin.Length())
+                {
+                    if (inf-- < 0)
+                    {
+                        Log("Inf loop circle vertex");
+                        break;
+                    }
+                    nextPos -= normalizedNextPos / 10;
+                }
+                // nextPos = nextPos * circleRadius / nextPos.Length();
             }
+            // if (i == index)
             DrawDebugSphere(GetWorld(), nextPos + GetOwner()->GetActorLocation(), 1, 4, FColor::Green, true, 100);
         }
     }
+    return;
     UpdateMesh();
 }
 void UMeshGenerator::ClearData()
