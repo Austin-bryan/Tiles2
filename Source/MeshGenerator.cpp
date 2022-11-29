@@ -10,6 +10,7 @@
 #include "CreatorTile.h"
 #include "CreatorBoard.h"
 #include "KismetProceduralMeshLibrary.h"
+#include "VectorTypes.h"
 #include "Kismet/KismetMathLibrary.h"
 
 /*
@@ -245,25 +246,42 @@ void UMeshGenerator::Draw()
     }
 
     // TODO:: have angle be a function of 360 / vertexCount
+    // ReSharper disable once CppTooWideScope
     const float circleCount = 64;
     // ReSharper disable once CppTooWideScope
-    const float circleRadius = 40;
+    const float circleRadius = 20.0f;
 
-    TArray<FVector> circlePositions;
-    for (int i = 0; i < circleCount; i++)
+    TArray<FVector> circleOrigins;
+
+    for (int i = 0; i < vertexCount; i++)
     {
-        FVector local = FVector(
-            circleRadius * UKismetMathLibrary::DegCos(i * (360 / circleCount) + angleOffset), 0,
-            circleRadius * UKismetMathLibrary::DegSin(i * (360 / circleCount) + angleOffset));
-        FVector world = local + GetOwner()->GetActorLocation();
-        // DrawDebugSphere(GetWorld(), world, 2, 4, FColor::Blue, true, 100);
-        circlePositions.Add(world);
+        FVector normalizedVertex = vertexPositions[i];
+        normalizedVertex.Normalize();
+        FVector circleOrigin = normalizedVertex * circleRadius * FMath::Sqrt(2.0f);
+        circleOrigins.Add(circleOrigin);
+        
+        for (int j = 0; j < circleCount ; j++)
+        {
+            FVector circleVertex = FVector(
+                  circleRadius * UKismetMathLibrary::DegCos(j * (360 / circleCount) + angleOffset), 0
+                , circleRadius * UKismetMathLibrary::DegSin(j * (360 / circleCount) + angleOffset))
+                + vertexPositions[i];
+            
+            circleOrigins.Add(circleVertex - circleOrigin);
+            FVector world = circleVertex - circleOrigin + GetOwner()->GetActorLocation();
+            DrawDebugSphere(GetWorld(), world, 0.5f, 4, FColor::Blue, true, 100);
+        }
     }
-    
+
+    // TODO:: cache circle position for each vertex
+    // todo: position is based on circle radius and radius of shape itself
+    // todo: Then cap each vertex based on the current circles distance from tile origin
     TArray<FVector> subdividedPositions;
     for (int i = 0; i < vertexCount; i++)
     {
         subdividedPositions.AddUnique(vertexPositions[i]);
+        FVector circleOrigin = circleOrigins[i];
+        
         for (int j = 1; j < subdivide; j++)
         {
             if (i < 0)
@@ -273,10 +291,10 @@ void UMeshGenerator::Draw()
             FVector increment = (vertexPositions[wrapIndex] - vertexPositions[i]) / subdivide;
             FVector nextPos = vertexPositions[i] + increment * j;
 
-            if (nextPos.Length() > circleRadius)
+            // TODO:: circle origin and radius are already cached;
+            // todo: all thats left is to check if this vertex is has a greater distance from tile origin than the circle does
+            if (nextPos.Length() > circleOrigin.Length() + circleRadius)
             {
-                Log(nextPos.Length(), circleRadius / nextPos.Length(),
-                    (nextPos * circleRadius / nextPos.Length()).Length(), ORANGE);
                 nextPos = nextPos * circleRadius / nextPos.Length();
             }
             DrawDebugSphere(GetWorld(), nextPos + GetOwner()->GetActorLocation(), 1, 4, FColor::Green, true, 100);
