@@ -84,18 +84,68 @@ void UMeshGenerator::Merge()
 }
 void UMeshGenerator::MergeWithNeighbors(TArray<Vertex*>& queuedVertices, ACreatorTile* const& creatorTileA)
 {
+    for (auto vertexA : creatorTileA->MeshGenerator->vertices)
+    {
+        int selectionCount = 0;
+        const auto GetCreatorTile = [](const Vertex* vertex) { return Cast<ACreatorTile>(vertex->GetTile()); };
+
+        const auto creatorTile = GetCreatorTile(vertexA);
+        if (!creatorTile->GetIsSelected())
+            continue;
+        selectionCount++;
+        for (auto vertexB : vertexA->neighbors)
+        {
+            const auto creatorTileB = GetCreatorTile(vertexB);
+            
+            if (creatorTileB->GetIsSelected())
+                selectionCount++;
+        }
+
+        if (selectionCount == 2)
+        {
+            if (vertexA->IsMerged())
+                continue;
+            for (const auto& creatorTileB : TilesToMerge)
+                if (creatorTileB != creatorTileA)
+                    MergeWithNeighbor(queuedVertices, creatorTileA, vertexA, creatorTileB);
+            Log("Dual Merge: ", selectionCount);
+        }
+        else if (selectionCount > 2)
+        {
+            Log("Group Merge: ", selectionCount);
+            
+            FVector sum = FVector::Zero();
+            TArray<Vertex*> selectedVertices;
+            
+            for (auto vertexB : vertexA->neighbors)
+            {
+                if (!GetCreatorTile(vertexB)->GetIsSelected())
+                    continue;
+                selectedVertices.Add(vertexB);
+                sum += vertexB->GetWorldPosition();
+            }
+            AverageVertices(selectedVertices, sum);
+        }
+        Log("Selection Count: ", selectionCount, *vertexA,
+              selectionCount == 1
+            ? YELLOW
+            : selectionCount == 2
+            ? ORANGE
+            : selectionCount == 3
+            ? RED
+            : selectionCount == 4
+            ? PURPLE
+            : selectionCount == 5
+            ? CYAN
+            : selectionCount == 6
+            ? BLACK
+            : WHITE);
+    }
+    
     for (auto& vertexA : creatorTileA->MeshGenerator->vertices)
     {
-        if (vertexA->IsMerged())
-            continue;
-        FVector sum = FVector::Zero();
-
-        for (const auto& creatorTileB : TilesToMerge)
-            if (creatorTileB != creatorTileA)
-                MergeWithNeighbor(queuedVertices, creatorTileA, vertexA, sum, creatorTileB);
-        // if (neighbors.Num() <= 2)
-            // continue;
-        // AverageVertices(neighbors, sum);
+ 
+      
     }
 }
 
@@ -105,7 +155,7 @@ void UMeshGenerator::Init(int _radius, int _vertexCount, int _angleOffset, int _
     ClearData();
     Draw();
 }
-void UMeshGenerator::MergeWithNeighbor(TArray<Vertex*>& queuedVertices, ACreatorTile* const& creatorTileA, Vertex* vertexA, FVector& sum, ACreatorTile* const& creatorTileB)
+void UMeshGenerator::MergeWithNeighbor(TArray<Vertex*>& queuedVertices, ACreatorTile* const& creatorTileA, Vertex* vertexA, ACreatorTile* const& creatorTileB)
 {
     TArray<Vertex*> neighbors;
     neighbors.Add(vertexA);
@@ -115,7 +165,6 @@ void UMeshGenerator::MergeWithNeighbor(TArray<Vertex*>& queuedVertices, ACreator
         if (!ShouldMergeVertices(vertexA, vertexB))
             continue;
         neighbors.Add(vertexB);
-        sum += vertexB->GetWorldPosition();
 
         FVector intersection;
         if (IsIntersectionValid(Cast<ACreatorBoard>(creatorTileA->Board())->VertexMode, creatorTileA, creatorTileB, vertexA, vertexB, intersection))
@@ -126,7 +175,7 @@ bool UMeshGenerator::ShouldMergeVertices(const Vertex* vertexA, const Vertex* ve
 {
     if (vertexA->IsMerged() || vertexB->IsMerged())
         return false;
-    return vertexA->linkedVertices.Contains(vertexB);
+    return vertexA->neighbors.Contains(vertexB);
 }
 void UMeshGenerator::QueueVertices(TArray<Vertex*>& queuedVertices, ACreatorTile* const& creatorTileA, Vertex* vertexA, Vertex* vertexB, FVector intersection)
 {

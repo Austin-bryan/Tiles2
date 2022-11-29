@@ -5,6 +5,8 @@
 
 class UMeshGenerator;
 
+//TODO:: private the fields that don't need to be public
+
 class TILES2_API Vertex
 {
 public:
@@ -15,6 +17,7 @@ public:
         UMeshGenerator* _generator);
     
     bool IsMerged() const;
+    ATile* GetTile() const;
     Vertex* NextVertex() const;
     Vertex* PrevVertex() const;
     FVector GetLocalPosition() const;
@@ -34,7 +37,7 @@ public:
         const Vertex rhs) const;
     
     static TArray<Vertex*> Vertices;
-    TArray<Vertex*> linkedVertices;
+    TArray<Vertex*> neighbors;
     int vertexIndex, sideCount;
     UMeshGenerator* generator;
     FVector position, queuedPosition;

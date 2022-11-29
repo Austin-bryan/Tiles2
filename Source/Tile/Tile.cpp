@@ -9,7 +9,7 @@
 #include "Components/TextRenderComponent.h"
 #include "Materials/MaterialInstanceConstant.h"
 
-// #define ShowDebugText
+//#define ShowDebugText
 #ifdef ShowDebugText
 #include "Coord.h"
 #endif 

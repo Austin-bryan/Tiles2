@@ -67,7 +67,6 @@ public:
         TArray<Vertex*>& queuedVertices,
         ACreatorTile* const& creatorTileA,
         Vertex* vertexA,
-        FVector& sum,
         ACreatorTile* const& creatorTileB);
     static void MergeWithNeighbors(
         TArray<Vertex*>& queuedVertices,

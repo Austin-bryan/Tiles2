@@ -4,7 +4,6 @@
 TArray<Vertex*> Vertex::Vertices;
 int Vertex::Count;
 
-int foo = 0;
 bool Vertex::AreNeighbors(const Vertex* a, const Vertex* b)
 {
     FVector va = a->GetWorldPosition();
@@ -12,7 +11,7 @@ bool Vertex::AreNeighbors(const Vertex* a, const Vertex* b)
     va.Y = 0;
     vb.Y = 0;
 
-    return FVector::Distance(a->GetWorldPosition(), b->GetWorldPosition()) < 20;
+    return FVector::Distance(a->GetWorldPosition(), b->GetWorldPosition()) < 30;
 }
 bool Vertex::operator==(const Vertex* rhs) const { return *this == *rhs; }
 bool Vertex::operator==(const Vertex rhs)  const { return ID == rhs.ID; }
@@ -22,11 +21,10 @@ void Vertex::LinkVertices()
 {
     for (const auto other : Vertices)
     {
-        if (other != this && AreNeighbors(this, other))
-        {
-            linkedVertices.AddUnique(other);
-            other->linkedVertices.AddUnique(this);
-        }
+        if (other == this || !AreNeighbors(this, other))
+            continue;
+        neighbors.AddUnique(other);
+        other->neighbors.AddUnique(this);
     }
 }
 Vertex::Vertex(const int _vertexIndex, const int _sideCount, const FVector _position, UMeshGenerator* _generator) :
@@ -36,14 +34,13 @@ Vertex::Vertex(const int _vertexIndex, const int _sideCount, const FVector _posi
     Count++;
     Vertices.AddUnique(this);
 }
-bool    Vertex::IsMerged()         const { return hasBeenMerged; }
+
+bool Vertex::IsMerged()            const { return hasBeenMerged; }
+ATile*  Vertex::GetTile()          const { return Cast<ATile>(generator->GetOwner());  }
 Vertex* Vertex::PrevVertex()       const { return generator->vertices[(FMath::Abs(vertexIndex - 1 + sideCount) % sideCount)]; }
 Vertex* Vertex::NextVertex()       const { return generator->vertices[(vertexIndex + 1) % sideCount]; }
 FVector Vertex::GetLocalPosition() const { return position; }
-FVector Vertex::GetWorldPosition() const
-{
-    return generator->GetOwner()->GetActorTransform().TransformPosition(position);
-}
+FVector Vertex::GetWorldPosition() const { return generator->GetOwner()->GetActorTransform().TransformPosition(position); }
 
 void Vertex::ApplyPosition() { SetPosition(queuedPosition); }
 void Vertex::QueuePosition(const FVector newPosition) { hasBeenMerged = true, queuedPosition = newPosition; }
