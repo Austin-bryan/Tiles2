@@ -230,7 +230,9 @@ void UMeshGenerator::Draw()
 {
     ClearData();
     int _vertexCount = vertexCount;
-    const int subdivide = 8;
+    
+    // ReSharper disable once CppTooWideScope
+    const int subdivide = 64;
     for (int i = 0; i < vertexCount; i++)
     {
         //TODO:: add 10x the number of vertices in this area
@@ -242,22 +244,42 @@ void UMeshGenerator::Draw()
         vertices.Add(new Vertex(i, vertexCount, vertexPositions[i], this));
     }
 
+    // TODO:: have angle be a function of 360 / vertexCount
+    const float circleCount = 64;
+    // ReSharper disable once CppTooWideScope
+    const float circleRadius = 40;
+
+    TArray<FVector> circlePositions;
+    for (int i = 0; i < circleCount; i++)
+    {
+        FVector local = FVector(
+            circleRadius * UKismetMathLibrary::DegCos(i * (360 / circleCount) + angleOffset), 0,
+            circleRadius * UKismetMathLibrary::DegSin(i * (360 / circleCount) + angleOffset));
+        FVector world = local + GetOwner()->GetActorLocation();
+        // DrawDebugSphere(GetWorld(), world, 2, 4, FColor::Blue, true, 100);
+        circlePositions.Add(world);
+    }
+    
     TArray<FVector> subdividedPositions;
     for (int i = 0; i < vertexCount; i++)
     {
         subdividedPositions.AddUnique(vertexPositions[i]);
         for (int j = 1; j < subdivide; j++)
         {
-            Log(i - 1, i, i + 1, vertexPositions.Num());
-            
             if (i < 0)
                 continue;
             int wrapIndex = i + 1 >= vertexPositions.Num()
                 ? 0 : i + 1;
             FVector increment = (vertexPositions[wrapIndex] - vertexPositions[i]) / subdivide;
             FVector nextPos = vertexPositions[i] + increment * j;
-            
-            DrawDebugSphere(GetWorld(), nextPos + GetOwner()->GetActorLocation(), 2, 8, FColor::Green, true, 100);
+
+            if (nextPos.Length() > circleRadius)
+            {
+                Log(nextPos.Length(), circleRadius / nextPos.Length(),
+                    (nextPos * circleRadius / nextPos.Length()).Length(), ORANGE);
+                nextPos = nextPos * circleRadius / nextPos.Length();
+            }
+            DrawDebugSphere(GetWorld(), nextPos + GetOwner()->GetActorLocation(), 1, 4, FColor::Green, true, 100);
         }
     }
     UpdateMesh();
