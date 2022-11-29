@@ -73,14 +73,6 @@ void UMeshGenerator::Merge()
         vertex->ApplyPosition();
     for (const auto& generator : Generators)
         generator->UpdateMesh();
-
-    // for (auto v : Vertex::Vertices)
-        // v->SetPosition(FVector::ZeroVector);
-    // for (auto v : Vertex::Vertices)
-        // Log(v->GetWorldPosition(), RED);
-    // for (const auto& generator : Generators)
-    // for (auto& v : generator->vertices)
-        // Log(v.GetWorldPosition(), BLUE);
 }
 void UMeshGenerator::MergeWithNeighbors(TArray<Vertex*>& queuedVertices, ACreatorTile* const& creatorTileA)
 {
@@ -108,12 +100,9 @@ void UMeshGenerator::MergeWithNeighbors(TArray<Vertex*>& queuedVertices, ACreato
             for (const auto& creatorTileB : TilesToMerge)
                 if (creatorTileB != creatorTileA)
                     MergeWithNeighbor(queuedVertices, creatorTileA, vertexA, creatorTileB);
-            Log("Dual Merge: ", selectionCount);
         }
         else if (selectionCount > 2)
         {
-            Log("Group Merge: ", selectionCount);
-            
             FVector sum = FVector::Zero();
             TArray<Vertex*> selectedVertices;
             
@@ -126,26 +115,6 @@ void UMeshGenerator::MergeWithNeighbors(TArray<Vertex*>& queuedVertices, ACreato
             }
             AverageVertices(selectedVertices, sum);
         }
-        Log("Selection Count: ", selectionCount, *vertexA,
-              selectionCount == 1
-            ? YELLOW
-            : selectionCount == 2
-            ? ORANGE
-            : selectionCount == 3
-            ? RED
-            : selectionCount == 4
-            ? PURPLE
-            : selectionCount == 5
-            ? CYAN
-            : selectionCount == 6
-            ? BLACK
-            : WHITE);
-    }
-    
-    for (auto& vertexA : creatorTileA->MeshGenerator->vertices)
-    {
- 
-      
     }
 }
 
@@ -240,6 +209,19 @@ FVector UMeshGenerator::GetEndVertex(const Vertex* start, const Vertex* end)
 
 void UMeshGenerator::UpdateMesh()
 {
+    TArray<FVector> smoothedPositions = vertexPositions;
+
+    // for (int i = 0; i < vertexPositions.Num(); i++)
+    // {
+    //     FVector sum;
+    //     if (i + 1 > vertexPositions.Num())
+    //          sum = vertexPositions[i] + vertexPositions[0];
+    //     else sum = vertexPositions[i] + vertexPositions[i + 1];
+    //         
+    //     smoothedPositions.Add(sum / 2);
+    // }
+    // Log(vertexPositions.Num(), smoothedPositions.Num());
+
     UKismetProceduralMeshLibrary::CreateGridMeshTriangles(11, 11, false, triangles);
     UKismetProceduralMeshLibrary::CalculateTangentsForMesh(vertexPositions, triangles, UV, normals, tangents);
     ProceduralMesh->CreateMeshSection(0, vertexPositions, triangles, normals, UV, colors, tangents, true);
@@ -247,10 +229,36 @@ void UMeshGenerator::UpdateMesh()
 void UMeshGenerator::Draw()
 {
     ClearData();
+    int _vertexCount = vertexCount;
+    const int subdivide = 8;
     for (int i = 0; i < vertexCount; i++)
     {
+        //TODO:: add 10x the number of vertices in this area
+        //todo: draw debug to show where they are
+        //todo: use an algorithm to know when the vert is a corner and use math to curve the corner
+        //todo: ensure this works with merging
         vertexPositions.Add(FVector(radius * UKismetMathLibrary::DegCos(i * angle + angleOffset), 0, radius * UKismetMathLibrary::DegSin(i * angle + angleOffset)));
+        DrawDebugSphere(GetWorld(), vertexPositions[i] + GetOwner()->GetActorLocation(), 4, 8, FColor::White, true, 100);
         vertices.Add(new Vertex(i, vertexCount, vertexPositions[i], this));
+    }
+
+    TArray<FVector> subdividedPositions;
+    for (int i = 0; i < vertexCount; i++)
+    {
+        subdividedPositions.AddUnique(vertexPositions[i]);
+        for (int j = 1; j < subdivide; j++)
+        {
+            Log(i - 1, i, i + 1, vertexPositions.Num());
+            
+            if (i < 0)
+                continue;
+            int wrapIndex = i + 1 >= vertexPositions.Num()
+                ? 0 : i + 1;
+            FVector increment = (vertexPositions[wrapIndex] - vertexPositions[i]) / subdivide;
+            FVector nextPos = vertexPositions[i] + increment * j;
+            
+            DrawDebugSphere(GetWorld(), nextPos + GetOwner()->GetActorLocation(), 2, 8, FColor::Green, true, 100);
+        }
     }
     UpdateMesh();
 }
