@@ -17,7 +17,7 @@ FLinearColor UColorCast::TileColorToLinearColor(const ETileColor color)
     case ETileColor::Purple:  return FLinearColor(0.2f, 0, 0.3f, 1);
     case ETileColor::Pink:    return FLinearColor(0.65f, 0, 0.1f, 1);
     case ETileColor::Magenta: return FLinearColor(0.6f, 0, 0.6f, 1);
-    case ETileColor::Brown:   return FLinearColor(0.2f, 0.0f, 0.05f, 1);
+    case ETileColor::Maroon:  return FLinearColor(0.2f, 0.0f, 0.05f, 1);
     case ETileColor::Black:   return FLinearColor(blackShade, blackShade, blackShade, 1);
     default: throw std::invalid_argument("Invalid tile color enum.");
     }
@@ -42,7 +42,7 @@ FKey UColorCast::GetKey(const ETileColor color)
     case ETileColor::Purple:  return EKeys::P;
     case ETileColor::Pink:    return EKeys::N;
     case ETileColor::Magenta: return EKeys::T;
-    case ETileColor::Brown:   return EKeys::M;
+    case ETileColor::Maroon:   return EKeys::M;
     case ETileColor::Black:   return EKeys::K;
     default: throw std::invalid_argument("Invalid color.");
     }

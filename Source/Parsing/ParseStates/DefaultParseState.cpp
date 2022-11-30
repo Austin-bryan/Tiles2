@@ -1,4 +1,6 @@
 #include "DefaultParseState.h"
+
+#include "Logger.h"
 #include "Token.h"
 #include "Parser.h"
 #include "Tile.h"
