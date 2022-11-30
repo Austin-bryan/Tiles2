@@ -58,7 +58,6 @@ bool LineLineIntersection(FVector startA, FVector endA, FVector startB, FVector 
     double z = (a1 * c2 - a2 * c1) / determinant;
 
     out_intersection = FVector(x, 0, z);
-    // Log("intersection: ", out_intersection, TURQUOISE);
     return true;
 }
 
@@ -73,14 +72,6 @@ void UMeshGenerator::Merge()
         vertex->ApplyPosition();
     for (const auto& generator : Generators)
         generator->UpdateMesh();
-
-    // for (auto v : Vertex::Vertices)
-        // v->SetPosition(FVector::ZeroVector);
-    // for (auto v : Vertex::Vertices)
-        // Log(v->GetWorldPosition(), RED);
-    // for (const auto& generator : Generators)
-    // for (auto& v : generator->vertices)
-        // Log(v.GetWorldPosition(), BLUE);
 }
 void UMeshGenerator::MergeWithNeighbors(TArray<Vertex*>& queuedVertices, ACreatorTile* const& creatorTileA)
 {
@@ -108,12 +99,9 @@ void UMeshGenerator::MergeWithNeighbors(TArray<Vertex*>& queuedVertices, ACreato
             for (const auto& creatorTileB : TilesToMerge)
                 if (creatorTileB != creatorTileA)
                     MergeWithNeighbor(queuedVertices, creatorTileA, vertexA, creatorTileB);
-            Log("Dual Merge: ", selectionCount);
         }
         else if (selectionCount > 2)
         {
-            Log("Group Merge: ", selectionCount);
-            
             FVector sum = FVector::Zero();
             TArray<Vertex*> selectedVertices;
             
@@ -126,26 +114,6 @@ void UMeshGenerator::MergeWithNeighbors(TArray<Vertex*>& queuedVertices, ACreato
             }
             AverageVertices(selectedVertices, sum);
         }
-        Log("Selection Count: ", selectionCount, *vertexA,
-              selectionCount == 1
-            ? YELLOW
-            : selectionCount == 2
-            ? ORANGE
-            : selectionCount == 3
-            ? RED
-            : selectionCount == 4
-            ? PURPLE
-            : selectionCount == 5
-            ? CYAN
-            : selectionCount == 6
-            ? BLACK
-            : WHITE);
-    }
-    
-    for (auto& vertexA : creatorTileA->MeshGenerator->vertices)
-    {
- 
-      
     }
 }
 
