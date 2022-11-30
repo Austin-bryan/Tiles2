@@ -89,6 +89,7 @@ private:
     TArray<FVector2D> UV;
     TArray<FColor> colors;
     TArray<FProcMeshTangent> tangents;
+    TArray<FVector> roundedVertices;
     
     int radius, angle, vertexCount, angleOffset;
 };

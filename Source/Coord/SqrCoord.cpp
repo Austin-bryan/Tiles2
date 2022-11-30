@@ -14,7 +14,6 @@ const FCoord* FSqrCoord::operator+(const EDirection direction) const
 	}
 }
 
-// TODO:: spacing = 110;
 float FSqrCoord::GetSpaceX()  const { return 110; }
 float FSqrCoord::GetSpaceZ()  const { return 110; }
 float FSqrCoord::GetOffsetX() const { return -x; }

@@ -2,7 +2,10 @@ sqr (3, 3) | b{cmo, bnd((-1, -1), (1, -1))}/b/b/ g/g/g/ r/r/r;
 sqr (3, 3) | b{cmo, bnd((-1, -1), (-1, 1))}/b/b/ g/g/g/ r/r/r;
 sqr (3, 3) | b{bnd((-1, -1), (1, 0))}/b/b/ g/g/g/ r/r/r;
 sqr (3, 3) | b/b/b/ g/g/g/ r/r/r;
+sqr (2, 2) | r/r/ b/b;
 
+sqr (7, 7) | r/r/r/r/r/r/r/ o/o/o/o/o/o/o/ g/g/g/g/g/g/g/ b/b/b/b/b/b/b/ c/c/c/c/c/c/c/ y/y/y/y/y/y/y/ n/n/n/n/n/n/n;
+sqr (6, 6) | r/r/r/r/r/r/ o/o/o/o/o/o/ g/g/g/g/g/g/ b/b/b/b/b/b/ c/c/c/c/c/c/ y/y/y/y/y/y;
 sqr (5, 5) | r/r/r/r/r/ o/o/o/o/o/ g/g/g/g/g/ b/b/b/b/b/ c/c/c/c/c;
 sqr (4, 4) | r/r/r/r/ g/g/g/g/ b/b/b/b/ c/c/c/c;
 sqr (3, 4) | n/n/n/ g/g/g/ b/b/b/ c/c/c;
@@ -28,8 +31,6 @@ hex (9, 9, 9) | r/r/r/r/r/ b/b/b/b/b/b/ g/g/g/g/g/g/g/ n/n/n/n/n/n/n/n/ k/k/k/k/
 
 hex (9, 9, 9) | r/r/r/r/r/ b/b/b/b/b/b/ g/g/g/g/g/g/g/ n/n/n/n/n/n/n/n/ k/k/k/k/k/k/k/k/k/ p/p/p/p/p/p/p/p/ c/c/c/c/c/c/c/ o/o/o/o/o/o/ y/y/y/y/y;
 
-
-tri (3, 4, 2) | r/o/y/ g/c/b/ p/n/k/ w/m/r;
 tri (2, 2, 2) | r/ b/b/b;
 
 tri (5, 5, 5) | r/ b/b/b/ g/g/g/g/g/ n/n/n/n/n/n/n/ k/k/k/k/k/k/k/k/k;
