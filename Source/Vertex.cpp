@@ -48,11 +48,5 @@ void Vertex::SetPosition(const FVector newPosition)
 {
     position = generator->GetOwner()->GetTransform().InverseTransformPosition(newPosition), hasBeenMerged = true;
     position.Y = 0;
-    // generator->vertexPositions[vertexIndex] = position;
-
-    // const auto normalizedPos = position;
-    // const float length = 0.2f;
-
-    generator->vertexPositions[vertexIndex] = position;
     UMeshGenerator::Generators.AddUnique(generator);
 }

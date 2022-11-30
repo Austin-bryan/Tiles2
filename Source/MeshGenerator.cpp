@@ -215,28 +215,22 @@ void UMeshGenerator::UpdateMesh()
 void UMeshGenerator::Draw()
 {
     ClearData();
-    int _vertexCount = vertexCount;
-    
-    // ReSharper disable once CppTooWideScope
-    const int subdivide = 31;
+
     for (int i = 0; i < vertexCount; i++)
     {
-        vertexPositions.Add(FVector(radius * UKismetMathLibrary::DegCos(i * angle + angleOffset), 0, radius * UKismetMathLibrary::DegSin(i * angle + angleOffset)));
         // DrawDebugSphere(GetWorld(), vertexPositions[i] + GetOwner()->GetActorLocation(), 2, 8, FColor::White, true, 100);
-        vertices.Add(new Vertex(i, vertexCount, vertexPositions[i], this));
+        vertices.Add(new Vertex(i, vertexCount
+                , FVector(radius * UKismetMathLibrary::DegCos(i * angle + angleOffset), 0
+                        , radius * UKismetMathLibrary::DegSin(i * angle + angleOffset)), this));
     }
 
     // TODO:: have angle be a function of 360 / vertexCount
-    // ReSharper disable once CppTooWideScope
-    const float circleCount = 63;
-    // ReSharper disable once CppTooWideScope
     const float circleRadius = 25.0f;
 
     TArray<FVector> circleOrigins;
-
-    const int index = 1;
     for (int i = 0; i < vertexCount; i++)
     {
+        const float circleCount = 63;
         FVector normalizedVertex = vertices[i]->GetLocalPosition();
         normalizedVertex.Normalize();
         FVector circleOrigin = -normalizedVertex * circleRadius * FMath::Sqrt(2.0f) + vertices[i]->GetLocalPosition();
@@ -274,7 +268,7 @@ void UMeshGenerator::Draw()
 }
 void UMeshGenerator::ClearData()
 {
-    vertexPositions.Empty();
+    // vertexPositions.Empty();
     triangles.Empty();
     UV.Empty();
 }

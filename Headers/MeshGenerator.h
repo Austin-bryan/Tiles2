@@ -83,7 +83,6 @@ private:
     void ClearData();
 
     TArray<Vertex*> vertices;
-    TArray<FVector> vertexPositions;
     TArray<int> triangles;
     TArray<FVector> normals;
     TArray<FVector2D> UV;
