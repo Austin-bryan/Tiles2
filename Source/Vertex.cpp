@@ -4,15 +4,7 @@
 TArray<Vertex*> Vertex::Vertices;
 int Vertex::Count;
 
-bool Vertex::AreNeighbors(const Vertex* a, const Vertex* b)
-{
-    FVector va = a->GetWorldPosition();
-    FVector vb = b->GetWorldPosition();
-    va.Y = 0;
-    vb.Y = 0;
-
-    return FVector::Distance(a->GetWorldPosition(), b->GetWorldPosition()) < 30;
-}
+bool Vertex::AreNeighbors(const Vertex* a, const Vertex* b) { return FVector::Distance(a->GetWorldPosition(), b->GetWorldPosition()) < 30; }
 bool Vertex::operator==(const Vertex* rhs) const { return *this == *rhs; }
 bool Vertex::operator==(const Vertex rhs)  const { return ID == rhs.ID; }
 

@@ -2,8 +2,8 @@
 // ReSharper disable CppLocalVariableMayBeConst
 #include "MeshGenerator.h"
 
-#include "Board.h"
 #include "Logger.h"
+#include "Board.h"
 #include "Vertex.h"
 #include "Tile.h"
 #include "ActiveSocket.h"
@@ -229,21 +229,7 @@ void UMeshGenerator::Draw()
 
     TArray<FVector> circleOrigins;
     for (int i = 0; i < vertexCount; i++)
-    {
-        const float circleCount = 63;
-        FVector normalizedVertex = vertices[i]->GetLocalPosition();
-        normalizedVertex.Normalize();
-        FVector circleOrigin = -normalizedVertex * circleRadius * FMath::Sqrt(2.0f) + vertices[i]->GetLocalPosition();
-        circleOrigins.Add(circleOrigin);
-
-        for (int j = 0; j < circleCount; j++)
-        {
-            FVector circleVertex = FVector(
-                  circleRadius * UKismetMathLibrary::DegCos(j * (360 / circleCount) + angleOffset), 0
-                , circleRadius * UKismetMathLibrary::DegSin(j * (360 / circleCount) + angleOffset));
-            FVector world = circleVertex + circleOrigin + GetOwner()->GetActorLocation();
-        }
-    }
+        circleOrigins.Add(-vertices[i]->GetLocalPosition().GetSafeNormal() * circleRadius * FMath::Sqrt(2.0f) + vertices[i]->GetLocalPosition());
 
     roundedVertices.Empty();
     for (int i = 0; i < vertexCount; i++)
