@@ -1,8 +1,8 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "CreatorBoard.h"
-#include "ProceduralMeshComponent.h"
 #include "Vertex.h"
+#include "ProceduralMeshComponent.h"
 #include "MeshGenerator.generated.h"
 
 // #define DRAW_DEBUG

@@ -4,11 +4,11 @@
 #include "ForwardDeclares.h"
 #include "Tile.generated.h"
 
-class UProceduralMeshComponent;
 class ABoard;
 class UMeshGenerator;
 class UBoxComponent;
 class UTextRenderComponent;
+class UProceduralMeshComponent;
 class UMaterialInstanceConstant;
 enum class EBoardShape;
 enum class ETileColor : uint8;

@@ -12,7 +12,6 @@
 #include "KismetProceduralMeshLibrary.h"
 #include "VectorTypes.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "RuntimeMeshComponent/Public/Components/RuntimeMeshComponentStatic.h"
 
 /*
      2  1
@@ -211,7 +210,7 @@ FVector UMeshGenerator::GetEndVertex(const Vertex* start, const Vertex* end)
 
 void UMeshGenerator::UpdateMesh()
 {
-    UKismetProceduralMeshLibrary::CreateGridMeshTriangles(11, 11, false, triangles);
+    UKismetProceduralMeshLibrary::CreateGridMeshTriangles(roundedVertices.Num(), roundedVertices.Num(), false, triangles);
     UKismetProceduralMeshLibrary::CalculateTangentsForMesh(roundedVertices, triangles, UV, normals, tangents);
     ProceduralMesh->CreateMeshSection(0, roundedVertices, triangles, normals, UV, colors, tangents, true);
 }
@@ -225,7 +224,7 @@ void UMeshGenerator::Draw()
     for (int i = 0; i < vertexCount; i++)
     {
         vertexPositions.Add(FVector(radius * UKismetMathLibrary::DegCos(i * angle + angleOffset), 0, radius * UKismetMathLibrary::DegSin(i * angle + angleOffset)));
-        DrawDebugSphere(GetWorld(), vertexPositions[i] + GetOwner()->GetActorLocation(), 2, 8, FColor::White, true, 100);
+        // DrawDebugSphere(GetWorld(), vertexPositions[i] + GetOwner()->GetActorLocation(), 2, 8, FColor::White, true, 100);
         vertices.Add(new Vertex(i, vertexCount, vertexPositions[i], this));
     }
 
@@ -247,7 +246,7 @@ void UMeshGenerator::Draw()
         circleOrigins.Add(circleOrigin);
 
         // if (i == index)
-        DrawDebugSphere(GetWorld(), circleOrigin + GetOwner()->GetActorLocation(), 1, 8, FColor::Orange, true, 100);
+        // DrawDebugSphere(GetWorld(), circleOrigin + GetOwner()->GetActorLocation(), 1, 8, FColor::Orange, true, 100);
         for (int j = 0; j < circleCount; j++)
         {
             FVector circleVertex = FVector(
@@ -257,45 +256,41 @@ void UMeshGenerator::Draw()
             FVector world = circleVertex + circleOrigin + GetOwner()->GetActorLocation();
 
             // if (i == index)
-            DrawDebugSphere(GetWorld(), world, 0.5f, 4, FColor::Blue, true, 100);
+            // DrawDebugSphere(GetWorld(), world, 0.5f, 4, FColor::Blue, true, 100);
         }
     }
 
-    // TODO:: cache circle position for each vertex
-    // todo: position is based on circle radius and radius of shape itself
-    // todo: Then cap each vertex based on the current circles distance from tile origin
-
-    
     roundedVertices.Empty();
     for (int i = 0; i < vertexCount; i++)
     {
         FVector circleOrigin = circleOrigins[i];
-        DrawDebugSphere(GetWorld(), circleOrigin + GetOwner()->GetActorLocation(), 1, 16, i == 0 ? FColor::Red : i == 1 ? FColor::Green : i == 2 ? FColor::Blue : FColor::White, true, 100);
+        // DrawDebugSphere(GetWorld(), circleOrigin + GetOwner()->GetActorLocation(), 1, 16, i == 0 ? FColor::Red : i == 1 ? FColor::Green : i == 2 ? FColor::Blue : FColor::White, true, 100);
 
-        int curveCount = 1;
-        // for (int j = -curveCount; j <= curveCount; j++)
-        // {
-        //     FTransform circleTrans{ circleOrigin };
-        //     
-        //     FVector  x = (circleOrigin.GetSafeNormal() * circleRadius + circleOrigin);
-        //     x          = circleTrans.InverseTransformPosition(x);
-        //     // was 5
-        //     FRotator r = FRotator(j * 10, 0, 0);
-        //     x = r.RotateVector(x);
-        //     x = circleTrans.TransformPosition(x);
-        //     
-        //     // roundedVertices.AddUnique(x);
-        //     roundedVertices.Add(x);
-        //     DrawDebugSphere(GetWorld()
-        //         , x + GetOwner()->GetActorLocation()
-        //         , 0.5f, 4, FColor::Green, true, 100);
-        // }
-        roundedVertices.Add(vertexPositions[i]);
-        if (i + 1 < vertexCount)
-             roundedVertices.Add((vertexPositions[i] + vertexPositions[i + 1]) / 2);
-        else roundedVertices.Add((vertexPositions[i] + vertexPositions[0]) / 2);
+        int curveCount = 0;
+        // roundedVertices.Add(circleOrigin);
+        for (int j = -curveCount; j <= curveCount; j++)
+        {
+            FTransform circleTrans{ circleOrigin };
+            
+            FVector  x = (circleOrigin.GetSafeNormal() * circleRadius + circleOrigin);
+            x = circleTrans.InverseTransformPosition(x);
+            // was 5
+            FRotator r = FRotator(j * 15, 0, 0);
+            x = r.RotateVector(x);
+            x = circleTrans.TransformPosition(x);
+            
+            // roundedVertices.AddUnique(x);
+            roundedVertices.Add(x);
+            // DrawDebugSphere(GetWorld()
+                // , x + GetOwner()->GetActorLocation()
+                // , 0.5f, 4, FColor::Green, true, 100);
+        }
+        // roundedVertices.Add(vertexPositions[i]);
+        // if (i + 1 < vertexCount)
+             // roundedVertices.Add((vertexPositions[i] + vertexPositions[i + 1]) / 2);
+        // else roundedVertices.Add((vertexPositions[i] + vertexPositions[0]) / 2);
     }
-    roundedVertices.Insert(FVector::ZeroVector, roundedVertices.Num() - 1);
+    // roundedVertices.Insert(FVector::ZeroVector, roundedVertices.Num() - 1);
 
     UpdateMesh();
     return;
