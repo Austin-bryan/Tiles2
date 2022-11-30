@@ -34,7 +34,6 @@ void UMeshGenerator::TickComponent(const float DeltaTime, const ELevelTick TickT
         DrawDebugSphere(GetWorld(), vertices[i]->GetWorldPosition(), 1, 4, FColor::White);
 }
 #endif
-
 bool LineLineIntersection(FVector startA, FVector endA, FVector startB, FVector endB, FVector& out_intersection)
 {
     // Line AB represented as a1x + b1y = c1
@@ -73,7 +72,7 @@ void UMeshGenerator::Merge()
     for (auto& vertex : queuedVertices)
         vertex->ApplyPosition();
     for (const auto& generator : Generators)
-        generator->UpdateMesh();
+        generator->Draw();
 }
 void UMeshGenerator::MergeWithNeighbors(TArray<Vertex*>& queuedVertices, ACreatorTile* const& creatorTileA)
 {
@@ -211,7 +210,6 @@ FVector UMeshGenerator::GetEndVertex(const Vertex* start, const Vertex* end)
 void UMeshGenerator::UpdateMesh()
 {
     UKismetProceduralMeshLibrary::CreateGridMeshTriangles(roundedVertices.Num(), roundedVertices.Num(), false, triangles);
-    UKismetProceduralMeshLibrary::CalculateTangentsForMesh(roundedVertices, triangles, UV, normals, tangents);
     ProceduralMesh->CreateMeshSection(0, roundedVertices, triangles, normals, UV, colors, tangents, true);
 }
 void UMeshGenerator::Draw()
@@ -232,7 +230,7 @@ void UMeshGenerator::Draw()
     // ReSharper disable once CppTooWideScope
     const float circleCount = 63;
     // ReSharper disable once CppTooWideScope
-    const float circleRadius = 20.0f;
+    const float circleRadius = 25.0f;
 
     TArray<FVector> circleOrigins;
 
@@ -242,21 +240,14 @@ void UMeshGenerator::Draw()
         FVector normalizedVertex = vertices[i]->GetLocalPosition();
         normalizedVertex.Normalize();
         FVector circleOrigin = -normalizedVertex * circleRadius * FMath::Sqrt(2.0f) + vertices[i]->GetLocalPosition();
-        // FVector circleOrigin = normalizedVertex * circleRadius * FMath::Sqrt(2.0f) + vertexPositions[i];
         circleOrigins.Add(circleOrigin);
 
-        // if (i == index)
-        // DrawDebugSphere(GetWorld(), circleOrigin + GetOwner()->GetActorLocation(), 1, 8, FColor::Orange, true, 100);
         for (int j = 0; j < circleCount; j++)
         {
             FVector circleVertex = FVector(
                   circleRadius * UKismetMathLibrary::DegCos(j * (360 / circleCount) + angleOffset), 0
                 , circleRadius * UKismetMathLibrary::DegSin(j * (360 / circleCount) + angleOffset));
-            
             FVector world = circleVertex + circleOrigin + GetOwner()->GetActorLocation();
-
-            // if (i == index)
-            // DrawDebugSphere(GetWorld(), world, 0.5f, 4, FColor::Blue, true, 100);
         }
     }
 
@@ -264,36 +255,22 @@ void UMeshGenerator::Draw()
     for (int i = 0; i < vertexCount; i++)
     {
         FVector circleOrigin = circleOrigins[i];
-        // DrawDebugSphere(GetWorld(), circleOrigin + GetOwner()->GetActorLocation(), 1, 16, i == 0 ? FColor::Red : i == 1 ? FColor::Green : i == 2 ? FColor::Blue : FColor::White, true, 100);
 
-        int curveCount = 0;
-        // roundedVertices.Add(circleOrigin);
+        int curveCount = 3;
         for (int j = -curveCount; j <= curveCount; j++)
         {
             FTransform circleTrans{ circleOrigin };
+            FVector x = (circleOrigin.GetSafeNormal() * circleRadius + circleOrigin);
             
-            FVector  x = (circleOrigin.GetSafeNormal() * circleRadius + circleOrigin);
             x = circleTrans.InverseTransformPosition(x);
-            // was 5
             FRotator r = FRotator(j * 15, 0, 0);
             x = r.RotateVector(x);
             x = circleTrans.TransformPosition(x);
             
-            // roundedVertices.AddUnique(x);
             roundedVertices.Add(x);
-            // DrawDebugSphere(GetWorld()
-                // , x + GetOwner()->GetActorLocation()
-                // , 0.5f, 4, FColor::Green, true, 100);
         }
-        // roundedVertices.Add(vertexPositions[i]);
-        // if (i + 1 < vertexCount)
-             // roundedVertices.Add((vertexPositions[i] + vertexPositions[i + 1]) / 2);
-        // else roundedVertices.Add((vertexPositions[i] + vertexPositions[0]) / 2);
     }
-    // roundedVertices.Insert(FVector::ZeroVector, roundedVertices.Num() - 1);
-
     UpdateMesh();
-    return;
 }
 void UMeshGenerator::ClearData()
 {

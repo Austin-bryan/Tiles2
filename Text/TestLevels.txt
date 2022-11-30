@@ -4,6 +4,10 @@ sqr (3, 3) | b{bnd((-1, -1), (1, 0))}/b/b/ g/g/g/ r/r/r;
 sqr (3, 3) | b/b/b/ g/g/g/ r/r/r;
 sqr (2, 2) | r/r/ b/b;
 
+sqr (9, 9) | r/r/r/r/r/r/r/r/r/ o/o/o/o/o/o/o/o/o/ y/y/y/y/y/y/y/y/y/ g/g/g/g/g/g/g/g/g/ c/c/c/c/c/c/c/c/c/ b/b/b/b/b/b/b/b/b/ p/p/p/p/p/p/p/p/p/ n/n/n/n/n/n/n/n/n/ k/k/k/k/k/k/k/k/k;
+
+sqr (9, 9) | r/r/r/r/r/r/r/r/r/ o/o/o/o/o/o/o/o/o/ y/y/y/y/y/y/y/y/y/ g/g/g/g/g/g/g/g/g/ c/c/c/c/c/c/c/c/c/ b/b/b/b/b/b/b/b/b/ p/p/p/p/p/p/p/p/p/ n/n/n/n/n/n/n/n/n/ k/k/k/k/k/k/k/k/k;
+
 sqr (7, 7) | r/r/r/r/r/r/r/ o/o/o/o/o/o/o/ g/g/g/g/g/g/g/ b/b/b/b/b/b/b/ c/c/c/c/c/c/c/ y/y/y/y/y/y/y/ n/n/n/n/n/n/n;
 sqr (6, 6) | r/r/r/r/r/r/ o/o/o/o/o/o/ g/g/g/g/g/g/ b/b/b/b/b/b/ c/c/c/c/c/c/ y/y/y/y/y/y;
 sqr (5, 5) | r/r/r/r/r/ o/o/o/o/o/ g/g/g/g/g/ b/b/b/b/b/ c/c/c/c/c;
