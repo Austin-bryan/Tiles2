@@ -58,7 +58,6 @@ bool LineLineIntersection(FVector startA, FVector endA, FVector startB, FVector 
     double z = (a1 * c2 - a2 * c1) / determinant;
 
     out_intersection = FVector(x, 0, z);
-    // Log("intersection: ", out_intersection, TURQUOISE);
     return true;
 }
 
@@ -81,9 +80,9 @@ void UMeshGenerator::MergeWithNeighbors(TArray<Vertex*>& queuedVertices, ACreato
         int selectionCount = 0;
         const auto GetCreatorTile = [](const Vertex* vertex) { return Cast<ACreatorTile>(vertex->GetTile()); };
 
-        const auto creatorTile = GetCreatorTile(vertexA);
-        if (!creatorTile->GetIsSelected())
+        if (!GetCreatorTile(vertexA)->GetIsSelected())
             continue;
+        
         selectionCount++;
         for (auto vertexB : vertexA->neighbors)
         {
@@ -95,11 +94,10 @@ void UMeshGenerator::MergeWithNeighbors(TArray<Vertex*>& queuedVertices, ACreato
 
         if (selectionCount == 2)
         {
-            if (vertexA->IsMerged())
-                continue;
-            for (const auto& creatorTileB : TilesToMerge)
-                if (creatorTileB != creatorTileA)
-                    MergeWithNeighbor(queuedVertices, creatorTileA, vertexA, creatorTileB);
+            if (!vertexA->IsMerged())
+                for (const auto& creatorTileB : TilesToMerge)
+                    if (creatorTileB != creatorTileA)
+                        MergeWithNeighbor(queuedVertices, creatorTileA, vertexA, creatorTileB);
         }
         else if (selectionCount > 2)
         {
@@ -217,34 +215,34 @@ void UMeshGenerator::Draw()
     ClearData();
 
     for (int i = 0; i < vertexCount; i++)
-    {
-        // DrawDebugSphere(GetWorld(), vertexPositions[i] + GetOwner()->GetActorLocation(), 2, 8, FColor::White, true, 100);
-        vertices.Add(new Vertex(i, vertexCount
-                , FVector(radius * UKismetMathLibrary::DegCos(i * angle + angleOffset), 0
-                        , radius * UKismetMathLibrary::DegSin(i * angle + angleOffset)), this));
-    }
+        vertices.Add(new Vertex(i, vertexCount, FVector(radius * UKismetMathLibrary::DegCos(i * angle + angleOffset), 0
+                                                      , radius * UKismetMathLibrary::DegSin(i * angle + angleOffset)), this));
 
     // TODO:: have angle be a function of 360 / vertexCount
     const float circleRadius = 25.0f;
 
     TArray<FVector> circleOrigins;
-    for (int i = 0; i < vertexCount; i++)
-        circleOrigins.Add(-vertices[i]->GetLocalPosition().GetSafeNormal() * circleRadius * FMath::Sqrt(2.0f) + vertices[i]->GetLocalPosition());
+    for (const auto& vertex : vertices)
+        circleOrigins.Add(-vertex->GetLocalPosition().GetSafeNormal() * circleRadius * FMath::Sqrt(2.0f) + vertex->GetLocalPosition());
 
     roundedVertices.Empty();
     for (int i = 0; i < vertexCount; i++)
     {
+        if (vertices[i]->IsMerged())
+        {
+            roundedVertices.Add(vertices[i]->GetLocalPosition());
+            continue;
+        }
         FVector circleOrigin = circleOrigins[i];
 
-        int curveCount = 3;
+        int curveCount = 5;
         for (int j = -curveCount; j <= curveCount; j++)
         {
             FTransform circleTrans{ circleOrigin };
             FVector x = (circleOrigin.GetSafeNormal() * circleRadius + circleOrigin);
             
             x = circleTrans.InverseTransformPosition(x);
-            FRotator r = FRotator(j * 15, 0, 0);
-            x = r.RotateVector(x);
+            x = FRotator(j * 45 / curveCount, 0, 0).RotateVector(x);
             x = circleTrans.TransformPosition(x);
             
             roundedVertices.Add(x);
