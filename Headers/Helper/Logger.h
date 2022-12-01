@@ -25,6 +25,9 @@ class Vertex;
 class LogParams;
 struct FParameter;
 
+// TODO:: have a template<...>Format() function that has the same interface as template<...>Log(),
+// todo: then internally, Log uses Format() to reuse code. This allows string formatting of the same functions and interface
+
 constexpr float defaultTime = 600.0f;
 const FColor defaultColor = FColor::Cyan;
 
@@ -69,12 +72,12 @@ inline FString fstr(const char* c) { return FString(c); }
 inline FString fstr(const bool b)  { return b ? FString("true") : FString("false"); } 
 inline FString fstr(const char c)  { return FString(std::string(1, c).c_str()); }
 
-inline FString operator+(const FString& lhs, const int rhs);
-inline FString operator+(const FString& lhs, const float rhs);
-inline FString operator+(const FString& lhs, const char* rhs);
-inline FString operator+(const FString& lhs, const bool rhs);
-inline FString operator+(const FString& lhs, const char rhs);
-inline FString operator+(const FString& lhs, const FVector rhs);
+FString operator+(const FString& lhs, const int rhs);
+FString operator+(const FString& lhs, const float rhs);
+FString operator+(const FString& lhs, const char* rhs);
+FString operator+(const FString& lhs, const bool rhs);
+FString operator+(const FString& lhs, const char rhs);
+FString operator+(const FString& lhs, const FVector rhs);
 
 inline std::ostringstream& operator<<(std::ostringstream& os, const FString& string)
 {

@@ -28,7 +28,6 @@ TArray<ACreatorTile*> UMeshGenerator::TilesToMerge;
 //TODO:: Triangle needs proper corners
 //TODO:: Switch corner settings depending on shape
 //TODO:: Tile color depends on orientation
-
 //TODO:: Rounded corners seem to extend width of tile, which means when they are merged away, the tile becomes skinnier in that area
 //todo: this isn't an issue for square tiles, so its possible this is tied to the position of the corners which has never been adjusted, but needs to
 //todo: its sqrt() for SquareTile and needs to vary for each shape. This might mean the corner doesn't need other parameters then, as well 
@@ -128,6 +127,7 @@ void UMeshGenerator::MergeWithNeighbors(TArray<Vertex*>& queuedVertices, ACreato
 
 ETileColor UMeshGenerator::GetBandagedColor()
 {
+    //TODO:: if there is only one of each color, black is used, instead of a random color that was in the selection
     TMap<ETileColor, int> colorMap;
     ETileColor bandagedColor = ETileColor::None;
     int maxColor = 0;
@@ -258,13 +258,31 @@ void UMeshGenerator::Draw()
     for (int i = 0; i < vertexCount; i++)
         vertices.Add(new Vertex(i, vertexCount, FVector(radius * UKismetMathLibrary::DegCos(i * angle + angleOffset), 0
                                                       , radius * UKismetMathLibrary::DegSin(i * angle + angleOffset)), this));
-
     // TODO:: have angle be a function of 360 / vertexCount
-    const float circleRadius = 25.0f;
+    const float circleRadius = 12;
+    // const float circleRadius = 12;
+    // const float circleRadius = 15;
+
+    auto shape = Cast<ATile>(GetOwner())->Board()->GetBoardShape();
+    float distance =
+        shape == EBoardShape::Square
+        ? FMath::Sqrt(2.0f)
+        : shape == EBoardShape::Triangle
+        ? 1.75f
+        : 1.15f;
 
     TArray<FVector> circleOrigins;
     for (const auto& vertex : vertices)
-        circleOrigins.Add(-vertex->GetLocalPosition().GetSafeNormal() * circleRadius * FMath::Sqrt(2.0f) + vertex->GetLocalPosition());
+    {
+        // Hex:
+        circleOrigins.Add(-vertex->GetLocalPosition().GetSafeNormal() * circleRadius * distance + vertex->GetLocalPosition());
+
+        /// Square:
+        // circleOrigins.Add(-vertex->GetLocalPosition().GetSafeNormal() * circleRadius * FMath::Sqrt(2.0f) + vertex->GetLocalPosition());
+
+        // DrawDebugSphere(GetWorld(), vertex->GetWorldPosition(), 2, 4, FColor::Green, true, 100);
+        DrawDebugSphere(GetWorld(), circleOrigins.Last() + GetOwner()->GetActorLocation(), 2, 4, FColor::Red, true, 100);
+    }
 
     roundedVertices.Empty();
     for (int i = 0; i < vertexCount; i++)
@@ -281,19 +299,22 @@ void UMeshGenerator::Draw()
         {
             FTransform circleTrans{ circleOrigin };
             FVector x = (circleOrigin.GetSafeNormal() * circleRadius + circleOrigin);
-            
+
             x = circleTrans.InverseTransformPosition(x);
-            x = FRotator(j * 45 / curveCount, 0, 0).RotateVector(x);
+
+            // Triangle (not finsiehed): 
+            //x = FRotator(j * 20 / curveCount, 0, 0).RotateVector(x);
+
+            // Square:
+            // x = FRotator(j * 45 / curveCount, 0, 0).RotateVector(x);
+
+            // Hex:
+            x = FRotator(j * 30 / curveCount, 0, 0).RotateVector(x);
             x = circleTrans.TransformPosition(x);
-            
+
             roundedVertices.Add(x);
         }
     }
     UpdateMesh();
 }
-void UMeshGenerator::ClearData()
-{
-    // vertexPositions.Empty();
-    triangles.Empty();
-    UV.Empty();
-}
+void UMeshGenerator::ClearData() { UV.Empty(); }

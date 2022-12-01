@@ -5,7 +5,7 @@
 #include "ProceduralMeshComponent.h"
 #include "MeshGenerator.generated.h"
 
-// #define DRAW_DEBUG
+#define DRAW_DEBUG
 
 class ATile;
 class Vertex;

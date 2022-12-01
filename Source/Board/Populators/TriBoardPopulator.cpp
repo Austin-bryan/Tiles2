@@ -51,7 +51,7 @@ void TriBoardPopulator::Populate(const FCoordPtr size, Tiles& tiles)
 			if (!coord.GetIsUp())
 			{
 				tile->AddActorWorldRotation(FRotator(60, 0, 0));
-				tile->AddActorWorldOffset(FVector(0, 0, coord.GetSpaceZ() / 3));
+				tile->AddActorWorldOffset(FVector(0, 0, coord.GetSpaceZ() / 3.3f));
 			}
 			coord += EDirection::Right;
 		}
