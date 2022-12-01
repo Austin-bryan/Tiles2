@@ -65,10 +65,12 @@ void ATile::SetColor(const ETileColor color)
 		StaticLoadObject(UMaterialInstanceConstant::StaticClass(), nullptr, *path));
 		instance = UMaterialInstanceDynamic::Create(mat, this);
 	}
+	tileColor = color;
 	instance->SetVectorParameterValue(FName("Color"), UColorCast::TileColorToLinearColor(color));
-	// Mesh->SetMaterial(0, instance);
 	MeshGenerator->ProceduralMesh->SetMaterial(0, instance);
 }
+ETileColor ATile::GetColor() const { return tileColor; }
+
 void ATile::SetBoard(ABoard* newBoard)
 {
 	if (board != nullptr)

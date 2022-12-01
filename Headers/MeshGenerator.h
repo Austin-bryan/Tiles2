@@ -29,6 +29,7 @@ public:
     UPROPERTY(VisibleAnywhere)
         UProceduralMeshComponent* ProceduralMesh;
 
+    static ETileColor GetBandagedColor();
     UFUNCTION(BlueprintCallable)
         static void Merge();
     static TArray<Vertex> UniversalVertices;

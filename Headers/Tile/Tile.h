@@ -24,6 +24,7 @@ public:
 	void Tick    (float DeltaTime) override;
 	void SetShape(const EBoardShape) const;
 	void SetColor(const ETileColor color);
+	ETileColor GetColor() const;
 	void SetBoard(ABoard* newBoard);
 	void SetCoord(FCoordPtr coord);
 
@@ -52,6 +53,7 @@ protected:
 private:
 	static int tileCount;
 	int id;
+	ETileColor tileColor;
 	
 	UPROPERTY()
 		UMaterialInstanceDynamic* instance;
