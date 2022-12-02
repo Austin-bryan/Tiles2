@@ -30,11 +30,7 @@ const FCoord* FHexCoord::operator+=(const EDirection direction)
 }
 
 const float spaceModifier = 1.0f;
-float FHexCoord::GetSpaceX()  const
-{
-	Log(45 * spaceModifier);
-	return 45 * spaceModifier;
-}
+float FHexCoord::GetSpaceX()  const { return 45 * spaceModifier; }
 float FHexCoord::GetSpaceZ()  const { return 52.0f * spaceModifier; }
 float FHexCoord::GetOffsetX() const { return -x + y + z; }
 float FHexCoord::GetOffsetZ() const { return -z + y; }

@@ -130,28 +130,35 @@ ETileColor UMeshGenerator::GetBandagedColor()
     TMap<ETileColor, int> colorMap;
     ETileColor bandagedColor = ETileColor::None;
     int maxColor = 0;
-    
+
     for (int i = 0; i < TilesToMerge.Num(); i++)
     {
         const auto& currentColor = TilesToMerge[i]->GetColor();
-
-        if (colorMap.Contains(currentColor))
+        const auto TrySetBandageColor = [&]()
         {
-            colorMap[currentColor]++;
-
-            // If the majority of the tiles to merge are one color, exit early
-            if (colorMap[currentColor] > TilesToMerge.Num() / 2)
-            {
-                bandagedColor = currentColor;
-                break;
-            }
             if (colorMap[currentColor] > maxColor)
             {
                 maxColor = colorMap[currentColor];
                 bandagedColor = currentColor;
             }
+        };
+
+        if (colorMap.Contains(currentColor))
+        {
+            colorMap[currentColor]++;
+
+            if (colorMap[currentColor] > TilesToMerge.Num() / 2)      // If the majority of the tiles to merge are one color, exit early
+            {
+                bandagedColor = currentColor;
+                break;
+            }
+            TrySetBandageColor();
         }
-        else colorMap.Add(currentColor, 1);
+        else
+        {
+            colorMap.Add(currentColor, 1);
+            TrySetBandageColor();
+        }
     }
     return bandagedColor;
 }
