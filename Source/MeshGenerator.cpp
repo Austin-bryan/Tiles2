@@ -2,16 +2,15 @@
 // ReSharper disable CppLocalVariableMayBeConst
 #include "MeshGenerator.h"
 
-#include "Logger.h"
 #include "Board.h"
 #include "Vertex.h"
 #include "Tile.h"
 #include "ActiveSocket.h"
 #include "CreatorTile.h"
 #include "CreatorBoard.h"
-#include "KismetProceduralMeshLibrary.h"
 #include "TileColor.h"
 #include "VectorTypes.h"
+#include "KismetProceduralMeshLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
 
 /*
@@ -249,6 +248,15 @@ void UMeshGenerator::UpdateMesh()
 {
     int triangleCount = roundedVertices.Num();
     UKismetProceduralMeshLibrary::CreateGridMeshTriangles(triangleCount, triangleCount, false, triangles);
+    // UKismetProceduralMeshLibrary::CalculateTangentsForMesh(roundedVertices, triangles, UV, normals, tangents);
+    
+    UV.Reset();
+    // UV.AddUninitialized()
+    normals.Reset();
+
+    for (int i = 0; i < roundedVertices.Num(); i++)
+            normals.Add(FVector::RightVector);
+    tangents.Reset();   
     ProceduralMesh->CreateMeshSection(0, roundedVertices, triangles, normals, UV, colors, tangents, true);
 }
 void UMeshGenerator::Draw()
@@ -293,28 +301,41 @@ void UMeshGenerator::Draw()
             continue;
         }
         FVector circleOrigin = circleOrigins[i];
-
+    
         int curveCount = 5;
         for (int j = -curveCount; j <= curveCount; j++)
         {
             FTransform circleTrans{ circleOrigin };
             FVector x = (circleOrigin.GetSafeNormal() * circleRadius + circleOrigin);
-
+    
             x = circleTrans.InverseTransformPosition(x);
-
+    
             // Triangle (not finsiehed): 
             //x = FRotator(j * 20 / curveCount, 0, 0).RotateVector(x);
-
+    
             // Square:
             // x = FRotator(j * 45 / curveCount, 0, 0).RotateVector(x);
-
+    
             // Hex:
             x = FRotator(j * 30 / curveCount, 0, 0).RotateVector(x);
             x = circleTrans.TransformPosition(x);
-
+    
             roundedVertices.Add(x);
         }
     }
+
+    // roundedVertices.Add(FVector( 50, 0,  50));
+    // roundedVertices.Add(FVector(-50, 0,  50));
+    // roundedVertices.Add(FVector(-50, 0, -50));
+    // roundedVertices.Add(FVector( 50, 0, -50));
+
+    for (auto v : roundedVertices)
+    {
+        UV.Add(FVector2D(v.X, v.Z).GetSafeNormal());
+    }
+
+
+    normals.Reset();
     UpdateMesh();
 }
 void UMeshGenerator::ClearData() { UV.Empty(); }
