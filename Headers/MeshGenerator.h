@@ -1,8 +1,7 @@
 #pragma once
+#include "Vertex.h"
 #include "CoreMinimal.h"
 #include "CreatorBoard.h"
-#include "ProceduralMeshComponent.h"
-#include "Vertex.h"
 #include "MeshGenerator.generated.h"
 
 #define DRAW_DEBUG
@@ -29,6 +28,7 @@ public:
     UPROPERTY(VisibleAnywhere)
         UProceduralMeshComponent* ProceduralMesh;
 
+    static ETileColor GetBandagedColor();
     UFUNCTION(BlueprintCallable)
         static void Merge();
     static TArray<Vertex> UniversalVertices;
@@ -80,15 +80,9 @@ public:
 private:
     void Draw();
     void UpdateMesh();
-    void ClearData();
 
     TArray<Vertex*> vertices;
-    TArray<FVector> vertexPositions;
-    TArray<int> triangles;
-    TArray<FVector> normals;
-    TArray<FVector2D> UV;
-    TArray<FColor> colors;
-    TArray<FProcMeshTangent> tangents;
+    TArray<FVector> roundedVertices;
     
     int radius, angle, vertexCount, angleOffset;
 };

@@ -3,12 +3,13 @@
 #include "MeshGenerator.h"
 
 #include "Board.h"
-#include "Logger.h"
 #include "Vertex.h"
 #include "Tile.h"
 #include "ActiveSocket.h"
 #include "CreatorTile.h"
 #include "CreatorBoard.h"
+#include "TileColor.h"
+#include "VectorTypes.h"
 #include "KismetProceduralMeshLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
 
@@ -22,6 +23,14 @@ TArray<Vertex> UMeshGenerator::UniversalVertices;
 TArray<UMeshGenerator*> UMeshGenerator::Generators;
 TArray<ACreatorTile*> UMeshGenerator::TilesToMerge;
 
+//TODO:: UVs not applied
+//TODO:: Triangle needs proper corners
+//TODO:: Switch corner settings depending on shape
+//TODO:: Tile color depends on orientation
+//TODO:: Rounded corners seem to extend width of tile, which means when they are merged away, the tile becomes skinnier in that area
+//todo: this isn't an issue for square tiles, so its possible this is tied to the position of the corners which has never been adjusted, but needs to
+//todo: its sqrt() for SquareTile and needs to vary for each shape. This might mean the corner doesn't need other parameters then, as well 
+
 UMeshGenerator::UMeshGenerator() { }
 
 #ifdef DRAW_DEBUG
@@ -33,7 +42,6 @@ void UMeshGenerator::TickComponent(const float DeltaTime, const ELevelTick TickT
         DrawDebugSphere(GetWorld(), vertices[i]->GetWorldPosition(), 1, 4, FColor::White);
 }
 #endif
-
 bool LineLineIntersection(FVector startA, FVector endA, FVector startB, FVector endB, FVector& out_intersection)
 {
     // Line AB represented as a1x + b1y = c1
@@ -64,14 +72,17 @@ bool LineLineIntersection(FVector startA, FVector endA, FVector startB, FVector 
 void UMeshGenerator::Merge()
 {
     Generators.Empty();
-    TArray<Vertex*> queuedVertices;
 
+    TArray<Vertex*> queuedVertices;
     for (const auto& creatorTileA : TilesToMerge)
+    {
         MergeWithNeighbors(queuedVertices, creatorTileA);
+        creatorTileA->SetColor(GetBandagedColor());
+    }
     for (auto& vertex : queuedVertices)
         vertex->ApplyPosition();
     for (const auto& generator : Generators)
-        generator->UpdateMesh();
+        generator->Draw();
 }
 void UMeshGenerator::MergeWithNeighbors(TArray<Vertex*>& queuedVertices, ACreatorTile* const& creatorTileA)
 {
@@ -80,9 +91,6 @@ void UMeshGenerator::MergeWithNeighbors(TArray<Vertex*>& queuedVertices, ACreato
         int selectionCount = 0;
         const auto GetCreatorTile = [](const Vertex* vertex) { return Cast<ACreatorTile>(vertex->GetTile()); };
 
-        const auto creatorTile = GetCreatorTile(vertexA);
-        if (!creatorTile->GetIsSelected())
-            continue;
         selectionCount++;
         for (auto vertexB : vertexA->neighbors)
         {
@@ -94,11 +102,10 @@ void UMeshGenerator::MergeWithNeighbors(TArray<Vertex*>& queuedVertices, ACreato
 
         if (selectionCount == 2)
         {
-            if (vertexA->IsMerged())
-                continue;
-            for (const auto& creatorTileB : TilesToMerge)
-                if (creatorTileB != creatorTileA)
-                    MergeWithNeighbor(queuedVertices, creatorTileA, vertexA, creatorTileB);
+            if (!vertexA->IsMerged())
+                for (const auto& creatorTileB : TilesToMerge)
+                    if (creatorTileB != creatorTileA)
+                        MergeWithNeighbor(queuedVertices, creatorTileA, vertexA, creatorTileB);
         }
         else if (selectionCount > 2)
         {
@@ -117,10 +124,40 @@ void UMeshGenerator::MergeWithNeighbors(TArray<Vertex*>& queuedVertices, ACreato
     }
 }
 
+ETileColor UMeshGenerator::GetBandagedColor()
+{
+    //TODO:: if there is only one of each color, black is used, instead of a random color that was in the selection
+    TMap<ETileColor, int> colorMap;
+    ETileColor bandagedColor = ETileColor::None;
+    int maxColor = 0;
+    
+    for (int i = 0; i < TilesToMerge.Num(); i++)
+    {
+        const auto& currentColor = TilesToMerge[i]->GetColor();
+
+        if (colorMap.Contains(currentColor))
+        {
+            colorMap[currentColor]++;
+
+            // If the majority of the tiles to merge are one color, exit early
+            if (colorMap[currentColor] > TilesToMerge.Num() / 2)
+            {
+                bandagedColor = currentColor;
+                break;
+            }
+            if (colorMap[currentColor] > maxColor)
+            {
+                maxColor = colorMap[currentColor];
+                bandagedColor = currentColor;
+            }
+        }
+        else colorMap.Add(currentColor, 1);
+    }
+    return bandagedColor;
+}
 void UMeshGenerator::Init(int _radius, int _vertexCount, int _angleOffset, int _angle)
 {
     radius = _radius, vertexCount = _vertexCount, angleOffset = _angleOffset, angle = _angle;
-    ClearData();
     Draw();
 }
 void UMeshGenerator::MergeWithNeighbor(TArray<Vertex*>& queuedVertices, ACreatorTile* const& creatorTileA, Vertex* vertexA, ACreatorTile* const& creatorTileB)
@@ -208,23 +245,87 @@ FVector UMeshGenerator::GetEndVertex(const Vertex* start, const Vertex* end)
 
 void UMeshGenerator::UpdateMesh()
 {
-    UKismetProceduralMeshLibrary::CreateGridMeshTriangles(11, 11, false, triangles);
-    UKismetProceduralMeshLibrary::CalculateTangentsForMesh(vertexPositions, triangles, UV, normals, tangents);
-    ProceduralMesh->CreateMeshSection(0, vertexPositions, triangles, normals, UV, colors, tangents, true);
+    TArray<int> triangles;
+    TArray<FVector> normals;
+    TArray<FVector2D> UV;
+    TArray<FColor> colors;
+    TArray<FProcMeshTangent> tangents;
+    
+    int triangleCount = roundedVertices.Num();
+    UKismetProceduralMeshLibrary::CreateGridMeshTriangles(triangleCount, triangleCount, false, triangles);
+    
+    for (int i = 0; i < roundedVertices.Num(); i++)
+        normals.Add(FVector::RightVector);
+    for (int i = 0; i < roundedVertices.Num(); i++)
+    {
+        auto vert = roundedVertices[i];
+        auto vert2D = FVector2D(vert.X, vert.Z);
+
+        UV.Add(vert2D.GetSafeNormal());
+    }
+    ProceduralMesh->CreateMeshSection(0, roundedVertices, triangles, normals, UV, colors, tangents, true);
 }
 void UMeshGenerator::Draw()
 {
-    ClearData();
+    for (int i = 0; i < vertexCount; i++)
+        vertices.Add(new Vertex(i, vertexCount, FVector(radius * UKismetMathLibrary::DegCos(i * angle + angleOffset), 0
+                                                      , radius * UKismetMathLibrary::DegSin(i * angle + angleOffset)), this));
+    // TODO:: have angle be a function of 360 / vertexCount
+    const float circleRadius = 15;
+    // const float circleRadius = 12;
+    // const float circleRadius = 15;
+
+    auto shape = Cast<ATile>(GetOwner())->Board()->GetBoardShape();
+    float distance =
+        shape == EBoardShape::Square
+        ? FMath::Sqrt(2.0f)
+        : shape == EBoardShape::Triangle
+        ? 1.75f
+        : 1.15f;
+
+    TArray<FVector> circleOrigins;
+    for (const auto& vertex : vertices)
+    {
+        circleOrigins.Add(-vertex->GetLocalPosition().GetSafeNormal() * circleRadius * distance + vertex->GetLocalPosition());
+        DrawDebugSphere(GetWorld(), circleOrigins.Last() + GetOwner()->GetActorLocation(), 2, 4, FColor::Red, true, 100);
+    }
+
+    roundedVertices.Empty();
     for (int i = 0; i < vertexCount; i++)
     {
-        vertexPositions.Add(FVector(radius * UKismetMathLibrary::DegCos(i * angle + angleOffset), 0, radius * UKismetMathLibrary::DegSin(i * angle + angleOffset)));
-        vertices.Add(new Vertex(i, vertexCount, vertexPositions[i], this));
+        if (vertices[i]->IsMerged())
+        {
+            roundedVertices.Add(vertices[i]->GetLocalPosition());
+            continue;
+        }
+        FVector circleOrigin = circleOrigins[i];
+    
+        int curveCount = 5;
+        for (int j = -curveCount; j <= curveCount; j++)
+        {
+            FTransform circleTrans{ circleOrigin };
+            FVector x = (circleOrigin.GetSafeNormal() * circleRadius + circleOrigin);
+    
+            x = circleTrans.InverseTransformPosition(x);
+    
+            // Triangle (not finsiehed): 
+            //x = FRotator(j * 20 / curveCount, 0, 0).RotateVector(x);
+    
+            // Square:
+            // x = FRotator(j * 45 / curveCount, 0, 0).RotateVector(x);
+    
+            // Hex:
+            x = FRotator(j * 30 / curveCount, 0, 0).RotateVector(x);
+            x = circleTrans.TransformPosition(x);
+    
+            roundedVertices.Add(x);
+        }
     }
+
+    // roundedVertices.Add(FVector( 50, 0,  50));
+    // roundedVertices.Add(FVector(-50, 0,  50));
+    // roundedVertices.Add(FVector(-50, 0, -50));
+    // roundedVertices.Add(FVector( 50, 0, -50));
+
     UpdateMesh();
-}
-void UMeshGenerator::ClearData()
-{
-    vertexPositions.Empty();
-    triangles.Empty();
-    UV.Empty();
 }

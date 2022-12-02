@@ -7,35 +7,24 @@ int GetHalf(const float n) { return floor(n / 2); }
 FTriCoord::FTriCoord(): isUp{ false } { }
 FTriCoord::FTriCoord(const bool isUp): FCoord(), isUp {isUp} {}
 FTriCoord::FTriCoord(const float x, const float y, const float z, const bool isUp): FCoord(x, y, z), isUp{ isUp } {}
+
 //TODO:: make sure this works with multiple directions in a row
 const FCoord* FTriCoord::operator+(const EDirection direction) const
 {
 	switch (direction)
 	{
-	case EDirection::Left:		
-		return isUp 
-		? new FTriCoord(X() + 0, Y() - 1, Z() + 0, !isUp) 
-		: new FTriCoord(X() + 1, Y() + 0, Z() + 0, !isUp);
-	case EDirection::Right:		
-		return isUp 
-		? new FTriCoord(X() - 1, Y() + 0, Z() + 0, !isUp) 
-		: new FTriCoord(X() + 0, Y() + 1, Z() + 0, !isUp);
-	case EDirection::UpLeft:	
-		return isUp 
-		? new FTriCoord(X() + 0, Y() - 1, Z() + 0, !isUp) 
-		: new FTriCoord(X() + 0, Y() + 0, Z() - 1, !isUp);
-	case EDirection::UpRight:	
-		return isUp 
-		? new FTriCoord(X() - 1, Y() + 0, Z() + 0, !isUp) 
-		: new FTriCoord(X() + 0, Y() + 0, Z() - 1, !isUp);
-	case EDirection::DownLeft:	
-		return isUp 
-		? new FTriCoord(X() + 0, Y() + 0, Z() + 1, !isUp) 
-		: new FTriCoord(X() + 1, Y() + 0, Z() + 0, !isUp);
-	case EDirection::DownRight:	
-		return isUp 
-		? new FTriCoord(X() + 0, Y() + 0, Z() + 1, !isUp) 
-		: new FTriCoord(X() + 0, Y() + 1, Z() + 0, !isUp);
+	case EDirection::Left:      return isUp ? new FTriCoord(X() + 0, Y() - 1, Z() + 0, !isUp)
+											: new FTriCoord(X() + 1, Y() + 0, Z() + 0, !isUp);
+	case EDirection::Right:     return isUp ? new FTriCoord(X() - 1, Y() + 0, Z() + 0, !isUp)
+											: new FTriCoord(X() + 0, Y() + 1, Z() + 0, !isUp);
+	case EDirection::UpLeft:    return isUp ? new FTriCoord(X() + 0, Y() - 1, Z() + 0, !isUp)
+											: new FTriCoord(X() + 0, Y() + 0, Z() - 1, !isUp);
+	case EDirection::UpRight:   return isUp ? new FTriCoord(X() - 1, Y() + 0, Z() + 0, !isUp)
+											: new FTriCoord(X() + 0, Y() + 0, Z() - 1, !isUp);
+	case EDirection::DownLeft:  return isUp ? new FTriCoord(X() + 0, Y() + 0, Z() + 1, !isUp)
+											: new FTriCoord(X() + 1, Y() + 0, Z() + 0, !isUp);
+	case EDirection::DownRight:	return isUp ? new FTriCoord(X() + 0, Y() + 0, Z() + 1, !isUp)
+											: new FTriCoord(X() + 0, Y() + 1, Z() + 0, !isUp);
 	default: return this;
 	}
 }
@@ -50,12 +39,15 @@ const FCoord* FTriCoord::operator=(const FCoord* other)
 FString FTriCoord::ToString() const
 {
 	return  fstr("tri(") + FString::SanitizeFloat(X())
-		+ fstr(", ") + FString::SanitizeFloat(Y())
-		+ fstr(", ") + FString::SanitizeFloat(Z()) + fstr(")");
+		    + fstr(", ") + FString::SanitizeFloat(Y())
+		    + fstr(", ") + FString::SanitizeFloat(Z()) + fstr(")");
 }
 
-float FTriCoord::GetSpaceX()  const { return 67; }
-float FTriCoord::GetSpaceZ()  const { return 120; }
+const float triSpacing = 1.0f;
+float FTriCoord::GetSpaceX()  const { return 67 * triSpacing; }
+// float FTriCoord::GetSpaceX()  const { return 67  * triSpacing; }
+float FTriCoord::GetSpaceZ()  const { return 105 * triSpacing; }
+// float FTriCoord::GetSpaceZ()  const { return 120 * triSpacing; }
 float FTriCoord::GetOffsetX() const { return -x + y; }
 float FTriCoord::GetOffsetZ() const { return -z; }
 

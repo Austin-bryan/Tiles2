@@ -4,11 +4,11 @@
 #include "ForwardDeclares.h"
 #include "Tile.generated.h"
 
-class UProceduralMeshComponent;
 class ABoard;
 class UMeshGenerator;
 class UBoxComponent;
 class UTextRenderComponent;
+class UProceduralMeshComponent;
 class UMaterialInstanceConstant;
 enum class EBoardShape;
 enum class ETileColor : uint8;
@@ -24,6 +24,7 @@ public:
 	void Tick    (float DeltaTime) override;
 	void SetShape(const EBoardShape) const;
 	void SetColor(const ETileColor color);
+	ETileColor GetColor() const;
 	void SetBoard(ABoard* newBoard);
 	void SetCoord(FCoordPtr coord);
 
@@ -52,6 +53,7 @@ protected:
 private:
 	static int tileCount;
 	int id;
+	ETileColor tileColor;
 	
 	UPROPERTY()
 		UMaterialInstanceDynamic* instance;

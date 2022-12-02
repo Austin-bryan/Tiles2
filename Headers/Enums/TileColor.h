@@ -7,7 +7,7 @@ UENUM(Blueprintable)
 enum class ETileColor : uint8
 {
 	None, White, Red, Orange, Yellow, Green,
-	Cyan, Blue, Purple, Pink, Magenta, Brown, Black,
+	Cyan, Blue, Purple, Pink, Magenta, Maroon, Black,
 };
 
 inline TMap<ETileColor, FString> TileColorStrings =

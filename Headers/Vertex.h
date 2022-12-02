@@ -46,6 +46,5 @@ public:
 
 private:
     int ID;
-
 };
 
