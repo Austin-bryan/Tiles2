@@ -2,9 +2,8 @@
 #include "CoreMinimal.h"
 #include "ActorAnimator.h"
 #include "Tile.h"
-#include "MeshGenerator.h"
+#include "ProceduralMeshComponent.h"
 #include "CreatorTile.generated.h"
-
 
 /**
  * CreatorTiles are used in the level creator and have additional features such as being able to be selected.

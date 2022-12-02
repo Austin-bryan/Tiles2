@@ -158,7 +158,6 @@ ETileColor UMeshGenerator::GetBandagedColor()
 void UMeshGenerator::Init(int _radius, int _vertexCount, int _angleOffset, int _angle)
 {
     radius = _radius, vertexCount = _vertexCount, angleOffset = _angleOffset, angle = _angle;
-    ClearData();
     Draw();
 }
 void UMeshGenerator::MergeWithNeighbor(TArray<Vertex*>& queuedVertices, ACreatorTile* const& creatorTileA, Vertex* vertexA, ACreatorTile* const& creatorTileB)
@@ -246,28 +245,33 @@ FVector UMeshGenerator::GetEndVertex(const Vertex* start, const Vertex* end)
 
 void UMeshGenerator::UpdateMesh()
 {
+    TArray<int> triangles;
+    TArray<FVector> normals;
+    TArray<FVector2D> UV;
+    TArray<FColor> colors;
+    TArray<FProcMeshTangent> tangents;
+    
     int triangleCount = roundedVertices.Num();
     UKismetProceduralMeshLibrary::CreateGridMeshTriangles(triangleCount, triangleCount, false, triangles);
-    // UKismetProceduralMeshLibrary::CalculateTangentsForMesh(roundedVertices, triangles, UV, normals, tangents);
     
-    UV.Reset();
-    // UV.AddUninitialized()
-    normals.Reset();
-
     for (int i = 0; i < roundedVertices.Num(); i++)
-            normals.Add(FVector::RightVector);
-    tangents.Reset();   
+        normals.Add(FVector::RightVector);
+    for (int i = 0; i < roundedVertices.Num(); i++)
+    {
+        auto vert = roundedVertices[i];
+        auto vert2D = FVector2D(vert.X, vert.Z);
+
+        UV.Add(vert2D.GetSafeNormal());
+    }
     ProceduralMesh->CreateMeshSection(0, roundedVertices, triangles, normals, UV, colors, tangents, true);
 }
 void UMeshGenerator::Draw()
 {
-    ClearData();
-
     for (int i = 0; i < vertexCount; i++)
         vertices.Add(new Vertex(i, vertexCount, FVector(radius * UKismetMathLibrary::DegCos(i * angle + angleOffset), 0
                                                       , radius * UKismetMathLibrary::DegSin(i * angle + angleOffset)), this));
     // TODO:: have angle be a function of 360 / vertexCount
-    const float circleRadius = 12;
+    const float circleRadius = 15;
     // const float circleRadius = 12;
     // const float circleRadius = 15;
 
@@ -282,13 +286,7 @@ void UMeshGenerator::Draw()
     TArray<FVector> circleOrigins;
     for (const auto& vertex : vertices)
     {
-        // Hex:
         circleOrigins.Add(-vertex->GetLocalPosition().GetSafeNormal() * circleRadius * distance + vertex->GetLocalPosition());
-
-        /// Square:
-        // circleOrigins.Add(-vertex->GetLocalPosition().GetSafeNormal() * circleRadius * FMath::Sqrt(2.0f) + vertex->GetLocalPosition());
-
-        // DrawDebugSphere(GetWorld(), vertex->GetWorldPosition(), 2, 4, FColor::Green, true, 100);
         DrawDebugSphere(GetWorld(), circleOrigins.Last() + GetOwner()->GetActorLocation(), 2, 4, FColor::Red, true, 100);
     }
 
@@ -329,13 +327,5 @@ void UMeshGenerator::Draw()
     // roundedVertices.Add(FVector(-50, 0, -50));
     // roundedVertices.Add(FVector( 50, 0, -50));
 
-    for (auto v : roundedVertices)
-    {
-        UV.Add(FVector2D(v.X, v.Z).GetSafeNormal());
-    }
-
-
-    normals.Reset();
     UpdateMesh();
 }
-void UMeshGenerator::ClearData() { UV.Empty(); }

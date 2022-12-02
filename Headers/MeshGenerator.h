@@ -1,8 +1,7 @@
 #pragma once
+#include "Vertex.h"
 #include "CoreMinimal.h"
 #include "CreatorBoard.h"
-#include "Vertex.h"
-#include "ProceduralMeshComponent.h"
 #include "MeshGenerator.generated.h"
 
 #define DRAW_DEBUG
@@ -81,14 +80,8 @@ public:
 private:
     void Draw();
     void UpdateMesh();
-    void ClearData();
 
     TArray<Vertex*> vertices;
-    TArray<int> triangles;
-    TArray<FVector> normals;
-    TArray<FVector2D> UV;
-    TArray<FColor> colors;
-    TArray<FProcMeshTangent> tangents;
     TArray<FVector> roundedVertices;
     
     int radius, angle, vertexCount, angleOffset;
