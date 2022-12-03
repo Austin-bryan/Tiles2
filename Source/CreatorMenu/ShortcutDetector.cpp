@@ -23,8 +23,16 @@ void UShortcutDetector::BeginPlay()
     controller = GetWorld()->GetFirstPlayerController();
     controller->InputComponent->BindAction("AnyKey", IE_Released, this, &UShortcutDetector::AnyKey);
 
-    const auto SetSelectionType = [this](const ESelectionAngle angle)
+    const auto SetSelectionShape = [this](const ESelectionShape shape)
     {
+        const auto button = creatorMenu->GetShapeButton(shape);
+        button->OnToggle();
+        dragSelect->ChangeSelectionShape(shape);
+    };
+    const auto SetSelectionAngle = [SetSelectionShape, this](const ESelectionAngle angle)
+    {
+        if (dragSelect->Shape() != ESelectionShape::Square)
+            SetSelectionShape(ESelectionShape::Square);
         const auto button = creatorMenu->GetAngleButton(angle);
         button->OnToggle();
         rotator->SetSelectionType(angle);
@@ -34,12 +42,6 @@ void UShortcutDetector::BeginPlay()
         const auto button = creatorMenu->GetColorButton(color);
         button->OnToggle();
         UColorCast::ColorCreatorTiles(color);
-    };
-    const auto SetSelectionShape = [this](const ESelectionShape shape)
-    {
-        const auto button = creatorMenu->GetShapeButton(shape);
-        button->OnToggle();
-        dragSelect->ChangeSelectionShape(shape);
     };
 
     shortcuts =
@@ -54,9 +56,9 @@ void UShortcutDetector::BeginPlay()
             { EKeys::Q, [this, SetSelectionShape] { SetSelectionShape(ESelectionShape::Triangle); } },
             { EKeys::W, [this, SetSelectionShape] { SetSelectionShape(ESelectionShape::Square); } },
             { EKeys::E, [this, SetSelectionShape] { SetSelectionShape(ESelectionShape::Circle); } },
-            { EKeys::A, [this, SetSelectionType]  { SetSelectionType(ESelectionAngle::Downhill); } },
-            { EKeys::S, [this, SetSelectionType]  { SetSelectionType(ESelectionAngle::Flat); } },
-            { EKeys::D, [this, SetSelectionType]  { SetSelectionType(ESelectionAngle::Uphill); } },
+            { EKeys::A, [this, SetSelectionAngle] { SetSelectionAngle(ESelectionAngle::Downhill); } },
+            { EKeys::S, [this, SetSelectionAngle] { SetSelectionAngle(ESelectionAngle::Flat); } },
+            { EKeys::D, [this, SetSelectionAngle] { SetSelectionAngle(ESelectionAngle::Uphill); } },
             { EKeys::M, [this]
                 {
                     UMeshGenerator::TilesToMerge = ACreatorTile::SelectedTiles;
