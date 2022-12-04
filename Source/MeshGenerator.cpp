@@ -55,6 +55,7 @@ bool LineLineIntersection(FVector startA, FVector endA, FVector startB, FVector 
     out_intersection = FVector(x, 0, z);
     return true;
 }
+ACreatorTile* GetCreatorTile(const Vertex* vertex) { return Cast<ACreatorTile>(vertex->GetTile()); }
 
 void UMeshGenerator::Merge()
 {
@@ -71,86 +72,95 @@ void UMeshGenerator::Merge()
     for (const auto& generator : Generators)
         generator->Draw();
 }
+
 void UMeshGenerator::MergeWithNeighbors(TArray<Vertex*>& queuedVertices, ACreatorTile* const& creatorTileA)
 {
     for (auto vertexA : creatorTileA->MeshGenerator->vertices)
     {
-        const auto GetCreatorTile = [](const Vertex* vertex) { return Cast<ACreatorTile>(vertex->GetTile()); };
-
         TArray<ACreatorTile*> selectedNeighbors;
         for (auto vertexB : vertexA->neighbors)
         {
             const auto creatorTileB = GetCreatorTile(vertexB);
-
             if (creatorTileB->GetIsSelected())
                 selectedNeighbors.Add(creatorTileB);
         }
-
         if (selectedNeighbors.Num() == 1)
-        {
-            if (!vertexA->IsMerged())
-                for (const auto& creatorTileB : TilesToMerge)
-                    MergeWithNeighbor(queuedVertices, creatorTileA, vertexA, creatorTileB);
-        }
+            MergeTwoVertices(queuedVertices, creatorTileA, vertexA);
         if (selectedNeighbors.Num() == 2 && creatorTileA->Board()->GetBoardShape() == EBoardShape::Triangle)
-        {
-            // TODO:: this only works for the middle tiles on the edges, not for the interiour tiles
-            if (vertexA->IsMerged()) continue;
-            
-            ACreatorTile* middleTile = nullptr;
-            TOptional<FVector> position;
-
-            for (const auto& creatorTileB : selectedNeighbors)
-            {
-                const FTriCoord* triCoordA = static_cast<const FTriCoord*>(creatorTileA->GetCoord().Get());
-                const FTriCoord* triCoordB = static_cast<const FTriCoord*>(creatorTileB->GetCoord().Get());
-
-                if (triCoordA->GetIsUp() == triCoordB->GetIsUp())
-                {
-                    if (MergeWithNeighbor(queuedVertices, creatorTileA, vertexA, creatorTileB))
-                        position = TOptional<FVector>(vertexA->queuedPosition);
-                }
-                else middleTile = creatorTileB;
-            }
-
-            if (!position.IsSet())
-                continue;
-            for (auto& vertexB : middleTile->MeshGenerator->vertices)
-            if (ShouldMergeVertices(vertexA, vertexB))
-            {
-                vertexB->QueuePosition(*position);
-                queuedVertices.Add(vertexB);
-            }
-        }
+            MergeThreeVertices(queuedVertices, creatorTileA, vertexA, selectedNeighbors);
         else if (selectedNeighbors.Num() > 1)
-        {
-            FVector sum = FVector::Zero();
-            TArray<Vertex*> selectedVertices;
-            
-            for (auto vertexB : vertexA->neighbors)
-            if (GetCreatorTile(vertexB)->GetIsSelected())
-            {
-                selectedVertices.Add(vertexB);
-                sum += vertexB->GetWorldPosition();
-            }
-            AverageVertices(selectedVertices, sum);
-        }
+            MergeMultipleVertices(vertexA);
     }
 }
-
 bool UMeshGenerator::MergeWithNeighbor(TArray<Vertex*>& queuedVertices, ACreatorTile* const& creatorTileA, Vertex* vertexA, ACreatorTile* const& creatorTileB)
 {
     FVector intersection;
     for (auto& vertexB : creatorTileB->MeshGenerator->vertices)
-    if (ShouldMergeVertices(vertexA, vertexB) && IsIntersectionValid(Cast<ACreatorBoard>(creatorTileA->Board())->VertexMode, creatorTileA, creatorTileB, vertexA, vertexB, intersection))
-    {
-        QueueVertices(queuedVertices, creatorTileA, vertexA, vertexB, intersection);
-        return true;
-    }
+        if (ShouldMergeVertices(vertexA, vertexB) && IsIntersectionValid(Cast<ACreatorBoard>(creatorTileA->Board())->VertexMode, creatorTileA, creatorTileB, vertexA, vertexB, intersection))
+        {
+            QueueVertices(queuedVertices, creatorTileA, vertexA, vertexB, intersection);
+            return true;
+        }
     return false;
 }
+
+void UMeshGenerator::MergeTwoVertices(TArray<Vertex*>& queuedVertices, ACreatorTile* const& creatorTileA, Vertex* vertexA)
+{
+    if (!vertexA->IsMerged())
+        for (const auto& creatorTileB : TilesToMerge)
+            MergeWithNeighbor(queuedVertices, creatorTileA, vertexA, creatorTileB);
+}
+void UMeshGenerator::MergeThreeVertices(TArray<Vertex*>& queuedVertices, ACreatorTile* const& creatorTileA, Vertex* vertexA, TArray<ACreatorTile*> selectedNeighbors)
+{
+    if (vertexA->IsMerged())
+        return;
+    ACreatorTile* middleTile = nullptr;
+    TOptional<FVector> intersection;
+
+    for (const auto& creatorTileB : selectedNeighbors)
+    {
+        const FTriCoord* triCoordA = static_cast<const FTriCoord*>(creatorTileA->GetCoord().Get());
+        const FTriCoord* triCoordB = static_cast<const FTriCoord*>(creatorTileB->GetCoord().Get());
+
+        // TriTiles that face the same direction have their vertices aligned for an intersection
+        if (triCoordA->GetIsUp() == triCoordB->GetIsUp())
+        {
+            // Cache the intersection to use for the middle TriTile that doesn't intersect,
+            // but needs the same vertex position
+            if (MergeWithNeighbor(queuedVertices, creatorTileA, vertexA, creatorTileB))
+                intersection = TOptional<FVector>(vertexA->queuedPosition);
+        }
+        else middleTile = creatorTileB;
+    }
+
+    if (!intersection.IsSet())
+        return;
+    
+    // This snaps the odd TriTiles vertex to the same intersection point gained from the even TriTiles
+    for (auto& vertexB : middleTile->MeshGenerator->vertices)
+    if (ShouldMergeVertices(vertexA, vertexB))
+    {
+        vertexB->QueuePosition(*intersection);
+        queuedVertices.Add(vertexB);
+    }
+}
+void UMeshGenerator::MergeMultipleVertices(Vertex* vertexA)
+{
+    FVector sum = FVector::Zero();
+    TArray<Vertex*> selectedVertices;
+            
+    for (auto vertexB : vertexA->neighbors)
+        if (GetCreatorTile(vertexB)->GetIsSelected())
+        {
+            selectedVertices.Add(vertexB);
+            sum += vertexB->GetWorldPosition();
+        }
+    AverageVertices(selectedVertices, sum);
+}
+
 bool UMeshGenerator::ShouldMergeVertices(const Vertex* vertexA, const Vertex* vertexB)
 {
+    // TODO:: add this check back if board is not triangle
     // if (vertexA->IsMerged() || vertexB->IsMerged())
         // return false;
     return vertexA->neighbors.Contains(vertexB);
@@ -195,6 +205,7 @@ bool UMeshGenerator::GetIntersection(const UWorld* worldContext, const Vertex* s
         return false;
     return result;
 }
+
 void UMeshGenerator::AverageVertices(TArray<Vertex*> neighbors, FVector sum)
 {
     for (const auto& neighbor : neighbors)
@@ -217,7 +228,6 @@ FVector UMeshGenerator::GetEndVertex(const Vertex* start, const Vertex* end)
 }
 ETileColor UMeshGenerator::GetBandagedColor()
 {
-    //TODO:: if there is only one of each color, black is used, instead of a random color that was in the selection
     TMap<ETileColor, int> colorMap;
     ETileColor bandagedColor = ETileColor::None;
     int maxColor = 0;
@@ -286,28 +296,16 @@ void UMeshGenerator::Draw()
     for (int i = 0; i < vertexCount; i++)
         vertices.Add(new Vertex(i, vertexCount, FVector(radius * UKismetMathLibrary::DegCos(i * angle + angleOffset), 0
                                                       , radius * UKismetMathLibrary::DegSin(i * angle + angleOffset)), this));
-    // TODO:: have angle be a function of 360 / vertexCount
     const float circleRadius = 15;
-    // const float circleRadius = 12;
-    // const float circleRadius = 15;
 
     auto shape = Cast<ATile>(GetOwner())->Board()->GetBoardShape();
-    float distance =
-        shape == EBoardShape::Square
-        ? FMath::Sqrt(2.0f)
-        : shape == EBoardShape::Triangle
-        ? 1.75f
-        // ? 1.75f
-        : 1.15f;
-
+    float distance = shape == EBoardShape::Square
+                   ? FMath::Sqrt(2.0f)
+                   : shape == EBoardShape::Triangle
+                   ? 1.75f : 1.15f;
     TArray<FVector> circleOrigins;
     for (const auto& vertex : vertices)
-    {
         circleOrigins.Add(-vertex->GetLocalPosition().GetSafeNormal() * circleRadius * distance + vertex->GetLocalPosition());
-#ifdef DRAW_DEBUG
-        // DrawDebugSphere(GetWorld(), circleOrigins.Last() + GetOwner()->GetActorLocation(), 2, 4, FColor::Red, true, 100);
-#endif
-    }
 
     roundedVertices.Empty();
     for (int i = 0; i < vertexCount; i++)
@@ -323,21 +321,13 @@ void UMeshGenerator::Draw()
         for (int j = -curveCount; j <= curveCount; j++)
         {
             FTransform circleTrans{ circleOrigin };
-            FVector x = circleOrigin.GetSafeNormal() * circleRadius + circleOrigin;
+            FVector edge = circleOrigin.GetSafeNormal() * circleRadius + circleOrigin;
     
-            x = circleTrans.InverseTransformPosition(x);
+            edge = circleTrans.InverseTransformPosition(edge);
+            edge = FRotator(j * 30 / curveCount, 0, 0).RotateVector(edge);
+            edge = circleTrans.TransformPosition(edge);
     
-            // Triangle (not finsiehed): 
-            //x = FRotator(j * 20 / curveCount, 0, 0).RotateVector(x);
-    
-            // Square:
-            // x = FRotator(j * 45 / curveCount, 0, 0).RotateVector(x);
-    
-            // Hex:
-            x = FRotator(j * 30 / curveCount, 0, 0).RotateVector(x);
-            x = circleTrans.TransformPosition(x);
-    
-            roundedVertices.Add(x);
+            roundedVertices.Add(edge);
         }
     }
 

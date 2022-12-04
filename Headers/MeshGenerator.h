@@ -34,6 +34,19 @@ public:
     static TArray<Vertex> UniversalVertices;
     static TArray<UMeshGenerator*> Generators;
     static TArray<ACreatorTile*> TilesToMerge;
+    
+    static void MergeTwoVertices(
+        TArray<Vertex*>& queuedVertices,
+        ACreatorTile* const& creatorTileA,
+        Vertex* vertexA);
+    static void MergeThreeVertices(
+        TArray<Vertex*>& queuedVertices,
+        ACreatorTile* const& creatorTileA,
+        Vertex* vertexA,
+        TArray<ACreatorTile*> selectedNeighbors);
+    static void MergeMultipleVertices(
+        Vertex* vertexA);
+
     static void AverageVertices(
         TArray<Vertex*> neighbors,
         FVector sum);
