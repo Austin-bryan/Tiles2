@@ -88,13 +88,17 @@ void UMeshGenerator::MergeWithNeighbors(TArray<Vertex*>& queuedVertices, ACreato
         int selectionCount = 0;
         const auto GetCreatorTile = [](const Vertex* vertex) { return Cast<ACreatorTile>(vertex->GetTile()); };
 
+        TArray<ACreatorTile*> selectTiles;
         selectionCount++;
         for (auto vertexB : vertexA->neighbors)
         {
             const auto creatorTileB = GetCreatorTile(vertexB);
             
             if (creatorTileB->GetIsSelected())
+            {
                 selectionCount++;
+                selectTiles.Add(creatorTileB);
+            }
         }
 
         if (selectionCount == 2)
@@ -106,19 +110,33 @@ void UMeshGenerator::MergeWithNeighbors(TArray<Vertex*>& queuedVertices, ACreato
         }
         if (selectionCount == 3 && creatorTileA->Board()->GetBoardShape() == EBoardShape::Triangle)
         {
-            if (!vertexA->IsMerged())
+            // TODO:: this only works for the middle tiles on the edges, not for the interiour tiles
+            if (vertexA->IsMerged()) continue;
+            
+            ACreatorTile* middleTile = nullptr;
+            TOptional<FVector> position;
+
+            for (const auto& creatorTileB : selectTiles)
+            if (creatorTileB != creatorTileA)
             {
-                ACreatorTile* middleTile = nullptr;
-                for (const auto& creatorTileB : TilesToMerge)
-                    if (creatorTileB != creatorTileA)
-                    {
-                        const FTriCoord* triCoordA = static_cast<const FTriCoord*>(creatorTileA->GetCoord().Get());
-                        const FTriCoord* triCoordB = static_cast<const FTriCoord*>(creatorTileB->GetCoord().Get());
-                        
-                        if (triCoordA->GetIsUp() == triCoordB->GetIsUp())
-                             MergeWithNeighbor(queuedVertices, creatorTileA, vertexA, creatorTileB);
-                        else MergeWithNeighbor(queuedVertices, creatorTileA, vertexA, creatorTileB);
-                    }
+                const FTriCoord* triCoordA = static_cast<const FTriCoord*>(creatorTileA->GetCoord().Get());
+                const FTriCoord* triCoordB = static_cast<const FTriCoord*>(creatorTileB->GetCoord().Get());
+
+                if (triCoordA->GetIsUp() == triCoordB->GetIsUp())
+                {
+                    if (MergeWithNeighbor(queuedVertices, creatorTileA, vertexA, creatorTileB))
+                        position = TOptional<FVector>(vertexA->queuedPosition);
+                }
+                else middleTile = creatorTileB;
+            }
+
+            if (!position.IsSet())
+                continue;
+            for (auto& vertexB : middleTile->MeshGenerator->vertices)
+            if (ShouldMergeVertices(vertexA, vertexB))
+            {
+                vertexB->QueuePosition(*position);
+                queuedVertices.Add(vertexB);
             }
         }
         else if (selectionCount > 2)
@@ -137,12 +155,17 @@ void UMeshGenerator::MergeWithNeighbors(TArray<Vertex*>& queuedVertices, ACreato
         }
     }
 }
-void UMeshGenerator::MergeWithNeighbor(TArray<Vertex*>& queuedVertices, ACreatorTile* const& creatorTileA, Vertex* vertexA, ACreatorTile* const& creatorTileB)
+
+bool UMeshGenerator::MergeWithNeighbor(TArray<Vertex*>& queuedVertices, ACreatorTile* const& creatorTileA, Vertex* vertexA, ACreatorTile* const& creatorTileB)
 {
     FVector intersection;
     for (auto& vertexB : creatorTileB->MeshGenerator->vertices)
         if (ShouldMergeVertices(vertexA, vertexB) && IsIntersectionValid(Cast<ACreatorBoard>(creatorTileA->Board())->VertexMode, creatorTileA, creatorTileB, vertexA, vertexB, intersection))
+        {
             QueueVertices(queuedVertices, creatorTileA, vertexA, vertexB, intersection);
+            return true;
+        }
+    return false;
 }
 bool UMeshGenerator::ShouldMergeVertices(const Vertex* vertexA, const Vertex* vertexB)
 {

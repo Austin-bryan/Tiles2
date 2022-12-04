@@ -4,7 +4,7 @@
 #include "CreatorBoard.h"
 #include "MeshGenerator.generated.h"
 
-#define DRAW_DEBUG
+//#define DRAW_DEBUG
 
 class ATile;
 class Vertex;
@@ -63,7 +63,8 @@ public:
     static bool ShouldMergeVertices(
         const Vertex* vertexA,
         const Vertex* vertexB);
-    static void MergeWithNeighbor(
+    static bool MergeWithNeighbor
+    (
         TArray<Vertex*>& queuedVertices,
         ACreatorTile* const& creatorTileA,
         Vertex* vertexA,
