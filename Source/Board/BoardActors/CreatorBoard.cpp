@@ -7,6 +7,8 @@
 #include "ShortcutDetector.h"
 #include "Kismet/GameplayStatics.h"
 
+float ACreatorBoard::TriGap;
+
 ACreatorBoard::ACreatorBoard()
 {
     dragSelect = CreateDefaultSubobject<UDragSelect>(TEXT("Drag Select"));
@@ -42,6 +44,7 @@ ACreatorBoard::~ACreatorBoard()
 }
 void ACreatorBoard::BeginPlay()
 {
+    TriGap = triGap;
     Super::BeginPlay();
     const FVector location = GetActorLocation() - FVector(0, 100, 0);
 

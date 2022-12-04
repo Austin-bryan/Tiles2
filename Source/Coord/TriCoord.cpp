@@ -1,4 +1,6 @@
 #include "TriCoord.h"
+
+#include "CreatorBoard.h"
 #include "Logger.h"
 #include "Enums.h"
 
@@ -45,9 +47,7 @@ FString FTriCoord::ToString() const
 
 const float triSpacing = 1.0f;
 float FTriCoord::GetSpaceX()  const { return 67 * triSpacing; }
-// float FTriCoord::GetSpaceX()  const { return 67  * triSpacing; }
-float FTriCoord::GetSpaceZ()  const { return 105 * triSpacing; }
-// float FTriCoord::GetSpaceZ()  const { return 120 * triSpacing; }
+float FTriCoord::GetSpaceZ()  const { return ACreatorBoard::TriGap * triSpacing; }
 float FTriCoord::GetOffsetX() const { return -x + y; }
 float FTriCoord::GetOffsetZ() const { return -z; }
 

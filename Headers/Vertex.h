@@ -22,6 +22,7 @@ public:
     Vertex* PrevVertex() const;
     FVector GetLocalPosition() const;
     FVector GetWorldPosition() const;
+    FVector GetQueuedPosition() const;
 
     void LinkVertices();
     void ApplyPosition();

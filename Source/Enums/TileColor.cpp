@@ -3,7 +3,7 @@
 
 FLinearColor UColorCast::TileColorToLinearColor(const ETileColor color)
 {
-    const float whiteShade = 1, blackShade = 0.0025f;
+    const float whiteShade = 1, blackShade = 0.025f;
     switch(color)
     {
     case ETileColor::None:    return FLinearColor(0, 0, 0, 0);

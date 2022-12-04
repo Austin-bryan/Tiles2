@@ -27,12 +27,13 @@ Vertex::Vertex(const int _vertexIndex, const int _sideCount, const FVector _posi
     Vertices.AddUnique(this);
 }
 
-bool Vertex::IsMerged()            const { return hasBeenMerged; }
-ATile*  Vertex::GetTile()          const { return Cast<ATile>(generator->GetOwner());  }
-Vertex* Vertex::PrevVertex()       const { return generator->vertices[(FMath::Abs(vertexIndex - 1 + sideCount) % sideCount)]; }
-Vertex* Vertex::NextVertex()       const { return generator->vertices[(vertexIndex + 1) % sideCount]; }
-FVector Vertex::GetLocalPosition() const { return position; }
-FVector Vertex::GetWorldPosition() const { return generator->GetOwner()->GetActorTransform().TransformPosition(position); }
+bool    Vertex::IsMerged()          const { return hasBeenMerged; }
+ATile*  Vertex::GetTile()           const { return Cast<ATile>(generator->GetOwner());  }
+Vertex* Vertex::PrevVertex()        const { return generator->vertices[(FMath::Abs(vertexIndex - 1 + sideCount) % sideCount)]; }
+Vertex* Vertex::NextVertex()        const { return generator->vertices[(vertexIndex + 1) % sideCount]; }
+FVector Vertex::GetLocalPosition()  const { return position; }
+FVector Vertex::GetWorldPosition()  const { return generator->GetOwner()->GetActorTransform().TransformPosition(position); }
+FVector Vertex::GetQueuedPosition() const { return queuedPosition; }
 
 void Vertex::ApplyPosition() { SetPosition(queuedPosition); }
 void Vertex::QueuePosition(const FVector newPosition) { hasBeenMerged = true, queuedPosition = newPosition; }
