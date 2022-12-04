@@ -4,6 +4,8 @@
 #include "ForwardDeclares.h"
 #include "Tile.generated.h"
 
+//#define ShowDebugText
+
 class ABoard;
 class UMeshGenerator;
 class UBoxComponent;
@@ -21,17 +23,21 @@ public:
 	static void ResetTileCount() { tileCount = 0; }
 	
 	ATile();
-	void Tick    (float DeltaTime) override;
+	void Tick(float DeltaTime) override;
+
 	void SetShape(const EBoardShape) const;
-	void SetColor(const ETileColor color);
-	ETileColor GetColor() const;
+	void SetColor(const ETileColor color
+		, bool colorSiblings = true);
 	void SetBoard(ABoard* newBoard);
 	void SetCoord(FCoordPtr coord);
+	void BandagedWith(
+		TSharedPtr<TArray<ATile*>> sharedSiblings);
 
-	ABoard* Board()       const { return board; }
 	int ID()			  const { return id; }
+	ABoard* Board()       const { return board; }
 	FCoordPtr GetCoord()  const { return Coord; }
-
+	ETileColor GetColor() const;
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadonly)
 		UTextRenderComponent* CoordText;
 	UPROPERTY()
@@ -54,6 +60,7 @@ private:
 	static int tileCount;
 	int id;
 	ETileColor tileColor;
+	TSharedPtr<TArray<ATile*>> siblings;
 	
 	UPROPERTY()
 		UMaterialInstanceDynamic* instance;

@@ -6,10 +6,9 @@
 #include "TileModule.h"
 #include "TileColor.h"
 #include "MeshGenerator.h"
-#include "Components/TextRenderComponent.h"
+#include "ProceduralMeshComponent.h"
 #include "Materials/MaterialInstanceConstant.h"
 
-//#define ShowDebugText
 #ifdef ShowDebugText
 #include "Coord.h"
 #endif 
@@ -55,7 +54,7 @@ ATile::ATile()
 	CoordText->SetWorldSize(18);
 #endif
 }
-void ATile::SetColor(const ETileColor color)
+void ATile::SetColor(const ETileColor color, const bool colorSiblings)
 {
 	const FString path = "MaterialInstanceConstant'/Game/Materials/TileColors/MI_TileColor.MI_TileColor'"_f;
 
@@ -68,6 +67,11 @@ void ATile::SetColor(const ETileColor color)
 	tileColor = color;
 	instance->SetVectorParameterValue(FName("Color"), UColorCast::TileColorToLinearColor(color));
 	MeshGenerator->ProceduralMesh->SetMaterial(0, instance);
+
+
+	if (colorSiblings && siblings)
+	for (ATile* sibling : *siblings)
+		sibling->SetColor(color, false);
 }
 ETileColor ATile::GetColor() const { return tileColor; }
 
@@ -117,6 +121,11 @@ void ATile::SetShape(const EBoardShape boardShape) const
 	const auto tileMesh = Cast<UStaticMesh>(StaticLoadObject(UStaticMesh::StaticClass(), nullptr, *meshDir));
 	// Mesh->SetStaticMesh(tileMesh);
 	Collider->SetStaticMesh(tileMesh);
+}
+void ATile::BandagedWith(const TSharedPtr<TArray<ATile*>> sharedSiblings)
+{
+	siblings = sharedSiblings;
+	sharedSiblings->AddUnique(this);
 }
 void ATile::NotifyActorOnClicked(FKey buttonPressed) 
 {

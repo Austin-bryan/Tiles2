@@ -92,11 +92,12 @@ public:
         int _angleOffset,
         int _angle);
 private:
+    static TSharedPtr<TArray<ATile*>> sharedSiblings;
     void Draw();
     void UpdateMesh();
 
     TArray<Vertex*> vertices;
     TArray<FVector> roundedVertices;
-    
+
     int radius, angle, vertexCount, angleOffset;
 };

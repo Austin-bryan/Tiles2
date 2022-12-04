@@ -17,6 +17,8 @@
 TArray<Vertex> UMeshGenerator::UniversalVertices;
 TArray<UMeshGenerator*> UMeshGenerator::Generators;
 TArray<ACreatorTile*> UMeshGenerator::TilesToMerge;
+TSharedPtr<TArray<ATile*>> UMeshGenerator::sharedSiblings;
+
 
 UMeshGenerator::UMeshGenerator() { }
 
@@ -60,13 +62,15 @@ ACreatorTile* GetCreatorTile(const Vertex* vertex) { return Cast<ACreatorTile>(v
 void UMeshGenerator::Merge()
 {
     Generators.Empty();
+    sharedSiblings = MakeShared<TArray<ATile*>>();
 
     TArray<Vertex*> queuedVertices;
     for (const auto& creatorTileA : TilesToMerge)
     {
         MergeWithNeighbors(queuedVertices, creatorTileA);
-        creatorTileA->SetColor(GetBandagedColor());
+        creatorTileA->BandagedWith(sharedSiblings);
     }
+    TilesToMerge[0]->SetColor(GetBandagedColor());
     for (auto& vertex : queuedVertices)
         vertex->ApplyPosition();
     for (const auto& generator : Generators)
@@ -95,12 +99,13 @@ void UMeshGenerator::MergeWithNeighbors(TArray<Vertex*>& queuedVertices, ACreato
 bool UMeshGenerator::MergeWithNeighbor(TArray<Vertex*>& queuedVertices, ACreatorTile* const& creatorTileA, Vertex* vertexA, ACreatorTile* const& creatorTileB)
 {
     FVector intersection;
+
     for (auto& vertexB : creatorTileB->MeshGenerator->vertices)
-        if (ShouldMergeVertices(vertexA, vertexB) && IsIntersectionValid(Cast<ACreatorBoard>(creatorTileA->Board())->VertexMode, creatorTileA, creatorTileB, vertexA, vertexB, intersection))
-        {
-            QueueVertices(queuedVertices, creatorTileA, vertexA, vertexB, intersection);
-            return true;
-        }
+    if (ShouldMergeVertices(vertexA, vertexB) && IsIntersectionValid(Cast<ACreatorBoard>(creatorTileA->Board())->VertexMode, creatorTileA, creatorTileB, vertexA, vertexB, intersection))
+    {
+        QueueVertices(queuedVertices, creatorTileA, vertexA, vertexB, intersection);
+        return true;
+    }
     return false;
 }
 
