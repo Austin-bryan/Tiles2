@@ -16,22 +16,31 @@ public:
         const FVector _position,
         UMeshGenerator* _generator);
     
-    bool IsMerged() const;
     ATile* GetTile() const;
+    bool IsMerged() const;
+    bool ShouldRound() const;
     Vertex* NextVertex() const;
     Vertex* PrevVertex() const;
     FVector GetLocalPosition() const;
     FVector GetWorldPosition() const;
     FVector GetQueuedPosition() const;
+    float X() const { return GetWorldPosition().X; }
+    float Y() const { return GetWorldPosition().Y; }
+    float Z() const { return GetWorldPosition().Z; }
 
     void LinkVertices();
     void ApplyPosition();
     void QueuePosition(const FVector newPosition);
     void SetPosition(const FVector newPosition);
+    void SetShouldRound(bool value);
 
     static bool AreNeighbors(
         const Vertex* a,
         const Vertex* b);
+    static bool AreCollinear(
+        const Vertex* a,
+        const Vertex* b,
+        const Vertex* c);
     bool operator==(
         const Vertex* rhs) const;
     bool operator==(
@@ -47,5 +56,6 @@ public:
 
 private:
     int ID;
+    bool shouldRoundWhileMerged = false;
 };
 

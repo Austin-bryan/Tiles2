@@ -299,32 +299,30 @@ void UMeshGenerator::Draw()
     const float circleRadius = 15;
 
     auto shape = Cast<ATile>(GetOwner())->Board()->GetBoardShape();
-    float distance = shape == EBoardShape::Square
-                   ? FMath::Sqrt(2.0f)
-                   : shape == EBoardShape::Triangle
-                   ? 1.75f : 1.15f;
+    float distance = shape == EBoardShape::Square   ? FMath::Sqrt(2.0f)
+                   : shape == EBoardShape::Triangle ? 1.75f : 1.15f;
     TArray<FVector> circleOrigins;
     for (const auto& vertex : vertices)
         circleOrigins.Add(-vertex->GetLocalPosition().GetSafeNormal() * circleRadius * distance + vertex->GetLocalPosition());
 
     roundedVertices.Empty();
-    for (int i = 0; i < vertexCount; i++)
+    for (int vertexIndex = 0; vertexIndex < vertexCount; vertexIndex++)
     {
-        if (vertices[i]->IsMerged())
+        if (!vertices[vertexIndex]->ShouldRound())
         {
-            roundedVertices.Add(vertices[i]->GetLocalPosition());
+            roundedVertices.Add(vertices[vertexIndex]->GetLocalPosition());
             continue;
         }
-        FVector circleOrigin = circleOrigins[i];
+        FVector circleOrigin = circleOrigins[vertexIndex];
     
         int curveCount = 5;
-        for (int j = -curveCount; j <= curveCount; j++)
+        for (int curveIndex = -curveCount; curveIndex <= curveCount; curveIndex++)
         {
             FTransform circleTrans{ circleOrigin };
             FVector edge = circleOrigin.GetSafeNormal() * circleRadius + circleOrigin;
     
             edge = circleTrans.InverseTransformPosition(edge);
-            edge = FRotator(j * 30 / curveCount, 0, 0).RotateVector(edge);
+            edge = FRotator(curveIndex * 30 / curveCount, 0, 0).RotateVector(edge);
             edge = circleTrans.TransformPosition(edge);
     
             roundedVertices.Add(edge);
@@ -332,4 +330,4 @@ void UMeshGenerator::Draw()
     }
 
     UpdateMesh();
-}//364
+}

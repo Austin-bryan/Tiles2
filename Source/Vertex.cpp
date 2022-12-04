@@ -5,6 +5,11 @@ TArray<Vertex*> Vertex::Vertices;
 int Vertex::Count;
 
 bool Vertex::AreNeighbors(const Vertex* a, const Vertex* b) { return FVector::Distance(a->GetWorldPosition(), b->GetWorldPosition()) < 30; }
+bool Vertex::AreCollinear(const Vertex* a, const Vertex* b, const Vertex* c)
+{
+    return (a->Y() - b->Y()) * (a->X() - c->X()) == (a->Y() - c->Y()) * (a->X() - b->X());     
+}
+
 bool Vertex::operator==(const Vertex* rhs) const { return *this == *rhs; }
 bool Vertex::operator==(const Vertex rhs)  const { return ID == rhs.ID; }
 
@@ -27,6 +32,7 @@ Vertex::Vertex(const int _vertexIndex, const int _sideCount, const FVector _posi
     Vertices.AddUnique(this);
 }
 
+bool    Vertex::ShouldRound()       const { return shouldRoundWhileMerged || !IsMerged(); }
 bool    Vertex::IsMerged()          const { return hasBeenMerged; }
 ATile*  Vertex::GetTile()           const { return Cast<ATile>(generator->GetOwner());  }
 Vertex* Vertex::PrevVertex()        const { return generator->vertices[(FMath::Abs(vertexIndex - 1 + sideCount) % sideCount)]; }
@@ -36,6 +42,7 @@ FVector Vertex::GetWorldPosition()  const { return generator->GetOwner()->GetAct
 FVector Vertex::GetQueuedPosition() const { return queuedPosition; }
 
 void Vertex::ApplyPosition() { SetPosition(queuedPosition); }
+void Vertex::SetShouldRound(const bool value) { shouldRoundWhileMerged = value; }
 void Vertex::QueuePosition(const FVector newPosition) { hasBeenMerged = true, queuedPosition = newPosition; }
 void Vertex::SetPosition(const FVector newPosition)
 {
