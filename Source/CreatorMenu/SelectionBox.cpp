@@ -3,8 +3,6 @@
 #include "CreatorTile.h"
 #include "Components/BoxComponent.h"
 
-//TODO:: allow for shift drag
-//TODO:: prevent last time from being selected when exiting drag
 ASelectionBox::ASelectionBox()
 {
     const auto mat = LoadMaterialFromPath(TEXT(MAT_SELECTION_BOX));
@@ -79,10 +77,7 @@ void ASelectionBox::OnEndOverlap(UPrimitiveComponent* overlappedComp, AActor* ot
 
 void ASelectionBox::Select(AActor* otherActor, const bool isSelected) const
 {
-    ACreatorTile* creatorTile = Cast<ACreatorTile>(otherActor);
-
-    if (!creatorTile)
-        return;
-    creatorTile->Select(isSelected, true);
+    if (ACreatorTile* creatorTile = Cast<ACreatorTile>(otherActor))
+        creatorTile->Select(isSelected, true);
 }
 

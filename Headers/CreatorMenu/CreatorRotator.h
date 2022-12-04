@@ -4,7 +4,7 @@
 
 class UDragSelect;
 class ACreatorBoard;
-enum class ESelectionType : uint8;
+enum class ESelectionAngle : uint8;
 
 /**
  * For the different angles of box selection to work, this class rotates the board and camera accordingly
@@ -19,14 +19,13 @@ public:
     void SetDragSelect(UDragSelect* _dragSelect) { dragSelect = _dragSelect; }
 
     UFUNCTION(BlueprintCallable, Category="Default")
-    void SetSelectionType(ESelectionType _selectionType);
+        void SetSelectionType(ESelectionAngle _selectionType);
 protected:
     UPROPERTY()
         ACreatorBoard* board = nullptr;
 private:
-    UPROPERTY()
-        UDragSelect* dragSelect;
-    ESelectionType selectionType;
+    UDragSelect* dragSelect;
+    ESelectionAngle selectionType;
     float newRoll = 0;
     float increment = 15;
     bool rDown, lDown;

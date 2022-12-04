@@ -4,10 +4,12 @@
 #include "ForwardDeclares.h"
 #include "Tile.generated.h"
 
-class UMaterialInstanceConstant;
+class ABoard;
+class UMeshGenerator;
 class UBoxComponent;
 class UTextRenderComponent;
-class ABoard;
+class UProceduralMeshComponent;
+class UMaterialInstanceConstant;
 enum class EBoardShape;
 enum class ETileColor : uint8;
 
@@ -22,25 +24,27 @@ public:
 	void Tick    (float DeltaTime) override;
 	void SetShape(const EBoardShape) const;
 	void SetColor(const ETileColor color);
+	ETileColor GetColor() const;
 	void SetBoard(ABoard* newBoard);
 	void SetCoord(FCoordPtr coord);
 
-	ABoard* Board()		  const { return board; }
+	ABoard* Board()       const { return board; }
 	int ID()			  const { return id; }
 	FCoordPtr GetCoord()  const { return Coord; }
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadonly)
 		UTextRenderComponent* CoordText;
+	UPROPERTY()
+		UMeshGenerator* MeshGenerator;
 protected:
-	void BeginPlay() override;
 	FCoordPtr Coord;
 	
 	UPROPERTY()
 		ABoard* board;
 	UPROPERTY(VisibleAnywhere, BlueprintReadonly)
 		USceneComponent* Root;
-	UPROPERTY(VisibleAnywhere, BlueprintReadonly)
-		UStaticMeshComponent* Mesh;
+	UPROPERTY(VisibleAnywhere)
+		UProceduralMeshComponent* ProcMesh; 
 	UPROPERTY(VisibleAnywhere, BlueprintReadonly)
 		UStaticMeshComponent* Collider;
 	UPROPERTY(VisibleAnywhere, BlueprintReadonly)
@@ -49,6 +53,7 @@ protected:
 private:
 	static int tileCount;
 	int id;
+	ETileColor tileColor;
 	
 	UPROPERTY()
 		UMaterialInstanceDynamic* instance;

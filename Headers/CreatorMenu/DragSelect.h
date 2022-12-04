@@ -7,7 +7,7 @@ class ASelectionBox;
 class ACreatorBoard;
 class ULineBatchComponent;
 struct FBatchedLine;
-enum class ESelectionType : uint8;
+enum class ESelectionShape : uint8;
 
 /**
  * Handles selection of creator tiles via dragging.
@@ -21,11 +21,14 @@ class TILES2_API UDragSelect : public UActorComponent
 public:
     UDragSelect();
 
-    void BeginPlay() override;
-    void TickComponent(float deltaTime, ELevelTick tickType, FActorComponentTickFunction* ThisTickFunction) override;
-    void SetBoard(ACreatorBoard* _board) { board = _board; }
     void OnRotate() const;
-    void ChangeSelectionShape(ESelectionType mode);
+    void BeginPlay() override;
+    void SetBoard(ACreatorBoard* _board);
+    void TickComponent(float deltaTime, ELevelTick tickType, FActorComponentTickFunction* ThisTickFunction) override;
+    ESelectionShape Shape() const { return shape; }
+
+    UFUNCTION(BlueprintCallable, Category="Default")
+        void ChangeSelectionShape(ESelectionShape _shape);
 protected:
     UPROPERTY()
         ACreatorBoard* board;
@@ -37,4 +40,5 @@ protected:
 private:
     FRotator rotation;
     TUniquePtr<SelectionDrawer> drawer;
+    ESelectionShape shape;
 };

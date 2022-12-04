@@ -1,26 +1,46 @@
-UI inheritance tree
-    Shows which buttons are selected
-Shortcuts
-Selection
+---- UI inheritance tree
+    ---- Shows which buttons are selected
+---- Shortcuts
+---- Selection
     ---- Circle
     ---- Triangle
     ---- Upsidedown Tri
     ---- Switch System
     ---- Inheritence
-    
-    
+---- Make color selection based off clicks, not just down presses
 ---- Triangle should follow mouse
     Automatically snaps until moved far enough
     if shift => rounds to up or down
         if in hex board, rounds to up, right, left
-Buttons
-    Add More
-        Circle
-        Square
-        Triangle
-    Change angle buttons
-        (Under the hood these call the same functions but are visually simpler)
-        3 angles for square
-        Hide for circle and triangle   
-        When returning to square, resets its angle to be flat
-    Buttons highlight to show active combination
+    make tirangle more natural
+    prevent shortcuts for angle work while square is not selectedd
+---- Buttons
+    ---- Add More
+        ---- Circle
+        ---- Square
+        ---- Triangle
+    ---- Change angle buttons
+        ---- (Under the hood these call the same functions but are visually simpler)
+        ---- 3 angles for square
+        ---- Hide for circle and triangle   
+        ---- When returning to square, resets its angle to be flat
+    ---- Buttons highlight to show active combination
+    
+    Custom panel with header 
+        adjusts with size
+        text
+        icon
+    have snap angle for triangle selection change to align with the hexboard better
+    Highlight color when selecting tile
+        if selecting multiple, override the toggle feature to show that multiple colors are selected
+    Collapse windows
+        Expand
+        Icon
+        
+bug where slant selection entirely breaks vertices
+ 
+ ==== Polish ====
+ Animations
+    Animate hover opacity
+    animate selecitn color
+    animate expansion

@@ -2,6 +2,7 @@
 #include "CoreMinimal.h"
 #include "ActorAnimator.h"
 #include "Tile.h"
+#include "ProceduralMeshComponent.h"
 #include "CreatorTile.generated.h"
 
 /**
@@ -18,9 +19,9 @@ public:
 	static ACreatorTile* FirstSelectedTile() { return firstSelectedTile; }
 
 	ACreatorTile();
+	bool GetIsSelected() const { return isSelected; }
 	void Tick(float deltaSeconds) override;
 	void NotifyActorOnClicked(FKey ButtonPressed) override;
-
 	void Select(bool _isSelected, bool isDragSelecting = false);
 private:
 	static ACreatorTile* firstSelectedTile;
@@ -30,6 +31,6 @@ private:
 	bool wasDragSelected;
 
 	ActorAnimator* activeAnimation;
-	ActorAnimator animPress{Mesh, FVector::One(), FVector(0.75f), EAnimMode::Scale, 8};
-	ActorAnimator animHover{Mesh, FVector::One(), FVector(1.05f), EAnimMode::Scale, 8};
+	ActorAnimator animPress{ProcMesh, FVector::One(), FVector(0.75f), EAnimMode::Scale, 8};
+	ActorAnimator animHover{ProcMesh, FVector::One(), FVector(1.05f), EAnimMode::Scale, 8};
 };

@@ -5,13 +5,14 @@
 #include "SelectionDrawer.h"
 #include "Components/LineBatchComponent.h"
 #include "Slate/SceneViewport.h"
-#include "SelectionType.h"
+#include "SelectionAngle.h"
 
 UDragSelect::UDragSelect() 
 {
     UActorComponent::SetComponentTickEnabled(true);
     lineBatchComponent = CreateDefaultSubobject<ULineBatchComponent>(FName("Line Batch"));
 }
+
 void UDragSelect::BeginPlay()
 {
     selectionBox = GetWorld()->SpawnActor<ASelectionBox>(
@@ -19,13 +20,16 @@ void UDragSelect::BeginPlay()
         FVector::Zero(),
         FRotator(0, 90, 0));
     Super::BeginPlay();
-    ChangeSelectionShape(ESelectionType::Circle);
+    ChangeSelectionShape(ESelectionShape::Square);
 }
-
-void UDragSelect::TickComponent(const float deltaTime, const ELevelTick tickType
-    , FActorComponentTickFunction* ThisTickFunction)
+void UDragSelect::TickComponent(const float deltaTime, const ELevelTick tickType, FActorComponentTickFunction* ThisTickFunction)
 {
     Super::TickComponent(deltaTime, tickType, ThisTickFunction);
+
+    if (!board) { Log("Board is null", LogParams(0)); return; }
+    if (!board->GetWorld()) { Log("World is null", LogParams(0)); return; }
+    if (!board->GetWorld()->GetFirstPlayerController()) { Log("Controller is null", LogParams(0)); return; }
+
     const auto controller = board->GetWorld()->GetFirstPlayerController();
     auto GetScreenToWorld = [this, controller]
     {
@@ -61,12 +65,11 @@ void UDragSelect::TickComponent(const float deltaTime, const ELevelTick tickType
         selectionBox->SetVisibility(true);
     }
 }
-
-void UDragSelect::OnRotate() const
+void UDragSelect::SetBoard(ACreatorBoard* _board) { board = _board; }
+void UDragSelect::OnRotate() const { selectionBox->SetVisibility(false, true); }
+void UDragSelect::ChangeSelectionShape(const ESelectionShape _shape)
 {
-    selectionBox->SetVisibility(false, true);
-}
-void UDragSelect::ChangeSelectionShape(const ESelectionType mode)
-{
-    drawer = SelectionDrawer::Create(mode, lineBatchComponent, selectionBox);
+    drawer = SelectionDrawer::Create(_shape, lineBatchComponent, selectionBox);
+    drawer->SetCreatorBoard(board);
+    shape = _shape; 
 }
