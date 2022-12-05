@@ -26,8 +26,9 @@ public:
 	void Tick(float DeltaTime) override;
 
 	void SetShape(const EBoardShape) const;
-	void SetColor(const ETileColor color
-		, bool colorSiblings = true);
+	virtual void SetColor(
+		const ETileColor color,
+		bool colorSiblings = true);
 	void SetBoard(ABoard* newBoard);
 	void SetCoord(FCoordPtr coord);
 	void BandagedWith(
@@ -36,7 +37,7 @@ public:
 	int ID()			  const { return id; }
 	ABoard* Board()       const { return board; }
 	FCoordPtr GetCoord()  const { return Coord; }
-	ETileColor GetColor() const;
+	virtual ETileColor GetColor() const;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadonly)
 		UTextRenderComponent* CoordText;

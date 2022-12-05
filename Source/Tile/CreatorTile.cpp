@@ -4,7 +4,7 @@
 TArray<ACreatorTile*> ACreatorTile::SelectedTiles;
 ACreatorTile* ACreatorTile::firstSelectedTile;
 
-ACreatorTile::ACreatorTile() : ATile()
+ACreatorTile::ACreatorTile() : AModTile()
 {
     if (SelectedTiles.Num() > 0)
         SelectedTiles.Empty();
@@ -23,10 +23,6 @@ void ACreatorTile::NotifyActorOnClicked(FKey ButtonPressed)
     // Invert selection, unless was previously dragselected
     Select(!isSelected || wasDragSelected && isSelected);
 }
-
-// todo:: this bool should be whether or not we're dragging
-// todo:  allow shift select when individually clicking but not dragging
-// todo:: allow shift select and override select for dragging
 void ACreatorTile::Select(const bool _isSelected, const bool isDragSelecting)
 {
     isSelected = _isSelected;
@@ -46,7 +42,8 @@ void ACreatorTile::Select(const bool _isSelected, const bool isDragSelecting)
                     tile->Select(false);
         }
     }
-    // prevents animating into the state its already in
+    
+    // Prevents animating into the state its already in
     if (isSelected && animPress.GetAnimState() != EAnimState::Forwards
     || !isSelected && animPress.GetAnimState() != EAnimState::Backwards)
     {

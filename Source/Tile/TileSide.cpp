@@ -19,6 +19,6 @@ void UTileSide::SetModTile(AModTile* _modTile)    { modTile = _modTile; }
 void UTileSide::BeginPlay()                       { Super::BeginPlay(); }
 
 //TODO:: add enum to module field to make sure that it wasnt already added
-void UTileSide::AddModule(UTileModule* module)     { moduleMap.Add(module); }
+void UTileSide::AddModule(UTileModule* module)     { moduleMap.Add(module->ModuleType(), module); }
 void UTileSide::RemoveModule(const EModule module) { moduleMap.Remove(module); }
 void UTileSide::RemoveAll()                        { moduleMap.Empty(); }

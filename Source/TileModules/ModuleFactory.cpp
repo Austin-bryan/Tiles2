@@ -10,7 +10,7 @@
 class UBandagedModule;
 class UCamoModule;
 
-UTileModule* ModuleFactory::Produce(const EModule module, ATile* modTile, const TArray<FParameter>& parameters) 
+UTileModule* ModuleFactory::Produce(const EModule module, AModTile* modTile, const TArray<FParameter>& parameters) 
 {
     switch(module)
     {

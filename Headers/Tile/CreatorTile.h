@@ -1,7 +1,7 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "ActorAnimator.h"
-#include "Tile.h"
+#include "ModTile.h"
 #include "ProceduralMeshComponent.h"
 #include "CreatorTile.generated.h"
 
@@ -9,7 +9,7 @@
  * CreatorTiles are used in the level creator and have additional features such as being able to be selected.
  */
 UCLASS()
-class TILES2_API ACreatorTile : public ATile
+class TILES2_API ACreatorTile : public AModTile
 {
 	GENERATED_BODY()
 public:

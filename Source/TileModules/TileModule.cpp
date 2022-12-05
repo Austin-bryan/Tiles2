@@ -1,15 +1,13 @@
 #include "TileModule.h"
+#include "ModTile.h"
 
-UTileModule::UTileModule()
-{
-	PrimaryComponentTick.bCanEverTick = true;
-}
+UTileModule::UTileModule() { PrimaryComponentTick.bCanEverTick = true; }
 UTileModule::~UTileModule() {}
 
 template<class T>
-UTileModule* UTileModule::Create(ATile* tile, const TArray<FParameter>& parameters)
+UTileModule* UTileModule::Create(AModTile* tile, const TArray<FParameter>& parameters)
 {
-	//todo:= assert generic is right class
+	//TODO:: assert generic is right class
 	UTileModule* module = NewObject<UTileModule>(tile, T::StaticClass(), FName(T::StaticClass()->GetName()));
 	module->ModTile = tile;
 	module->RegisterComponent();

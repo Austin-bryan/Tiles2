@@ -1,9 +1,10 @@
 #pragma once
-#include "Tile.h"
 #include "CoreMinimal.h"
-#include "Components/SceneComponent.h"
+#include "Enums.h"
 #include "TileModule.generated.h"
 
+class AModTile;
+enum class EModule : uint8;
 struct FParameter;
 
 /**
@@ -18,12 +19,13 @@ public:
 	~UTileModule();
 
 	void BeginPlay() override;
-	void Init();
-	void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-	virtual void ApplyParameters(const TArray<FParameter>& parameters){}
+	void Init() const;
+	virtual void ApplyParameters(const TArray<FParameter>& parameters){ }
 	
 	template<class T>
-	static UTileModule* Create(ATile* tile, const TArray<FParameter>& parameters);
+	static UTileModule* Create(AModTile* tile, const TArray<FParameter>& parameters);
+	
+	virtual EModule ModuleType() const { return EModule::Normal; }
 protected:
-	ATile* ModTile;
+	AModTile* ModTile;
 };

@@ -13,7 +13,7 @@ class TILES2_API UBandagedModule : public UTileModule
 public:
 	UBandagedModule() : UTileModule(){}
 	~UBandagedModule(){}
-	// void ApplyParameters(const TArray<FParameter>& parameters) override;
+	EModule ModuleType() const override { return EModule::Bandaged; }
 protected:
 	float Average(const float a, const float b);
 };

@@ -1,7 +1,7 @@
 #include "PlayerTile.h"
 #include "Logger.h"
 
-APlayerTile::APlayerTile(): ATile()
+APlayerTile::APlayerTile(): AModTile()
 {
     // Log("Player Tile");
 }
