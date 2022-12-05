@@ -60,12 +60,7 @@ void UShortcutDetector::BeginPlay()
             { EKeys::A, [this, SetSelectionAngle] { SetSelectionAngle(ESelectionAngle::Downhill); } },
             { EKeys::S, [this, SetSelectionAngle] { SetSelectionAngle(ESelectionAngle::Flat); } },
             { EKeys::D, [this, SetSelectionAngle] { SetSelectionAngle(ESelectionAngle::Uphill); } },
-            { EKeys::M, [this]
-                {
-                    UMeshGenerator::TilesToMerge = ACreatorTile::SelectedTiles;
-                    UMeshGenerator::Merge();
-                }
-            },
+            { EKeys::M, [this] { UMeshGenerator::Merge(); } },
         }),
         // Shift
         new ModifiedShortcuts({
@@ -106,7 +101,7 @@ void UShortcutDetector::BeginPlay()
             { EKeys::W, [] { Log("Wrap"); } },
             { EKeys::C, []
             {
-                for (const auto c : ACreatorTile::SelectedTiles)
+                for (const auto c : ACreatorTile::SelectedTiles())
                     if (!c->HasModule(EModule::Camo))
                         c->AddModule(ModuleFactory::Produce(EModule::Camo, c));
             } },

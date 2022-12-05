@@ -11,20 +11,22 @@
 UCLASS()
 class TILES2_API ACreatorTile : public AModTile
 {
+	friend class AStaticResetter;
 	GENERATED_BODY()
 public:
-	// TODO:: make private with const getter
-	static TArray<ACreatorTile*> SelectedTiles;
-	static void EmptySelectedTiles();
 	static ACreatorTile* FirstSelectedTile() { return firstSelectedTile; }
+	static const TArray<ACreatorTile*>& SelectedTiles() { return selectedTiles; }
 
 	ACreatorTile();
 	bool GetIsSelected() const { return isSelected; }
 	void Tick(float deltaSeconds) override;
 	void NotifyActorOnClicked(FKey ButtonPressed) override;
 	void Select(bool _isSelected, bool isDragSelecting = false);
+
 private:
 	static ACreatorTile* firstSelectedTile;
+	static TArray<ACreatorTile*> selectedTiles;
+	
 	bool isSelected, isPlayingSelectAnim;
 	FVector targetScale, startScale;
 	float selectAlpha;

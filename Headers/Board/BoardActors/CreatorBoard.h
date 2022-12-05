@@ -21,7 +21,6 @@ public:
 	static float TriGap;
 	UClass* TileClass() const override;
 	ACreatorBoard();
-	~ACreatorBoard();
 	void BeginPlay() override;
 
 	UPROPERTY(EditAnywhere)

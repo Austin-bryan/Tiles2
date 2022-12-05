@@ -35,13 +35,6 @@ ACreatorBoard::ACreatorBoard()
     
     rand = FMath::RandRange(0, 100000);
 }
-ACreatorBoard::~ACreatorBoard()
-{
-    UMeshGenerator::UniversalVertices.Empty();
-    ACreatorTile::EmptySelectedTiles();
-    Vertex::Vertices.Empty();
-    Vertex::Count = 0;
-}
 void ACreatorBoard::BeginPlay()
 {
     TriGap = triGap;
@@ -57,8 +50,9 @@ void ACreatorBoard::BeginPlay()
     FTimerHandle handle;
     GetWorldTimerManager().SetTimer(handle, [&]()
     {
-        for (const auto vertex : Vertex::Vertices)
-            vertex->LinkVertices();
+        const auto tileValues = tiles.Values();
+        for (int i = 0; i < tiles.Num(); i++)
+            tileValues[i]->MeshGenerator->LinkVertices();
     }, 1, false);
 }
 
@@ -70,6 +64,5 @@ void ACreatorBoard::SetCreatorMenu(UCreatorMenu* _creatorMenu)
     creatorMenu = _creatorMenu;
     shortcutDetector->SetCreatorMenu(creatorMenu);
 }
-
 UClass* ACreatorBoard::TileClass() const { return ACreatorTile::StaticClass(); }
 //119, 50, 17

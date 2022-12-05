@@ -2,7 +2,6 @@
 #include "Logger.h"
 
 TArray<Vertex*> Vertex::Vertices;
-int Vertex::Count;
 
 bool Vertex::AreNeighbors(const Vertex* a, const Vertex* b) { return FVector::Distance(a->GetWorldPosition(), b->GetWorldPosition()) < 30; }
 bool Vertex::AreCollinear(const Vertex* a, const Vertex* b, const Vertex* c)
@@ -13,13 +12,12 @@ bool Vertex::AreCollinear(const Vertex* a, const Vertex* b, const Vertex* c)
 bool Vertex::operator==(const Vertex* rhs) const { return *this == *rhs; }
 bool Vertex::operator==(const Vertex rhs)  const { return ID == rhs.ID; }
 
-// this needs to be a delay inorder for for the positions to be accurate
+// This needs to be a delay inorder for for the positions to be accurate
 void Vertex::LinkVertices()
 {
     for (const auto other : Vertices)
+    if (other != this && AreNeighbors(this, other))
     {
-        if (other == this || !AreNeighbors(this, other))
-            continue;
         neighbors.AddUnique(other);
         other->neighbors.AddUnique(this);
     }
@@ -27,8 +25,7 @@ void Vertex::LinkVertices()
 Vertex::Vertex(const int _vertexIndex, const int _sideCount, const FVector _position, UMeshGenerator* _generator) :
     vertexIndex{ _vertexIndex }, sideCount{ _sideCount }, generator{ _generator }, position{ _position }
 {
-    ID = Count;
-    Count++;
+    ID = Vertices.Num();
     Vertices.AddUnique(this);
 }
 
@@ -43,7 +40,7 @@ FVector Vertex::GetQueuedPosition() const { return queuedPosition; }
 
 void Vertex::ApplyPosition() { SetPosition(queuedPosition); }
 void Vertex::SetShouldRound(const bool value) { shouldRoundWhileMerged = value; }
-void Vertex::QueuePosition(const FVector newPosition) { hasBeenMerged = true, queuedPosition = newPosition; }
+void Vertex::QueuedPosition(const FVector newPosition) { hasBeenMerged = true, queuedPosition = newPosition; }
 void Vertex::SetPosition(const FVector newPosition)
 {
     position = generator->GetOwner()->GetTransform().InverseTransformPosition(newPosition), hasBeenMerged = true;

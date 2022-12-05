@@ -14,11 +14,9 @@
 #include "KismetProceduralMeshLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
 
-TArray<Vertex> UMeshGenerator::UniversalVertices;
 TArray<UMeshGenerator*> UMeshGenerator::Generators;
-TArray<ACreatorTile*> UMeshGenerator::TilesToMerge;
+TArray<ACreatorTile*> UMeshGenerator::tilesToMerge;
 TSharedPtr<TArray<ATile*>> UMeshGenerator::sharedSiblings;
-
 
 UMeshGenerator::UMeshGenerator() { }
 
@@ -62,15 +60,16 @@ ACreatorTile* GetCreatorTile(const Vertex* vertex) { return Cast<ACreatorTile>(v
 void UMeshGenerator::Merge()
 {
     Generators.Empty();
+    tilesToMerge = ACreatorTile::SelectedTiles();
     sharedSiblings = MakeShared<TArray<ATile*>>();
 
     TArray<Vertex*> queuedVertices;
-    for (const auto& creatorTileA : TilesToMerge)
+    for (const auto& creatorTileA : tilesToMerge)
     {
         MergeWithNeighbors(queuedVertices, creatorTileA);
         creatorTileA->BandagedWith(sharedSiblings);
     }
-    TilesToMerge[0]->SetColor(GetBandagedColor());
+    tilesToMerge[0]->SetColor(GetBandagedColor());
     for (auto& vertex : queuedVertices)
         vertex->ApplyPosition();
     for (const auto& generator : Generators)
@@ -82,7 +81,7 @@ void UMeshGenerator::MergeWithNeighbors(TArray<Vertex*>& queuedVertices, ACreato
     for (auto vertexA : creatorTileA->MeshGenerator->vertices)
     {
         TArray<ACreatorTile*> selectedNeighbors;
-        for (auto vertexB : vertexA->neighbors)
+        for (auto vertexB : vertexA->Neighbors())
         {
             const auto creatorTileB = GetCreatorTile(vertexB);
             if (creatorTileB->GetIsSelected())
@@ -112,7 +111,7 @@ bool UMeshGenerator::MergeWithNeighbor(TArray<Vertex*>& queuedVertices, ACreator
 void UMeshGenerator::MergeTwoVertices(TArray<Vertex*>& queuedVertices, ACreatorTile* const& creatorTileA, Vertex* vertexA)
 {
     if (!vertexA->IsMerged())
-        for (const auto& creatorTileB : TilesToMerge)
+        for (const auto& creatorTileB : tilesToMerge)
             MergeWithNeighbor(queuedVertices, creatorTileA, vertexA, creatorTileB);
 }
 void UMeshGenerator::MergeThreeVertices(TArray<Vertex*>& queuedVertices, ACreatorTile* const& creatorTileA, Vertex* vertexA, TArray<ACreatorTile*> selectedNeighbors)
@@ -133,7 +132,7 @@ void UMeshGenerator::MergeThreeVertices(TArray<Vertex*>& queuedVertices, ACreato
             // Cache the intersection to use for the middle TriTile that doesn't intersect,
             // but needs the same vertex position
             if (MergeWithNeighbor(queuedVertices, creatorTileA, vertexA, creatorTileB))
-                intersection = TOptional<FVector>(vertexA->queuedPosition);
+                intersection = TOptional<FVector>(vertexA->GetQueuedPosition());
         }
         else middleTile = creatorTileB;
     }
@@ -145,16 +144,16 @@ void UMeshGenerator::MergeThreeVertices(TArray<Vertex*>& queuedVertices, ACreato
     for (auto& vertexB : middleTile->MeshGenerator->vertices)
     if (ShouldMergeVertices(vertexA, vertexB))
     {
-        vertexB->QueuePosition(*intersection);
+        vertexB->QueuedPosition(*intersection);
         queuedVertices.Add(vertexB);
     }
 }
-void UMeshGenerator::MergeMultipleVertices(Vertex* vertexA)
+void UMeshGenerator::MergeMultipleVertices(const Vertex* vertexA)
 {
     FVector sum = FVector::Zero();
     TArray<Vertex*> selectedVertices;
             
-    for (auto vertexB : vertexA->neighbors)
+    for (auto vertexB : vertexA->Neighbors())
         if (GetCreatorTile(vertexB)->GetIsSelected())
         {
             selectedVertices.Add(vertexB);
@@ -168,15 +167,15 @@ bool UMeshGenerator::ShouldMergeVertices(const Vertex* vertexA, const Vertex* ve
     // TODO:: add this check back if board is not triangle
     // if (vertexA->IsMerged() || vertexB->IsMerged())
         // return false;
-    return vertexA->neighbors.Contains(vertexB);
+    return vertexA->Neighbors().Contains(vertexB);
 }
 void UMeshGenerator::QueueVertices(TArray<Vertex*>& queuedVertices, ACreatorTile* const& creatorTileA, Vertex* vertexA, Vertex* vertexB, FVector intersection)
 {
 #ifdef DRAW_DEBUG
     DrawDebugSphere(creatorTileA->GetWorld(), intersection, 5, 16, FColor::Green, true);
 #endif
-    vertexA->QueuePosition(intersection);
-    vertexB->QueuePosition(intersection);
+    vertexA->QueuedPosition(intersection);
+    vertexB->QueuedPosition(intersection);
     queuedVertices.Add(vertexA);
     queuedVertices.Add(vertexB);
 }
@@ -237,9 +236,9 @@ ETileColor UMeshGenerator::GetBandagedColor()
     ETileColor bandagedColor = ETileColor::None;
     int maxColor = 0;
 
-    for (int i = 0; i < TilesToMerge.Num(); i++)
+    for (int i = 0; i < tilesToMerge.Num(); i++)
     {
-        const auto& currentColor = TilesToMerge[i]->GetColor();
+        const auto& currentColor = tilesToMerge[i]->GetColor();
         const auto TrySetBandageColor = [&]()
         {
             if (colorMap[currentColor] > maxColor)
@@ -253,7 +252,7 @@ ETileColor UMeshGenerator::GetBandagedColor()
         {
             colorMap[currentColor]++;
 
-            if (colorMap[currentColor] > TilesToMerge.Num() / 2)      // If the majority of the tiles to merge are one color, exit early
+            if (colorMap[currentColor] > tilesToMerge.Num() / 2)      // If the majority of the tiles to merge are one color, exit early
             {
                 bandagedColor = currentColor;
                 break;
@@ -273,6 +272,11 @@ void UMeshGenerator::Init(int _radius, int _vertexCount, int _angleOffset, int _
 {
     radius = _radius, vertexCount = _vertexCount, angleOffset = _angleOffset, angle = _angle;
     Draw();
+}
+void UMeshGenerator::LinkVertices()
+{
+    for (const auto vertex : vertices)
+        vertex->LinkVertices();
 }
 void UMeshGenerator::UpdateMesh()
 {

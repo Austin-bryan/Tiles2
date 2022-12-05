@@ -1,13 +1,13 @@
 #include "CreatorTile.h"
 #include "Kismet/GameplayStatics.h"
 
-TArray<ACreatorTile*> ACreatorTile::SelectedTiles;
+TArray<ACreatorTile*> ACreatorTile::selectedTiles;
 ACreatorTile* ACreatorTile::firstSelectedTile;
 
 ACreatorTile::ACreatorTile() : AModTile()
 {
-    if (SelectedTiles.Num() > 0)
-        SelectedTiles.Empty();
+    if (selectedTiles.Num() > 0)
+        selectedTiles.Empty();
 }
 
 void ACreatorTile::Tick(const float deltaSeconds)
@@ -17,7 +17,6 @@ void ACreatorTile::Tick(const float deltaSeconds)
     if (activeAnimation)
         activeAnimation->Tick(deltaSeconds);
 }
-void ACreatorTile::EmptySelectedTiles() { SelectedTiles.Empty(); }
 void ACreatorTile::NotifyActorOnClicked(FKey ButtonPressed)
 {
     // Invert selection, unless was previously dragselected
@@ -36,7 +35,7 @@ void ACreatorTile::Select(const bool _isSelected, const bool isDragSelecting)
         if (const auto& controller = GetWorld()->GetFirstPlayerController();
             !controller->IsInputKeyDown(EKeys::LeftShift))
         {
-            const auto selected = SelectedTiles;
+            const auto selected = selectedTiles;
             for (const auto& tile : selected)
                 if (tile != this)
                     tile->Select(false);
@@ -52,8 +51,8 @@ void ACreatorTile::Select(const bool _isSelected, const bool isDragSelecting)
     }
     
     if (isSelected)
-         SelectedTiles.AddUnique(this);
-    else SelectedTiles.Remove(this);
+         selectedTiles.AddUnique(this);
+    else selectedTiles.Remove(this);
     
     wasDragSelected = isDragSelecting;
 }

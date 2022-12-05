@@ -31,9 +31,7 @@ public:
     static ETileColor GetBandagedColor();
     UFUNCTION(BlueprintCallable)
         static void Merge();
-    static TArray<Vertex> UniversalVertices;
     static TArray<UMeshGenerator*> Generators;
-    static TArray<ACreatorTile*> TilesToMerge;
     
     static void MergeTwoVertices(
         TArray<Vertex*>& queuedVertices,
@@ -45,7 +43,7 @@ public:
         Vertex* vertexA,
         TArray<ACreatorTile*> selectedNeighbors);
     static void MergeMultipleVertices(
-        Vertex* vertexA);
+        const Vertex* vertexA);
 
     static void AverageVertices(
         TArray<Vertex*> neighbors,
@@ -87,12 +85,13 @@ public:
         ACreatorTile* const& creatorTileA);
 
     void Init(
-        int _radius,
-        int _vertexCount,
-        int _angleOffset,
-        int _angle);
+        int _radius, int _vertexCount,
+        int _angleOffset, int _angle);
+    void LinkVertices();
 private:
     static TSharedPtr<TArray<ATile*>> sharedSiblings;
+    static TArray<ACreatorTile*> tilesToMerge;
+
     void Draw();
     void UpdateMesh();
 
