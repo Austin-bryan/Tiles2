@@ -1,7 +1,7 @@
 #pragma once
+#include "Tile.h"
 #include "CoreMinimal.h"
 #include "Components/SceneComponent.h"
-#include "Tile.h"
 #include "TileModule.generated.h"
 
 struct FParameter;
@@ -18,6 +18,7 @@ public:
 	~UTileModule();
 
 	void BeginPlay() override;
+	void Init();
 	void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	virtual void ApplyParameters(const TArray<FParameter>& parameters){}
 	
