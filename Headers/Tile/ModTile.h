@@ -26,10 +26,10 @@ public:
     void BeginPlay() override;
 
     ATileSide* CurrentSide() const;
-    TArray<UTileModule*> Modules() const;
+    TArray<ATileModule*> Modules() const;
     
     bool HasModule(const EModule module) const;
-    void AddModule(UTileModule* module) const;
+    void AddModule(ATileModule* module) const;
 protected:
     UPROPERTY(VisibleAnywhere)
     UTileSideHandler* SideHandler;

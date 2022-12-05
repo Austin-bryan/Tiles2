@@ -7,14 +7,14 @@
  * BandagedTiles are normal tiles stuck together to move as one.
  */
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
-class TILES2_API UBandagedModule : public UTileModule	
+class TILES2_API ABandagedModule : public ATileModule	
 {
 	GENERATED_BODY()
 public:
-	UBandagedModule() : UTileModule(){}
-	~UBandagedModule(){}
+	ABandagedModule() : ATileModule(){}
+	~ABandagedModule(){}
 	EModule ModuleType() const override { return EModule::Bandaged; }
 protected:
-	float Average(const float a, const float b);
+	float Average(const float a, const float b) const;
 };
 

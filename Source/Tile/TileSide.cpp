@@ -5,11 +5,11 @@
 
 ETileColor ATileSide::Color() const                     { return ETileColor::Black; }
 AModTile* ATileSide::ModTile() const                    { return modTile;}
-UTileModule* ATileSide::GetModule(const EModule module) { return moduleMap[module]; }
+ATileModule* ATileSide::GetModule(const EModule module) { return moduleMap[module]; }
 bool ATileSide::HasModule(const EModule module) const   { return moduleMap.Contains(module); }
-TArray<UTileModule*> ATileSide::Modules() const
+TArray<ATileModule*> ATileSide::Modules() const
 {
-    TArray<UTileModule*> valueArray;
+    TArray<ATileModule*> valueArray;
     moduleMap.GenerateValueArray(valueArray);
     return valueArray;
 }
@@ -25,6 +25,19 @@ void ATileSide::SetModTile(AModTile* _modTile)    { modTile = _modTile; }
 void ATileSide::BeginPlay()                       { Super::BeginPlay(); }
 
 //TODO:: add enum to module field to make sure that it wasnt already added
-void ATileSide::AddModule(UTileModule* module)     { moduleMap.Add(module->ModuleType(), module); }
+void ATileSide::AddModule(ATileModule* module)
+{
+    // There are checks in place to prevent duplicate Modules from being created in the first place
+    // but just in case, we need to destroy the duplicate
+    if (moduleMap.Contains(module->ModuleType()))
+    {
+        module->Destroy();
+        return;
+    }
+    module->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
+    module->SetOwner(this);
+    module->Init();
+    moduleMap.Add(module->ModuleType(), module);
+}
 void ATileSide::RemoveModule(const EModule module) { moduleMap.Remove(module); }
 void ATileSide::RemoveAll()                        { moduleMap.Empty(); }

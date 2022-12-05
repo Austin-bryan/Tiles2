@@ -7,10 +7,8 @@
 #include "Engine/StaticMeshActor.h"
 #include "Kismet/GameplayStatics.h"
 
-UTileSideHandler::UTileSideHandler()
-{
-}
-int  UTileSideHandler::SideCount()    const { return GetNumChildrenComponents(); }
+UTileSideHandler::UTileSideHandler() { }
+int  UTileSideHandler::SideCount()    const { return GetOwner()->Children.Num(); }
 int  UTileSideHandler::TileID()       const { return ModTile()->ID(); }
 int  UTileSideHandler::CurrentIndex() const { return currentIndex; }
 bool UTileSideHandler::IsMultiSided() const { return SideCount() > 1; }
@@ -21,7 +19,7 @@ void UTileSideHandler::SetColor(const ETileColor _color)const { CurrentSide()->S
 ATileSide* UTileSideHandler::CurrentSide()              const { return (*this)[currentIndex]; }
 ETileColor UTileSideHandler::Color()                    const { return CurrentSide()->ModTile()->GetColor(); }
 AModTile*  UTileSideHandler::ModTile()                  const { return modTile; }
-TArray<UTileModule*> UTileSideHandler::CurrentModules() const { return CurrentSide()->Modules(); }
+TArray<ATileModule*> UTileSideHandler::CurrentModules() const { return CurrentSide()->Modules(); }
 
 void UTileSideHandler::InitModules() const
 {
@@ -31,17 +29,13 @@ void UTileSideHandler::InitModules() const
 }
 TArray<ATileSide*> UTileSideHandler::GetSides() const
 {
-    TArray<USceneComponent*> children;
-    GetChildrenComponents(false, children);
-
     TArray<ATileSide*> sides;
-    for (const auto child : children)
-        if (auto* side = dynamic_cast<ATileSide*>(child))
+    for (const auto child : GetOwner()->Children)
+        if (auto* side = static_cast<ATileSide*>(child))
             sides.Add(side);
     return sides;
 }
-ATileSide* UTileSideHandler::operator[](const int index) const { return GetSides()[index]; }
-
+ATileSide* UTileSideHandler::operator[](const int index) const { return Cast<ATileSide>(GetOwner()->Children[index]); }
 void UTileSideHandler::RemoveAll()
 {
     const int sideCount = SideCount();
@@ -59,22 +53,12 @@ void UTileSideHandler::RemoveSide(int index)
 }
 void UTileSideHandler::AddSide(ETileColor color) const
 {
-    const auto x = NewObject<UChildActorComponent>(UChildActorComponent::StaticClass(), TEXT("Child Actor"));
-
-    x->SetupAttachment(GetOwner()->GetRootComponent());
-
     auto* side = GetWorld()->SpawnActor(ATileSide::StaticClass());
     side->AttachToActor(GetOwner(), FAttachmentTransformRules::KeepRelativeTransform);
     side->SetOwner(GetOwner());
-    side->AttachToComponent(GetOwner()->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
-
-    Log(GetOwner()->GetName());
-    // Log(side->IsAttachedTo(GetOwner()), BLUE);
-    // Log(GetOwner() == nullptr, RED);
-    // Log(side->GetOwner() == nullptr);
 }
 bool UTileSideHandler::HasModule(const EModule module)         const { return CurrentSide()->HasModule(module); }
-UTileModule* UTileSideHandler::GetModule(const EModule module) const { return CurrentSide()->GetModule(module); }
+ATileModule* UTileSideHandler::GetModule(const EModule module) const { return CurrentSide()->GetModule(module); }
 
 void UTileSideHandler::SetToDefault() { ChangeSide(0); }
 void UTileSideHandler::NextSide()     { ChangeSide(currentIndex + 1); }

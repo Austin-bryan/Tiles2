@@ -6,12 +6,13 @@
 
 class AModTile;
 class ATileSide;
-class UTileModule;
+class ATileModule;
 enum class ETileColor : uint8;
 
 UCLASS()
 class UTileSideHandler : public USceneComponent
 {
+    friend class ModTile;
     GENERATED_BODY()
 public:
     UTileSideHandler();
@@ -20,7 +21,7 @@ public:
     int TileID() const;
     bool IsMultiSided() const;
     ATileSide* CurrentSide() const;
-    TArray<UTileModule*> CurrentModules() const;
+    TArray<ATileModule*> CurrentModules() const;
     
     ETileColor Color() const;
     int CurrentIndex() const;
@@ -40,7 +41,7 @@ public:
     void RemoveSide(int index = -1);
     void AddSide(ETileColor color) const;
     bool HasModule(EModule module) const;
-    UTileModule* GetModule(EModule module) const;
+    ATileModule* GetModule(EModule module) const;
 
     // ---- Changing Sides ---- //
     void SetToDefault();

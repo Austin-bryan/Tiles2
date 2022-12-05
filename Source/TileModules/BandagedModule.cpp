@@ -1,6 +1,6 @@
 #include "BandagedModule.h"
 
-float UBandagedModule::Average(const float a, const float b) { return (a + b) / 2; }
+float ABandagedModule::Average(const float a, const float b) const { return (a + b) / 2; }
 
 // void UBandagedModule::ApplyParameters(const TArray<FParameter>& parameters)
 // {

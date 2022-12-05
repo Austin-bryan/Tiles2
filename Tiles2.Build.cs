@@ -22,7 +22,6 @@ public class Tiles2 : ModuleRules
 			"Headers/Tile",
 			"Headers/TileModules",
 			"Headers/Board/BoardActors",
-			"Headers/TileModules/BandagedModule",
 			"Headers/Enums",
 			"Headers/CreatorMenu",
 			
@@ -36,7 +35,6 @@ public class Tiles2 : ModuleRules
 			"Source/Tile",
 			"Source/TileModules",
 			"Source/Board/BoardActors",
-			"Source/TileModules/BandagedModule",
 			"Source/Enums",
 			"Source/CreatorMenu",
 			

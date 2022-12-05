@@ -3,10 +3,10 @@
 #include "TileSide.generated.h"
 
 class AModTile;
-class UTileModule;
+class ATileModule;
 enum class ETileColor : uint8;
 enum class EModule : uint8;
-using FModuleMap = TMap<EModule, UTileModule*>;
+using FModuleMap = TMap<EModule, ATileModule*>;
 
 UCLASS()
 class ATileSide : public AActor
@@ -15,9 +15,9 @@ class ATileSide : public AActor
 public:
     ETileColor Color() const;
     AModTile* ModTile() const;
-    UTileModule* GetModule(EModule module);
+    ATileModule* GetModule(EModule module);
     bool HasModule(EModule module) const;
-    TArray<UTileModule*> Modules() const;
+    TArray<ATileModule*> Modules() const;
 
     ATileSide();
 
@@ -26,7 +26,7 @@ public:
     void BeginPlay() override;
     
     // ---- Module Manipulation ---- /
-    void AddModule(UTileModule* module);
+    void AddModule(ATileModule* module);
     void RemoveModule(EModule module);
     void RemoveAll();
 

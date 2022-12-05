@@ -106,12 +106,9 @@ void UShortcutDetector::BeginPlay()
             { EKeys::W, [] { Log("Wrap"); } },
             { EKeys::C, []
             {
-                for (auto c : ACreatorTile::SelectedTiles)
-                {
-                    auto m = ModuleFactory::Produce(EModule::Camo, c);
-                    c->AddModule(m);
-                    // c->AddModule(ModuleFactory::Produce(EModule::Camo, c));
-                }
+                for (const auto c : ACreatorTile::SelectedTiles)
+                    if (!c->HasModule(EModule::Camo))
+                        c->AddModule(ModuleFactory::Produce(EModule::Camo, c));
             } },
             { EKeys::B, [] { Log("Bandaged"); } },
             { EKeys::R, [] { Log("Rotator"); } },
