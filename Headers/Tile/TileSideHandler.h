@@ -5,7 +5,7 @@
 #include "TileSideHandler.generated.h"
 
 class AModTile;
-class UTileSide;
+class ATileSide;
 class UTileModule;
 enum class ETileColor : uint8;
 
@@ -19,7 +19,7 @@ public:
     int SideCount() const;
     int TileID() const;
     bool IsMultiSided() const;
-    UTileSide* CurrentSide() const;
+    ATileSide* CurrentSide() const;
     TArray<UTileModule*> CurrentModules() const;
     
     ETileColor Color() const;
@@ -32,13 +32,13 @@ public:
     // ---------------- Methods ---------------- //
     void BeginPlay() override;
     void InitModules() const;
-    TArray<UTileSide*> GetSides() const;
-    UTileSide* operator[](int index) const;
+    TArray<ATileSide*> GetSides() const;
+    ATileSide* operator[](int index) const;
 
     // ---- Manipulating Sides ---- //
     void RemoveAll();
     void RemoveSide(int index = -1);
-    void AddSide(ETileColor color);
+    void AddSide(ETileColor color) const;
     bool HasModule(EModule module) const;
     UTileModule* GetModule(EModule module) const;
 
@@ -48,10 +48,6 @@ public:
     void PrevSide();
     void ChangeSide(int newSide, bool shouldHide = true);
 
-    UPROPERTY(VisibleAnywhere)
-        UTileSide* TileSide;
-    UPROPERTY(VisibleAnywhere)
-        UChildActorComponent* childActor;
 private:
     int currentIndex;
 

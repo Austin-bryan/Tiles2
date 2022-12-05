@@ -109,7 +109,7 @@ void UShortcutDetector::BeginPlay()
                 for (auto c : ACreatorTile::SelectedTiles)
                 {
                     auto m = ModuleFactory::Produce(EModule::Camo, c);
-                    // c->AddModule(m);
+                    c->AddModule(m);
                     // c->AddModule(ModuleFactory::Produce(EModule::Camo, c));
                 }
             } },

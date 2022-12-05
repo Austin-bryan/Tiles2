@@ -9,7 +9,7 @@ enum class EModule : uint8;
 using FModuleMap = TMap<EModule, UTileModule*>;
 
 UCLASS()
-class UTileSide : public USceneComponent
+class ATileSide : public AActor
 {
     GENERATED_BODY()
 public:
@@ -18,6 +18,8 @@ public:
     UTileModule* GetModule(EModule module);
     bool HasModule(EModule module) const;
     TArray<UTileModule*> Modules() const;
+
+    ATileSide();
 
     void SetColor(ETileColor _color);
     void SetModTile(AModTile* _modTile);
@@ -30,6 +32,9 @@ public:
 
     UPROPERTY(VisibleAnywhere)
     int XX = 10;
+
+    UPROPERTY(VisibleAnywhere)
+    USceneComponent* Root;
 private:
     FModuleMap moduleMap;
     ETileColor color;

@@ -6,7 +6,7 @@
 #include "ModTile.generated.h"
 
 class UTileSideHandler;
-class UTileSide;
+class ATileSide;
 
 /**
  * Base class for Tiles that are able to have Modules, as opposed to tiles like TargetTile that are just a color.
@@ -23,7 +23,9 @@ public:
         bool colorSiblings = true) override;
     ETileColor GetColor() const override;
 
-    UTileSide* CurrentSide() const;
+    void BeginPlay() override;
+
+    ATileSide* CurrentSide() const;
     TArray<UTileModule*> Modules() const;
     
     bool HasModule(const EModule module) const;
