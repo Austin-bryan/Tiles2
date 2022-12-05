@@ -14,6 +14,8 @@ class UTileSideHandler : public USceneComponent
 {
     GENERATED_BODY()
 public:
+    UTileSideHandler();
+
     int SideCount() const;
     int TileID() const;
     bool IsMultiSided() const;
@@ -36,7 +38,7 @@ public:
     // ---- Manipulating Sides ---- //
     void RemoveAll();
     void RemoveSide(int index = -1);
-    void AddSide(AModTile* modTile, ETileColor color);
+    void AddSide(ETileColor color);
     bool HasModule(EModule module) const;
     UTileModule* GetModule(EModule module) const;
 
@@ -45,6 +47,11 @@ public:
     void NextSide();
     void PrevSide();
     void ChangeSide(int newSide, bool shouldHide = true);
+
+    UPROPERTY(VisibleAnywhere)
+        UTileSide* TileSide;
+    UPROPERTY(VisibleAnywhere)
+        UChildActorComponent* childActor;
 private:
     int currentIndex;
 

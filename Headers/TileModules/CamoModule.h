@@ -14,6 +14,6 @@ public:
 	UCamoModule() : UTileModule(){}
 	~UCamoModule();
 
-	virtual void BeginPlay() override;
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	void BeginPlay() override;
+	EModule ModuleType() const override { return EModule::Camo; }
 };

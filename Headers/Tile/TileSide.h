@@ -27,6 +27,9 @@ public:
     void AddModule(UTileModule* module);
     void RemoveModule(EModule module);
     void RemoveAll();
+
+    UPROPERTY(VisibleAnywhere)
+    int XX = 10;
 private:
     FModuleMap moduleMap;
     ETileColor color;

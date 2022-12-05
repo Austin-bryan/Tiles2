@@ -9,6 +9,7 @@
 #include "CreatorTile.h"
 #include "DragSelect.h"
 #include "MeshGenerator.h"
+#include "ModuleFactory.h"
 #include "SelectionAngle.h"
 #include "ToggleButton.h"
 
@@ -103,7 +104,15 @@ void UShortcutDetector::BeginPlay()
         new ModifiedShortcuts({
             { EKeys::X, [] { Log("Gap"); } },
             { EKeys::W, [] { Log("Wrap"); } },
-            { EKeys::C, [] { Log("Camo"); } },
+            { EKeys::C, []
+            {
+                for (auto c : ACreatorTile::SelectedTiles)
+                {
+                    auto m = ModuleFactory::Produce(EModule::Camo, c);
+                    // c->AddModule(m);
+                    // c->AddModule(ModuleFactory::Produce(EModule::Camo, c));
+                }
+            } },
             { EKeys::B, [] { Log("Bandaged"); } },
             { EKeys::R, [] { Log("Rotator"); } },
             { EKeys::I, [] { Log("Iron"); } },

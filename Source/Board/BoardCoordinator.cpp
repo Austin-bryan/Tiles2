@@ -4,14 +4,13 @@
 #include "CreatorBoard.h"
 #include "SizeBoard.h"
 
-void UBoardCoordinator::BeginPlay() { Super::BeginPlay(); }
 void UBoardCoordinator::TickComponent(const float DeltaTime, const ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
-
 void UBoardCoordinator::SetBoard(ABoard* board, const EBoardType boardType)
 {
+	// TODO:: is this, or the cache boards used?
 	switch (boardType)
 	{
 	case EBoardType::PlayerBoard:  if (!playerBoard)  playerBoard  = static_cast<APlayerBoard*> (board); break;

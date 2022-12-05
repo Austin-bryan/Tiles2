@@ -1,8 +1,9 @@
 #include "ModuleFactory.h"
 
 #include "Board.h"
-#include "TileModule.h"
 #include "Enums.h"
+#include "ModTile.h"
+#include "TileModule.h"
 #include "SqrBandagedModule.h"
 #include "HexBandagedModule.h"
 #include "ParameterParseState.h"
