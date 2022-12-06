@@ -2,6 +2,7 @@
 
 #include "Logger.h"
 #include "TileSideHandler.h"
+#include "TileSideHandler.h"
 
 AModTile::AModTile()
 {
@@ -18,13 +19,30 @@ void AModTile::BeginPlay()
 ETileColor AModTile::GetColor()                const { return Super::GetColor(); }
 ATileSide* AModTile::CurrentSide()             const { return SideHandler->CurrentSide(); }
 TArray<ATileModule*> AModTile::Modules()       const { return SideHandler->CurrentModules(); }
-bool AModTile::HasModule(const EModule module) const { return SideHandler->HasModule(module); }
+bool AModTile::HasModule(const EModule module) const
+{
+    if (siblings.IsValid())
+    for (ATile* sibling : *siblings)
+    if (Cast<AModTile>(sibling)->SideHandler->HasModule(module))
+        return true;
+    return SideHandler->HasModule(module);
+}
 
 void AModTile::AddModule(ATileModule* module, const bool addToSiblings)  const
 {
     CurrentSide()->AddModule(module);
-    //
+    
     // if (addToSiblings)
     // for (ATile* sibling : *siblings)
     //     Cast<AModTile>(sibling)->AddModule(module, false);
+}
+void AModTile::CenterSprites() const
+{
+    if (!siblings.IsValid())
+        return;
+    FVector sum;
+
+    for (ATile* sibling : *siblings)
+        sum += Cast<AModTile>(sibling)->SideHandler->CurrentSide()->GetActorLocation();
+    SideHandler->CurrentSide()->SetActorLocation(sum / siblings->Num());
 }

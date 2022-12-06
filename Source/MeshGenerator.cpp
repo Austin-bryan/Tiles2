@@ -74,6 +74,8 @@ void UMeshGenerator::Merge()
         vertex->ApplyPosition();
     for (const auto& generator : Generators)
         generator->Draw();
+    for (const auto& creatorTileA : tilesToMerge)
+        creatorTileA->CenterSprites();
 }
 
 void UMeshGenerator::MergeWithNeighbors(TArray<Vertex*>& queuedVertices, ACreatorTile* const& creatorTileA)

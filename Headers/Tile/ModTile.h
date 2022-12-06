@@ -30,6 +30,7 @@ public:
     
     bool HasModule(const EModule module) const;
     void AddModule(ATileModule* module, bool addToSiblings = true) const;
+    void CenterSprites() const;
 protected:
     UPROPERTY(VisibleAnywhere)
     UTileSideHandler* SideHandler;
