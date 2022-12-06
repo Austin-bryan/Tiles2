@@ -1,10 +1,11 @@
 #include "ParseStates/ModuleParseState.h"
-#include "Enums.h"
+#include "Logger.h"
 #include "Parser.h"
 #include "Token.h"
+#include "ModTile.h"
 #include "ModuleFactory.h"
-#include "ParameterParseState.h"
 #include "ParameterKey.h"
+#include "ParameterParseState.h"
 
 ModuleParseState::ModuleParseState(Parser& parser, const TSharedPtr<ParseState> parent) : ParameterRequesterParseState(parser, parent) { isInDelimiter = false; }
 
@@ -24,7 +25,7 @@ void ModuleParseState::FinishModuleState(const char c, const bool shouldPop)
 			if (!hasFinishedParameters)
 				parser.Throw(TRightBrace, parsedText + fstr(" requires a parameter"));
 		}
-		else ModuleFactory::Produce(TileModuleParseKey[parsedText], CurrentTile());
+		else ModuleFactory::Produce(TileModuleParseKey[parsedText], static_cast<AModTile*>(CurrentTile()));
 
 		if (shouldPop)
 			 PopState();
@@ -46,7 +47,7 @@ void ModuleParseState::ParseLeftParen()
 }
 void ModuleParseState::OnParametersFinished()
 {
-	ModuleFactory::Produce(TileModuleParseKey[parsedText], CurrentTile(), parsedParameters);
+	ModuleFactory::Produce(TileModuleParseKey[parsedText], static_cast<AModTile*>(CurrentTile()), parsedParameters);
 }
 FString ModuleParseState::GetExpectedMessage() { return "Expected a module."; }
 

@@ -21,7 +21,7 @@ public:
 
 	Tiles& GetTiles() { return tiles; }
 
-	FCoordPtr GetSize()			const { return Size;  }
+	FCoordPtr GetSize() const { return Size;  }
 	EBoardShape GetBoardShape() const { return Shape; }
 	FVector LocationOf(FCoordPtr coord) const;
 	FCoord MinBounds() const;

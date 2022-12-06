@@ -22,16 +22,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetBoard(ABoard* board, EBoardType boardType);
 
-	APlayerBoard* PlayerBoard() { return playerBoard; }
+	APlayerBoard* PlayerBoard() const { return playerBoard; }
 protected:
-	void BeginPlay() override;
-
 	UPROPERTY()
-	APlayerBoard* playerBoard;
-
+		APlayerBoard* playerBoard;
 	UPROPERTY()
-	ACreatorBoard* creatorBoard;
-
+		ACreatorBoard* creatorBoard;
 	UPROPERTY()
-	ASizeBoard* sizeBoard;
+		ASizeBoard* sizeBoard;
 };

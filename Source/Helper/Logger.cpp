@@ -1,29 +1,58 @@
 #include "Logger.h"
 #include <string>
 #include "ParameterParseState.h"
+#include "Coord.h"
+#include "Vertex.h"
 
-void Log(const FString s,  const FColor color, const float time) { GEngine->AddOnScreenDebugMessage(-1, time, color, s); }
+void AddOnScreenMessage(const FString string, const FColor color, const float time) { GEngine->AddOnScreenDebugMessage(-1, time, color, string); }
 
-void Log(const int n,         const FColor color, const float time) { Log(FString::FromInt(n), color, time); }
-void Log(const float f,       const FColor color, const float time) { Log(FString::SanitizeFloat(f), color, time); }
-void Log(const FVector v,     const FColor color, const float time) { Log(v.ToString(), color, time); }
-void Log(const FRotator r,    const FColor color, const float time) { Log(r.ToString(), color, time); }
-void Log(const FParameter& p, const FColor color, const float time) { Log(p.ToString(), color, time); }
+FString logText;
+LogParams logParams;
 
-void Log(const int n,         const float time) { Log(FString::FromInt(n), defaultColor, time); }
-void Log(const float f,       const float time) { Log(FString::SanitizeFloat(f), defaultColor, time); }
-void Log(const FVector v,     const float time) { Log(v.ToString(), defaultColor, time); }
-void Log(const FString s,     const float time) { Log(s,			  defaultColor, time); }
-void Log(const FRotator r,    const float time) { Log(r.ToString(), defaultColor, time); }
-void Log(const FParameter& p, const float time) { Log(p.ToString(), defaultColor, time); }
-
-void NullCheck(const void* object, const FColor color, const float time)
+void Log()
 {
-	NullCheck("object", object, color, time);
+	logText.RemoveFromEnd(PAIR);
+	AddOnScreenMessage(logText, logParams.Color(), logParams.Time());
+	logText = "";
+	logParams = LogParams();
 }
-void NullCheck(FString&& label, const void* object, FColor color, const  float time)
+
+template<typename... Types>
+	void Log(const char* c, const Types&... types)
 {
-	Log(object == nullptr ? label + fstr(" is null") : label + fstr(" is not null"),
+	const std::string s = c;
+	logText += FString(c) + (s.find(':') ? "" : PAIR);
+	Log(types...);
+}
+template <typename T, typename... Types>
+	void Log(const T& firstArg, const Types&... types)
+{
+	std::ostringstream oss;
+	oss << firstArg;
+	
+	logText += FString(oss.str().c_str()) + PAIR;
+	Log(types...);
+}
+template <typename... Types>
+	void Log(const LogParams& params, const Types&... types)
+{
+	logParams = params;
+	Log(types...);
+}
+template <typename ... Types>
+	void Log(const bool b, const Types&... types)
+{
+	logText += (b ? "true"_f : "false"_f) + PAIR;
+	Log(types...);
+}
+
+void Path(const int n, const float time) { Path(n, defaultColor, time); }
+void Path(const int n, const FColor color, const float time) { AddOnScreenMessage(FString("Path: ") + FString::FromInt(n), color, time); }
+
+void NullCheck(const void* object, const FColor color, const float time) { NullCheck("object", object, color, time); }
+void NullCheck(FString&& label, const void* object, const FColor color, const  float time)
+{
+	AddOnScreenMessage(object == nullptr ? label + fstr(" is null") : label + fstr(" is not null"),
 		color == defaultColor
 		? object == nullptr
 			? FColor::Red
@@ -31,25 +60,25 @@ void NullCheck(FString&& label, const void* object, FColor color, const  float t
 		: color, time);
 }
 
-void Path(const int n, const FColor color, const float time)
-{
-	Log(FString("Path: ") + FString::FromInt(n), color, time);
-}
-void Path(const int n, const float time) { Path(n, defaultColor, time); }
+FString operator+(const FString& lhs, const int rhs)     { return lhs + fstr(rhs); }
+FString operator+(const FString& lhs, const float rhs)   { return lhs + fstr(rhs); }
+FString operator+(const FString& lhs, const char* rhs)   { return lhs + fstr(rhs); }
+FString operator+(const FString& lhs, const bool rhs)    { return lhs + fstr(rhs); }
+FString operator+(const FString& lhs, const char rhs)    { return lhs + fstr(rhs); }
+FString operator+(const FString& lhs, const FVector rhs) { return lhs + rhs.ToString(); }
 
-FString fstr(const char* c) { return FString(c); }
-FString fstr(const float f) { return FString::SanitizeFloat(f); }
-FString fstr(const int i)   { return FString::FromInt(i); }
-FString fstr(const bool b)  { return b ? FString("true") : FString("false"); }
-FString fstr(const char c)		
+inline std::ostringstream& operator<<(std::ostringstream& os, const FCoordPtr coord)
 {
-	const std::string s(1, c);
-	return FString(s.c_str()); 
+	os << coord->ToString();
+	return os;
 }
-
-inline FString operator+(const FString& lhs, const int rhs)     { return lhs + fstr(rhs); }
-inline FString operator+(const FString& lhs, const float rhs)   { return lhs + fstr(rhs); }
-inline FString operator+(const FString& lhs, const char* rhs)   { return lhs + fstr(rhs); }
-inline FString operator+(const FString& lhs, const bool rhs)    { return lhs + fstr(rhs); }
-inline FString operator+(const FString& lhs, const char rhs)    { return lhs + fstr(rhs); }
-inline FString operator+(const FString& lhs, const FVector rhs) { return lhs + rhs.ToString(); }
+inline std::ostringstream& operator<<(std::ostringstream& os, const FParameter& coord)
+{
+	os << coord.ToString();
+	return os;
+}
+inline std::ostringstream& operator<<(std::ostringstream& os, const Vertex& vertex)
+{
+	os << vertex.GetWorldPosition();
+	return os;
+}

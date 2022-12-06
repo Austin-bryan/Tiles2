@@ -3,12 +3,12 @@
 #include "Board.h"
 #include "Logger.h"
 #include "Enums.h"
-#include "Materials/MaterialInstanceConstant.h"
-#include "Components/TextRenderComponent.h"
 #include "TileModule.h"
 #include "TileColor.h"
+#include "MeshGenerator.h"
+#include "ProceduralMeshComponent.h"
+#include "Materials/MaterialInstanceConstant.h"
 
-//#define ShowDebugText
 #ifdef ShowDebugText
 #include "Coord.h"
 #endif 
@@ -21,13 +21,19 @@ ATile::ATile()
 	
 	id   = tileCount++;
 	Root = CreateDefaultSubobject<USceneComponent>(FName("Root"));
+	Root->SetRelativeLocation(FVector::ZeroVector);
 	RootComponent = Root;
 	
-	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
-	Mesh->SetWorldRotation(FRotator(0, -90, 0));
-	Mesh->AttachToComponent(Root, FAttachmentTransformRules::KeepRelativeTransform);
-	Mesh->SetCollisionProfileName("BlockAll");
-	Mesh->SetGenerateOverlapEvents(false);
+	ProcMesh = CreateDefaultSubobject<UProceduralMeshComponent>(TEXT("Procedural Mesh"));
+	ProcMesh->SetupAttachment(Root);
+	ProcMesh->AttachToComponent(Root, FAttachmentTransformRules::KeepRelativeTransform);
+
+	MeshGenerator = CreateDefaultSubobject<UMeshGenerator>(TEXT("Mesh Generator"));
+	MeshGenerator->PrimaryComponentTick.bCanEverTick = true;
+	MeshGenerator->PrimaryComponentTick.bStartWithTickEnabled = true;
+	MeshGenerator->SetComponentTickEnabled(true);
+	MeshGenerator->RegisterComponent();
+	MeshGenerator->ProceduralMesh = ProcMesh;
 
 	// By avoiding using the mesh as the collider, several scale related bugs are avoided
 	Collider = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Collider"));
@@ -41,16 +47,14 @@ ATile::ATile()
 	if (!CoordText)
 		return;
 	CoordText->SetText(FText::FromString(TEXT("swag")));
-	CoordText->AttachToComponent(Mesh, FAttachmentTransformRules::KeepRelativeTransform);
-	CoordText->SetRelativeLocation(FVector::ZeroVector + GetActorForwardVector() - 17);
+	CoordText->AttachToComponent(Root, FAttachmentTransformRules::KeepRelativeTransform);
+	CoordText->SetRelativeLocation(FVector::ZeroVector + GetActorForwardVector() + 17);
 	CoordText->SetRelativeRotation(FRotator(0, 0, 0));
 	CoordText->HorizontalAlignment = EHorizTextAligment::EHTA_Center;
 	CoordText->SetWorldSize(18);
 #endif
 }
-
-void ATile::BeginPlay() { Super::BeginPlay(); }
-void ATile::SetColor(const ETileColor color)
+void ATile::SetColor(const ETileColor color, const bool colorSiblings)
 {
 	const FString path = "MaterialInstanceConstant'/Game/Materials/TileColors/MI_TileColor.MI_TileColor'"_f;
 
@@ -60,9 +64,17 @@ void ATile::SetColor(const ETileColor color)
 		StaticLoadObject(UMaterialInstanceConstant::StaticClass(), nullptr, *path));
 		instance = UMaterialInstanceDynamic::Create(mat, this);
 	}
+	tileColor = color;
 	instance->SetVectorParameterValue(FName("Color"), UColorCast::TileColorToLinearColor(color));
-	Mesh->SetMaterial(0, instance);
+	MeshGenerator->ProceduralMesh->SetMaterial(0, instance);
+
+
+	if (colorSiblings && siblings)
+	for (ATile* sibling : *siblings)
+		sibling->SetColor(color, false);
 }
+ETileColor ATile::GetColor() const { return tileColor; }
+
 void ATile::SetBoard(ABoard* newBoard)
 {
 	if (board != nullptr)
@@ -93,15 +105,28 @@ void ATile::SetShape(const EBoardShape boardShape) const
 	FString meshDir;
 	switch (boardShape)
 	{
-	case EBoardShape::Square:   meshDir = SQUARE_TILE;   break;
-	case EBoardShape::Triangle: meshDir = TRIANGLE_TILE; break;
-	case EBoardShape::Hex:      meshDir = HEX_TILE;      break;
+	case EBoardShape::Square:
+		meshDir = SQUARE_TILE;
+		MeshGenerator->Init(70, 4, 45, 90);
+		break;
+	case EBoardShape::Triangle:
+		meshDir = TRIANGLE_TILE;
+		MeshGenerator->Init(70, 3, -30, 120);
+		break;
+	case EBoardShape::Hex:
+		meshDir = HEX_TILE; 
+		MeshGenerator->Init(55, 6, 0, 60);
+		break;
 	}
 	const auto tileMesh = Cast<UStaticMesh>(StaticLoadObject(UStaticMesh::StaticClass(), nullptr, *meshDir));
-	Mesh->SetStaticMesh(tileMesh);
+	// Mesh->SetStaticMesh(tileMesh);
 	Collider->SetStaticMesh(tileMesh);
 }
-
+void ATile::BandagedWith(const TSharedPtr<TArray<ATile*>> sharedSiblings)
+{
+	siblings = sharedSiblings;
+	sharedSiblings->AddUnique(this);
+}
 void ATile::NotifyActorOnClicked(FKey buttonPressed) 
 {
 	//Log(*Coord);

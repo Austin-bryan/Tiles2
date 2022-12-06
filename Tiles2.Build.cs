@@ -22,7 +22,6 @@ public class Tiles2 : ModuleRules
 			"Headers/Tile",
 			"Headers/TileModules",
 			"Headers/Board/BoardActors",
-			"Headers/TileModules/BandagedModule",
 			"Headers/Enums",
 			"Headers/CreatorMenu",
 			
@@ -36,13 +35,21 @@ public class Tiles2 : ModuleRules
 			"Source/Tile",
 			"Source/TileModules",
 			"Source/Board/BoardActors",
-			"Source/TileModules/BandagedModule",
 			"Source/Enums",
 			"Source/CreatorMenu",
+			
+			// "RuntimeMeshComponent",
+			// "RuntimeMeshComponent/Public/Providers",
+			// "RuntimeMeshComponent/Public/Components"
 		});
 
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" });
-		PrivateDependencyModuleNames.AddRange(new string[] { "RD", "RD" });
+		PublicDependencyModuleNames.AddRange(new string[]
+		{
+			"Core", "CoreUObject", "Engine", "InputCore",
+			"UMG", "RuntimeMeshComponent",
+		});
+		PrivateDependencyModuleNames.AddRange(new string[] { "RD", "RD", "ProceduralMeshComponent" });
+
 
 		// Uncomment if you are using Slate UI
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });

@@ -18,8 +18,8 @@ ATile* BoardPopulator::CreateTile(const FCoordPtr coord, Tiles& tiles) const
 		board->LocationOf(coord),
 		FRotator::ZeroRotator);
 	tiles.Add(coord, tile);
-	tile->SetShape(boardShape);
 	tile->SetBoard(board);
+	tile->SetShape(boardShape);
 	tile->SetCoord(coord);
 	
 	return tile;

@@ -1,29 +1,22 @@
 #include "TileModule.h"
-
-UTileModule::UTileModule()
-{
-	PrimaryComponentTick.bCanEverTick = true;
-}
-UTileModule::~UTileModule() {}
+#include "ModTile.h"
 
 template<class T>
-UTileModule* UTileModule::Create(ATile* tile, const TArray<FParameter>& parameters)
+ATileModule* ATileModule::Create(AModTile* tile, const TArray<FParameter>& parameters)
 {
-	//todo:= assert generic is right class
-	UTileModule* module = NewObject<UTileModule>(tile, T::StaticClass(), FName(T::StaticClass()->GetName()));
+	//TODO:: assert generic is right class
+	ATileModule* module = Cast<T>(tile->GetWorld()->SpawnActor(T::StaticClass()));
 	module->ModTile = tile;
-	module->RegisterComponent();
 	module->AttachToComponent(tile->GetRootComponent(), FAttachmentTransformRules::KeepWorldTransform);
-	module->CreationMethod = EComponentCreationMethod::Instance;
 	module->ApplyParameters(parameters);
 	
 	return module;
 }
-void UTileModule::BeginPlay()
+
+ATileModule::ATileModule()
 {
-	Super::BeginPlay();
+	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
+	SetRootComponent(Root);
 }
-void UTileModule::TickComponent(const float DeltaTime, const ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-}
+void ATileModule::BeginPlay() { Super::BeginPlay(); }
+void ATileModule::Init() const { }

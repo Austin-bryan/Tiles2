@@ -15,7 +15,9 @@ enum class EDirection
 	Up, Down, Left, Right,
 	UpLeft, UpRight, DownLeft, DownRight
 };
-enum class EModule
+
+UENUM(Blueprintable)
+enum class EModule : uint8 
 {
 	Normal, Gap, Wrap, Camo, TeleportWrap, MirrorWrap, CircuitWrap, Rotator, Link, Rift, 
 	Bandaged, Iron, Cloud, Swap, WrapWall, CorrectCounter,

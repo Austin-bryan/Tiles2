@@ -34,7 +34,7 @@ Parser::Parser(ABoard* board, FString seed) : board{ board }, seed{ seed }
 		{ 'w', ETileColor::White },   { 'r', ETileColor::Red },   { 'o', ETileColor::Orange },
 		{ 'y', ETileColor::Yellow },  { 'g', ETileColor::Green }, { 'c', ETileColor::Cyan },
 		{ 'b', ETileColor::Blue },    { 'p', ETileColor::Purple },{ 'n', ETileColor::Pink },
-		{ 'm', ETileColor::Magenta }, { 'k', ETileColor::Black }
+		{ 't', ETileColor::Magenta }, { 'k', ETileColor::Black }, { 'm', ETileColor::Maroon }
 	};
 }
 

@@ -7,13 +7,14 @@
  * Always are correct, changing their colors to match their targettile.
  */
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
-class TILES2_API UCamoModule : public UTileModule	
+class TILES2_API ACamoModule : public ATileModule	
 {
 	GENERATED_BODY()
 public:
-	UCamoModule() : UTileModule(){}
-	~UCamoModule();
-
-	virtual void BeginPlay() override;
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	ACamoModule() : ATileModule(){}
+	~ACamoModule();
+	
+	void Init() const override;
+	void BeginPlay() override;
+	EModule ModuleType() const override { return EModule::Camo; }
 };

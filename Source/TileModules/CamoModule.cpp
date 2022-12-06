@@ -1,18 +1,19 @@
 #include "CamoModule.h"
+#include "ModTile.h"
+#include "ProceduralMeshComponent.h"
 
-UCamoModule::~UCamoModule() {}
-
-void UCamoModule::BeginPlay()
+ACamoModule::~ACamoModule() {}
+void ACamoModule::Init() const
 {
-	Super::BeginPlay();
-	const auto mesh = Cast<UStaticMeshComponent>(ModTile->FindComponentByClass<UStaticMeshComponent>());
-	const auto mat = mesh->GetMaterial(0);
-	const auto dynamicMat = UMaterialInstanceDynamic::Create(mat, ModTile);
-
-	dynamicMat->SetScalarParameterValue("ShowCamo", 1);
-	mesh->SetMaterial(0, dynamicMat);
+	Super::Init();
+	const auto mesh = Cast<UProceduralMeshComponent>(ModTile->GetComponentByClass(UProceduralMeshComponent::StaticClass()));
+	const auto mat = Cast<UMaterialInstanceDynamic>(
+		Cast<UProceduralMeshComponent>(ModTile->GetComponentByClass(UProceduralMeshComponent::StaticClass()))->GetMaterial(0));
+	mat->SetScalarParameterValue("ShowCamo", 1);
+	mesh->SetMaterial(0, mat);
 }
-void UCamoModule::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+void ACamoModule::BeginPlay()
 {
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	// TODO:: Create helper method to get components
+	Super::BeginPlay();
 }

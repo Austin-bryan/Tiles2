@@ -1,7 +1,10 @@
 #pragma once
 #include "SelectionDrawer.h"
+
+#include "CreatorBoard.h"
+#include "Enums.h"
 #include "SelectionBox.h"
-#include "SelectionType.h"
+#include "SelectionAngle.h"
 #include "Components/LineBatchComponent.h"
 
 SelectionDrawer::SelectionDrawer(ULineBatchComponent* lineBatch, ASelectionBox* box)
@@ -13,16 +16,16 @@ void SelectionDrawer::Init()
     selectionBox->SetMesh(Mesh());
 }
 
-TUniquePtr<SelectionDrawer> SelectionDrawer::Create(const ESelectionType mode, ULineBatchComponent* lineBatch, ASelectionBox* box)
+TUniquePtr<SelectionDrawer> SelectionDrawer::Create(const ESelectionShape mode, ULineBatchComponent* lineBatch, ASelectionBox* box)
 {
     // TODO:: Handle angle cases
     TUniquePtr<SelectionDrawer> drawer;
     
     switch(mode)
     {
-    case ESelectionType::Square:   drawer = MakeUnique<SquareSelection>(lineBatch, box); break;
-    case ESelectionType::Circle:   drawer = MakeUnique<CircleSelection>(lineBatch, box); break;
-    case ESelectionType::Triangle: drawer = MakeUnique<TriangleSelection>(lineBatch, box); break;
+    case ESelectionShape::Square:   drawer = MakeUnique<SquareSelection>(lineBatch, box); break;
+    case ESelectionShape::Circle:   drawer = MakeUnique<CircleSelection>(lineBatch, box); break;
+    case ESelectionShape::Triangle: drawer = MakeUnique<TriangleSelection>(lineBatch, box); break;
     default: ;
     }
     drawer->Init();
@@ -74,14 +77,31 @@ int TriangleSelection::RollOffset(const FTransform& anchorTrans, const FVector& 
     const auto rad = atan2(inverseWorldPosition.Z - 0, inverseWorldPosition.X - 0);
     float deg = rad * (180 / PI) + 180 - 30;
 
+
+    // LogV(x, y);
+
     // Snaps if less than the snap limit
     constexpr int snapLimit = 20;
-    const auto SnapAngle = [snapLimit](float& degree, const int target)
+    const auto SnapAngle = [this, snapLimit](float& degree, const int target)
     {
-        const bool result = degree > (target - snapLimit) && degree < target + snapLimit;
-        
+        const int mod = static_cast<int>(degree) % 60;
+        const int abs = FMath::Abs(mod);
+
+        // Different offset depending on board
+        const bool result = board->GetBoardShape() == EBoardShape::Hex
+            ? abs > 20 && abs < 40
+            : abs < 10 || abs > 50;
+
+        float d = degree;
+
         if (result)
-            degree = target;
+        {
+            const float normalized = degree / 30;
+            const float rounded = FMath::RoundToFloat(normalized);
+            const float final = rounded * 30;
+    
+            degree = final;
+        }
         return result;
     };
 

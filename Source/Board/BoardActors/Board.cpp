@@ -1,8 +1,6 @@
 #include "Board.h"
-#include "MathUtil.h"
 #include "Parser.h"
 #include "Coord.h"
-#include "GameFramework/Actor.h"
 
 ABoard::ABoard()
 {
@@ -26,7 +24,7 @@ void ABoard::BeginPlay()
 float ABoard::GetCenteredPosition(const float coord) { return coord / 2; }
 
 //todo:: ensure this works with other boardshapes
-float GetMax(const float n) { return FMathf::Abs(n) * 2; }
+float GetMax(const float n) { return FMath::Abs(n) * 2; }
 FCoord ABoard::MinBounds() const
 {
 	return FCoord(0, 0, 0);

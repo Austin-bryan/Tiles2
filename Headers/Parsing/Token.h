@@ -36,8 +36,8 @@ const auto TileModuleParseKey = TMap<FString, EModule>
 	{ INormal,      EModule::Normal  },     { IRift,	       EModule::Rift },     { IWrap,  EModule::Wrap },
 	{ ICircuitWrap, EModule::CircuitWrap }, { IBandaged,	   EModule::Bandaged }, { ICamo,  EModule::Camo },
 	{ INoSpawn,     EModule::NoSpawn },     { ILink,		   EModule::Link },     { ISwap,  EModule::Swap },
-	{ IGap,	       EModule::Gap },         { IIron,		   EModule::Iron },     { ICloud, EModule::Cloud },
-	{ IRotator,	   EModule::Rotator },     { ICorrectCounter, EModule::CorrectCounter },
+	{ IGap,	        EModule::Gap },         { IIron,		   EModule::Iron },     { ICloud, EModule::Cloud },
+	{ IRotator,	    EModule::Rotator },     { ICorrectCounter, EModule::CorrectCounter },
 	{ IMirrorWrap,  EModule::MirrorWrap },  { ITeleportWrap,   EModule::TeleportWrap },
 };
 

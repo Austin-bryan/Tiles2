@@ -14,8 +14,8 @@ const FCoord* FSqrCoord::operator+(const EDirection direction) const
 	}
 }
 
-float FSqrCoord::GetSpaceX()  const { return 110; }
-float FSqrCoord::GetSpaceZ()  const { return 110; }
+float FSqrCoord::GetSpaceX()  const { return 102.5f; }
+float FSqrCoord::GetSpaceZ()  const { return 102.5f; }
 float FSqrCoord::GetOffsetX() const { return -x; }
 float FSqrCoord::GetOffsetZ() const { return -z; }
 

@@ -5,6 +5,7 @@
 class UDragSelect;
 class UCreatorRotator;
 class ACreatorBoard;
+class UCreatorMenu;
 using ModifiedShortcuts = TMap<FKey, TFunction<void()>>;
 
 enum EKey;
@@ -21,9 +22,10 @@ class UShortcutDetector : public UActorComponent
 public:
     UShortcutDetector();
     void BeginPlay() override;
-    UShortcutDetector* SetBoard(ACreatorBoard* _creatorBoard)  { creatorBoard = _creatorBoard; return this; }
-    UShortcutDetector* SetRotator(UCreatorRotator* _rotator)   { rotator      = _rotator;      return this; }
-    UShortcutDetector* SetDragSelect(UDragSelect* _dragSelect) { dragSelect   = _dragSelect;   return this; }
+    UShortcutDetector* SetBoard(ACreatorBoard* _creatorBoard)     { creatorBoard = _creatorBoard; return this; }
+    UShortcutDetector* SetRotator(UCreatorRotator* _rotator)      { rotator      = _rotator;      return this; }
+    UShortcutDetector* SetDragSelect(UDragSelect* _dragSelect)    { dragSelect   = _dragSelect;   return this; }
+    UShortcutDetector* SetCreatorMenu(UCreatorMenu* _creatorMenu) { creatorMenu  = _creatorMenu;  return this; }
 
     UFUNCTION(BlueprintCallable)
     void CallShortcut(const FKey key) const
@@ -34,14 +36,11 @@ public:
             (*shortcuts[modifier])[key]();
     }
 private:
-    UPROPERTY()
-        APlayerController* controller;
-    UPROPERTY()
-        ACreatorBoard* creatorBoard; 
-    UPROPERTY()
-        UCreatorRotator* rotator;
-    UPROPERTY()
-        UDragSelect* dragSelect;
+    APlayerController* controller;
+    ACreatorBoard* creatorBoard; 
+    UCreatorRotator* rotator;
+    UDragSelect* dragSelect;
+    UCreatorMenu* creatorMenu;
     
     TArray<ModifiedShortcuts*> shortcuts;
     void AnyKey(FKey key);
