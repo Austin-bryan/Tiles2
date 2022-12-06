@@ -1,4 +1,6 @@
 #include "CreatorTile.h"
+
+#include "TileSideHandler.h"
 #include "Kismet/GameplayStatics.h"
 
 TArray<ACreatorTile*> ACreatorTile::selectedTiles;
@@ -15,7 +17,12 @@ void ACreatorTile::Tick(const float deltaSeconds)
     Super::Tick(deltaSeconds);
 
     if (activeAnimation)
+    {
         activeAnimation->Tick(deltaSeconds);
+
+        for (const auto child : Children)
+            child->SetActorScale3D(activeAnimation->Value());
+    }
 }
 void ACreatorTile::NotifyActorOnClicked(FKey ButtonPressed)
 {

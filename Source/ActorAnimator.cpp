@@ -20,7 +20,7 @@ void ActorAnimator::Tick(const float deltaSeconds)
     }
 }
 
-void ActorAnimator::FinishAnimation() const { ApplyAnimation(animState == EAnimState::Forwards ? end : begin); }
+void ActorAnimator::FinishAnimation() { ApplyAnimation(animState == EAnimState::Forwards ? end : begin); }
 void ActorAnimator::Play(const bool forwards) { SetupAnim(forwards ? 0 : 1
                                                           , forwards ? EAnimState::Forwards : EAnimState::Backwards, forwards); }
 
@@ -29,12 +29,13 @@ void ActorAnimator::SetupAnim(const float _alpha, const EAnimState _animState, c
     alpha = _alpha, animState = _animState, isSelected = _isSelected;
 }
 void ActorAnimator::Toggle() { Play(!isSelected); }
-void ActorAnimator::ApplyAnimation(const FVector value) const
+void ActorAnimator::ApplyAnimation(const FVector _value)
 {
+    value = _value;
     switch (animMode)
     {
-    case EAnimMode::Scale:    target->SetWorldScale3D(value);  break;
-    case EAnimMode::Position: target->SetWorldLocation(value); break;
+    case EAnimMode::Scale:    target->SetWorldScale3D(_value);  break;
+    case EAnimMode::Position: target->SetWorldLocation(_value); break;
     default: throw std::invalid_argument("Invalid animation mode.");
     }
 }
