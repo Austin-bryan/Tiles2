@@ -1,4 +1,6 @@
 #include "ModTile.h"
+
+#include "Logger.h"
 #include "TileSideHandler.h"
 
 AModTile::AModTile()
@@ -25,10 +27,10 @@ ATileSide* AModTile::CurrentSide()       const { return SideHandler->CurrentSide
 TArray<ATileModule*> AModTile::Modules() const { return SideHandler->CurrentModules(); }
 bool AModTile::HasModule(const EModule module) const
 {
-    if (siblings.IsValid())
-    for (const AModTile* sibling : *siblings)
-    if (sibling->SideHandler->HasModule(module))
-        return true;
+    // if (siblings.IsValid())
+    // for (const AModTile* sibling : *siblings)
+    // if (sibling->SideHandler->HasModule(module))
+        // return true;
     return SideHandler->HasModule(module);
 }
 void AModTile::BandagedWith(const TSharedPtr<TArray<AModTile*>> sharedSiblings)
@@ -45,20 +47,27 @@ void AModTile::AddModule(ATileModule* module, const bool addToSiblings)  const
     // for (const AModTile* sibling : *siblings)
     //     sibling->AddModule(module, false);
 }
-void AModTile::OnMerge() const
+void AModTile::OnMerge()
 {
     if (!siblings.IsValid())
         return;
     FVector sum;
     
     // Center Sprites
-    for (ATile* sibling : *siblings)
-        sum += Cast<AModTile>(sibling)->SideHandler->CurrentSide()->GetActorLocation();
+    for (const AModTile* sibling : *siblings)
+        sum += sibling->SideHandler->CurrentSide()->GetActorLocation();
     SideHandler->PropagateSideLocation(sum / siblings->Num());
-    
-    if ((*siblings)[0] != this)
+
+    const auto mergeRoot = (*siblings)[0];
+    if (mergeRoot != this)
     {
-        // TODO:: Add modules from all tiles at least once
-        // TODO:: Remove any duplicate modules
+        for (const auto module : Modules())
+        {
+            if (!mergeRoot->HasModule(module->ModuleType()))
+                 mergeRoot->AddModule(module);
+            else module->Destroy();
+        }
+        // TODO:: cache the original SideHandler to reuse for when they are split
+        SideHandler = mergeRoot->SideHandler;
     }
 }

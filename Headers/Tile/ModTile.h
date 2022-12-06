@@ -31,7 +31,7 @@ public:
     void BandagedWith(TSharedPtr<TArray<AModTile*>> sharedSiblings);
     bool HasModule(const EModule module) const;
     void AddModule(ATileModule* module, bool addToSiblings = true) const;
-    void OnMerge() const;
+    void OnMerge();
     TSharedPtr<TArray<AModTile*>> siblings;
 protected:
     UPROPERTY(VisibleAnywhere)

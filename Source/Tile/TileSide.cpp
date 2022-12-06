@@ -33,5 +33,14 @@ void ATileSide::AddModule(ATileModule* module)
     module->Init();
     moduleMap.Add(module->ModuleType(), module);
 }
-void ATileSide::RemoveModule(const EModule module) { moduleMap.Remove(module); }
-void ATileSide::RemoveAll()                        { moduleMap.Empty(); }
+void ATileSide::RemoveModule(const EModule module)
+{
+    moduleMap[module]->Destroy();
+    moduleMap.Remove(module);
+}
+void ATileSide::RemoveAll()
+{
+    const auto modules = Modules();
+    for (const auto module : modules)
+        RemoveModule(module->ModuleType());
+}
