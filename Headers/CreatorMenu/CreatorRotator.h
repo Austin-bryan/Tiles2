@@ -23,8 +23,9 @@ public:
 protected:
     UPROPERTY()
         ACreatorBoard* board = nullptr;
+    UPROPERTY()
+        UDragSelect* dragSelect;
 private:
-    UDragSelect* dragSelect;
     ESelectionAngle selectionType;
     float newRoll = 0;
     float increment = 15;

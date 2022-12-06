@@ -36,11 +36,16 @@ public:
             (*shortcuts[modifier])[key]();
     }
 private:
-    APlayerController* controller;
-    ACreatorBoard* creatorBoard; 
-    UCreatorRotator* rotator;
-    UDragSelect* dragSelect;
-    UCreatorMenu* creatorMenu;
+    UPROPERTY()
+        APlayerController* controller;
+    UPROPERTY()
+        ACreatorBoard* creatorBoard; 
+    UPROPERTY()
+        UCreatorRotator* rotator;
+    UPROPERTY()
+        UDragSelect* dragSelect;
+    UPROPERTY()
+        UCreatorMenu* creatorMenu;
     
     TArray<ModifiedShortcuts*> shortcuts;
     void AnyKey(FKey key);

@@ -9,4 +9,3 @@ class AStaticResetter : public AActor
 public:
     void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 };
-

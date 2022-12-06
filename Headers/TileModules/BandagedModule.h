@@ -17,4 +17,3 @@ public:
 protected:
 	float Average(const float a, const float b) const;
 };
-

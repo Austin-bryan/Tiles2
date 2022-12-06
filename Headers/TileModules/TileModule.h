@@ -25,8 +25,8 @@ public:
 	
 	virtual EModule ModuleType() const { return EModule::Normal; }
 protected:
-	AModTile* ModTile;
-
+	UPROPERTY()
+		AModTile* ModTile;
 	UPROPERTY(VisibleAnywhere)
-	USceneComponent* Root;
+		USceneComponent* Root;
 };

@@ -26,7 +26,7 @@ public:
 	UPROPERTY(EditAnywhere)
 		float triGap;
 
-	// todo:: can these be protected?
+	// TODO:: can these be protected?
 	UFUNCTION(BlueprintCallable, Category="Default")
 		UDragSelect* GetDragSelect() const;
 	UFUNCTION(BlueprintCallable, Category="Default")
@@ -36,10 +36,14 @@ public:
 	UPROPERTY(EditAnywhere)
 		EVertexMode VertexMode;
 protected:
-	UShortcutDetector* shortcutDetector;
-	UDragSelect* dragSelect;
-	UCreatorRotator* rotator;
-	UCreatorMenu* creatorMenu;
+	UPROPERTY()
+		UShortcutDetector* shortcutDetector;
+	UPROPERTY()
+		UDragSelect* dragSelect;
+	UPROPERTY()
+		UCreatorRotator* rotator;
+	UPROPERTY()
+		UCreatorMenu* creatorMenu;
 private:
 	int rand = 0;
 };
