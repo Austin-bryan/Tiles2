@@ -82,3 +82,10 @@ inline std::ostringstream& operator<<(std::ostringstream& os, const Vertex& vert
 	os << vertex.GetWorldPosition();
 	return os;
 }
+std::ostringstream& operator<<(std::ostringstream& os, const EModule module)
+{
+	auto moduleName = UEnum::GetValueAsName(module).ToString();
+	moduleName.RemoveFromStart("EModule::"_f);
+	os << moduleName;
+	return os;
+}
