@@ -6,6 +6,7 @@
 
 //#define DRAW_DEBUG
 
+class AModTile;
 class ATile;
 class Vertex;
 class ACreatorTile;
@@ -89,7 +90,7 @@ public:
         int _angleOffset, int _angle);
     void LinkVertices();
 private:
-    static TSharedPtr<TArray<ATile*>> sharedSiblings;
+    static TSharedPtr<TArray<AModTile*>> sharedSiblings;
     static TArray<ACreatorTile*> tilesToMerge;
 
     void Draw();

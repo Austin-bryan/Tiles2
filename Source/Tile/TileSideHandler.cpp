@@ -1,8 +1,4 @@
 #include "TileSideHandler.h"
-
-#include <Windows.Web.Http.Headers.h>
-
-#include "Logger.h"
 #include "ModTile.h"
 #include "TileModule.h"
 #include "TileSide.h"

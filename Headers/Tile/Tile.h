@@ -31,8 +31,7 @@ public:
 		bool colorSiblings = true);
 	void SetBoard(ABoard* newBoard);
 	void SetCoord(FCoordPtr coord);
-	void BandagedWith(
-		TSharedPtr<TArray<ATile*>> sharedSiblings);
+
 
 	int ID()			  const { return id; }
 	ABoard* Board()       const { return board; }
@@ -57,7 +56,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadonly)
 		UBoxComponent* Box;
 	void NotifyActorOnClicked(FKey buttonPressed) override;
-	TSharedPtr<TArray<ATile*>> siblings;
 private:
 	static int tileCount;
 	int id;

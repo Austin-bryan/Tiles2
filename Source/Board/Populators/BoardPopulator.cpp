@@ -1,7 +1,7 @@
 #include "Populators/BoardPopulator.h"
-#include "Kismet/GameplayStatics.h"
 #include "Board.h"
 #include "Tile.h"
+#include "Kismet/GameplayStatics.h"
 
 BoardPopulator::BoardPopulator(ABoard* const board) : board{board}, boardShape{ board->GetBoardShape() } 
 { 
@@ -13,7 +13,7 @@ BoardPopulator::BoardPopulator(ABoard* const board) : board{board}, boardShape{ 
 }
 ATile* BoardPopulator::CreateTile(const FCoordPtr coord, Tiles& tiles) const
 {
-	const auto tile = board->GetWorld()->SpawnActor<ATile>(
+	ATile* tile = board->GetWorld()->SpawnActor<ATile>(
 		board->TileClass(),
 		board->LocationOf(coord),
 		FRotator::ZeroRotator);

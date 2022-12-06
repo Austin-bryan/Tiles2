@@ -3,7 +3,6 @@
 #include "Board.h"
 #include "Logger.h"
 #include "Enums.h"
-#include "TileModule.h"
 #include "TileColor.h"
 #include "MeshGenerator.h"
 #include "ProceduralMeshComponent.h"
@@ -67,11 +66,6 @@ void ATile::SetColor(const ETileColor color, const bool colorSiblings)
 	tileColor = color;
 	instance->SetVectorParameterValue(FName("Color"), UColorCast::TileColorToLinearColor(color));
 	MeshGenerator->ProceduralMesh->SetMaterial(0, instance);
-
-
-	if (colorSiblings && siblings)
-	for (ATile* sibling : *siblings)
-		sibling->SetColor(color, false);
 }
 ETileColor ATile::GetColor() const { return tileColor; }
 
@@ -122,11 +116,7 @@ void ATile::SetShape(const EBoardShape boardShape) const
 	// Mesh->SetStaticMesh(tileMesh);
 	Collider->SetStaticMesh(tileMesh);
 }
-void ATile::BandagedWith(const TSharedPtr<TArray<ATile*>> sharedSiblings)
-{
-	siblings = sharedSiblings;
-	sharedSiblings->AddUnique(this);
-}
+
 void ATile::NotifyActorOnClicked(FKey buttonPressed) 
 {
 	//Log(*Coord);

@@ -28,9 +28,11 @@ public:
     ATileSide* CurrentSide() const;
     TArray<ATileModule*> Modules() const;
     
+    void BandagedWith(TSharedPtr<TArray<AModTile*>> sharedSiblings);
     bool HasModule(const EModule module) const;
     void AddModule(ATileModule* module, bool addToSiblings = true) const;
     void OnMerge() const;
+    TSharedPtr<TArray<AModTile*>> siblings;
 protected:
     UPROPERTY(VisibleAnywhere)
     UTileSideHandler* SideHandler;

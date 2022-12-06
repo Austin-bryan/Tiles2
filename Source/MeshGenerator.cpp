@@ -16,7 +16,7 @@
 
 TArray<UMeshGenerator*> UMeshGenerator::Generators;
 TArray<ACreatorTile*> UMeshGenerator::tilesToMerge;
-TSharedPtr<TArray<ATile*>> UMeshGenerator::sharedSiblings;
+TSharedPtr<TArray<AModTile*>> UMeshGenerator::sharedSiblings;
 
 UMeshGenerator::UMeshGenerator() { }
 
@@ -61,7 +61,7 @@ void UMeshGenerator::Merge()
 {
     Generators.Empty();
     tilesToMerge = ACreatorTile::SelectedTiles();
-    sharedSiblings = MakeShared<TArray<ATile*>>();
+    sharedSiblings = MakeShared<TArray<AModTile*>>();
 
     TArray<Vertex*> queuedVertices;
     for (const auto& creatorTileA : tilesToMerge)
