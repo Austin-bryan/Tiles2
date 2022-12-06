@@ -29,7 +29,7 @@ public:
     TArray<ATileModule*> Modules() const;
     
     bool HasModule(const EModule module) const;
-    void AddModule(ATileModule* module) const;
+    void AddModule(ATileModule* module, bool addToSiblings = true) const;
 protected:
     UPROPERTY(VisibleAnywhere)
     UTileSideHandler* SideHandler;

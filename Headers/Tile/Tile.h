@@ -57,11 +57,11 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadonly)
 		UBoxComponent* Box;
 	void NotifyActorOnClicked(FKey buttonPressed) override;
+	TSharedPtr<TArray<ATile*>> siblings;
 private:
 	static int tileCount;
 	int id;
 	ETileColor tileColor;
-	TSharedPtr<TArray<ATile*>> siblings;
 	
 	UPROPERTY()
 		UMaterialInstanceDynamic* instance;

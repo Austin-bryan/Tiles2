@@ -1,4 +1,6 @@
 #include "ModTile.h"
+
+#include "Logger.h"
 #include "TileSideHandler.h"
 
 AModTile::AModTile()
@@ -17,4 +19,12 @@ ETileColor AModTile::GetColor()                const { return Super::GetColor();
 ATileSide* AModTile::CurrentSide()             const { return SideHandler->CurrentSide(); }
 TArray<ATileModule*> AModTile::Modules()       const { return SideHandler->CurrentModules(); }
 bool AModTile::HasModule(const EModule module) const { return SideHandler->HasModule(module); }
-void AModTile::AddModule(ATileModule* module)  const { CurrentSide()->AddModule(module); }
+
+void AModTile::AddModule(ATileModule* module, const bool addToSiblings)  const
+{
+    CurrentSide()->AddModule(module);
+
+    if (addToSiblings)
+    for (ATile* sibling : *siblings)
+        Cast<AModTile>(sibling)->AddModule(module, false);
+}

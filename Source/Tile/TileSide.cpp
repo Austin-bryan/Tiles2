@@ -24,16 +24,10 @@ void ATileSide::SetColor(const ETileColor _color) { color = _color, ModTile()->S
 void ATileSide::SetModTile(AModTile* _modTile)    { modTile = _modTile; }
 void ATileSide::BeginPlay()                       { Super::BeginPlay(); }
 
-//TODO:: add enum to module field to make sure that it wasnt already added
 void ATileSide::AddModule(ATileModule* module)
 {
-    // There are checks in place to prevent duplicate Modules from being created in the first place
-    // but just in case, we need to destroy the duplicate
     if (moduleMap.Contains(module->ModuleType()))
-    {
-        module->Destroy();
         return;
-    }
     module->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
     module->SetOwner(this);
     module->Init();

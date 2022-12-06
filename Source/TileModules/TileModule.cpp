@@ -1,5 +1,16 @@
 #include "TileModule.h"
 #include "ModTile.h"
+#include "PaperSpriteComponent.h"
+
+ATileModule::ATileModule()
+{
+	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
+	SetRootComponent(Root);
+
+	Sprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("Sprite"));
+	Sprite->RegisterComponent();
+	Sprite->AttachToComponent(Root, FAttachmentTransformRules::KeepRelativeTransform);
+}
 
 template<class T>
 ATileModule* ATileModule::Create(AModTile* tile, const TArray<FParameter>& parameters)
@@ -12,11 +23,9 @@ ATileModule* ATileModule::Create(AModTile* tile, const TArray<FParameter>& param
 	
 	return module;
 }
-
-ATileModule::ATileModule()
+void ATileModule::BeginPlay()
 {
-	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
-	SetRootComponent(Root);
+	Super::BeginPlay();
+	Sprite->SetSprite(GetSprite());
 }
-void ATileModule::BeginPlay() { Super::BeginPlay(); }
 void ATileModule::Init() const { }

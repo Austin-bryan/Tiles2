@@ -3,7 +3,9 @@
 #include "Enums.h"
 #include "TileModule.generated.h"
 
+class UPaperSprite;
 class AModTile;
+class UPaperSpriteComponent;
 enum class EModule : uint8;
 struct FParameter;
 
@@ -29,4 +31,8 @@ protected:
 		AModTile* ModTile;
 	UPROPERTY(VisibleAnywhere)
 		USceneComponent* Root;
+	UPROPERTY(VisibleAnywhere)
+		UPaperSpriteComponent* Sprite;
+
+	virtual UPaperSprite* GetSprite() const { return nullptr; }
 };
