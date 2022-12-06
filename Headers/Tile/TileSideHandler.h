@@ -36,6 +36,10 @@ public:
     TArray<ATileSide*> GetSides() const;
     ATileSide* operator[](int index) const;
 
+    // ---- Transform ---- //
+    void PropagateSideScale(FVector scale) const;
+    void PropagateSideLocation(FVector location) const;
+
     // ---- Manipulating Sides ---- //
     void RemoveAll();
     void RemoveSide(int index = -1);

@@ -72,10 +72,11 @@ void UMeshGenerator::Merge()
     tilesToMerge[0]->SetColor(GetBandagedColor());
     for (auto& vertex : queuedVertices)
         vertex->ApplyPosition();
-    for (const auto& generator : Generators)
-        generator->Draw();
     for (const auto& creatorTileA : tilesToMerge)
-        creatorTileA->CenterSprites();
+    {
+        creatorTileA->MeshGenerator->Draw();
+        creatorTileA->OnMerge();
+    }
 }
 
 void UMeshGenerator::MergeWithNeighbors(TArray<Vertex*>& queuedVertices, ACreatorTile* const& creatorTileA)

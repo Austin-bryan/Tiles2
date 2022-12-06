@@ -13,6 +13,7 @@ public:
 	ARotatorModule() : ATileModule(){}
 	
 	void Init() const override;
+	int SpriteOrder() const override { return 2; }
 	EModule ModuleType() const override { return EModule::Rotator; }
 };
 

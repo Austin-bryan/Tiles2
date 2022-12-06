@@ -29,6 +29,7 @@ void ATileModule::BeginPlay()
 {
 	Super::BeginPlay();
 	Sprite->SetSprite(GetSprite());
+	AddActorLocalOffset(FVector(0, SpriteOrder(), 0));
 }
 void ATileModule::Init() const { }
 FString ATileModule::GetSpritePath() const

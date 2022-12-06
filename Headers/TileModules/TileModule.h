@@ -26,6 +26,7 @@ public:
 	static ATileModule* Create(AModTile* tile, const TArray<FParameter>& parameters);
 	
 	virtual EModule ModuleType() const { return EModule::Normal; }
+	virtual int SpriteOrder() const { return 0; }
 	FString GetSpritePath() const;
 
 	void Tick(float DeltaSeconds) override;

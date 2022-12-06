@@ -1,5 +1,7 @@
 #include "TileSideHandler.h"
 
+#include <Windows.Web.Http.Headers.h>
+
 #include "Logger.h"
 #include "ModTile.h"
 #include "TileModule.h"
@@ -36,6 +38,16 @@ TArray<ATileSide*> UTileSideHandler::GetSides() const
     return sides;
 }
 ATileSide* UTileSideHandler::operator[](const int index) const { return Cast<ATileSide>(GetOwner()->Children[index]); }
+void UTileSideHandler::PropagateSideScale(const FVector scale) const
+{
+    for (const auto child : GetOwner()->Children)
+       child->SetActorScale3D(scale);
+}
+void UTileSideHandler::PropagateSideLocation(const FVector location) const
+{
+    for (const auto child : GetOwner()->Children)
+        child->SetActorLocation(location);
+}
 void UTileSideHandler::RemoveAll()
 {
     const int sideCount = SideCount();

@@ -16,9 +16,9 @@ void AModTile::BeginPlay()
     Super::BeginPlay();
     SideHandler->AddSide(ETileColor::Blue);
 }
-ETileColor AModTile::GetColor()                const { return Super::GetColor(); }
-ATileSide* AModTile::CurrentSide()             const { return SideHandler->CurrentSide(); }
-TArray<ATileModule*> AModTile::Modules()       const { return SideHandler->CurrentModules(); }
+ETileColor AModTile::GetColor()          const { return Super::GetColor(); }
+ATileSide* AModTile::CurrentSide()       const { return SideHandler->CurrentSide(); }
+TArray<ATileModule*> AModTile::Modules() const { return SideHandler->CurrentModules(); }
 bool AModTile::HasModule(const EModule module) const
 {
     if (siblings.IsValid())
@@ -36,13 +36,20 @@ void AModTile::AddModule(ATileModule* module, const bool addToSiblings)  const
     // for (ATile* sibling : *siblings)
     //     Cast<AModTile>(sibling)->AddModule(module, false);
 }
-void AModTile::CenterSprites() const
+void AModTile::OnMerge() const
 {
     if (!siblings.IsValid())
         return;
     FVector sum;
 
+    // Center Sprites
     for (ATile* sibling : *siblings)
         sum += Cast<AModTile>(sibling)->SideHandler->CurrentSide()->GetActorLocation();
-    SideHandler->CurrentSide()->SetActorLocation(sum / siblings->Num());
+    SideHandler->PropagateSideLocation(sum / siblings->Num());
+
+    if ((*siblings)[0] != this)
+    {
+        // TODO:: Add modules from all tiles at least once
+        // TODO:: Remove any duplicate modules
+    }
 }

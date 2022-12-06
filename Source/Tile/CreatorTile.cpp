@@ -19,9 +19,7 @@ void ACreatorTile::Tick(const float deltaSeconds)
     if (activeAnimation)
     {
         activeAnimation->Tick(deltaSeconds);
-
-        for (const auto child : Children)
-            child->SetActorScale3D(activeAnimation->Value());
+        SideHandler->PropagateSideScale(activeAnimation->Value());
     }
 }
 void ACreatorTile::NotifyActorOnClicked(FKey ButtonPressed)

@@ -105,13 +105,13 @@ void UShortcutDetector::BeginPlay()
         new ModifiedShortcuts({
             { EKeys::C, [&] { AddModule(EModule::Camo); } },
             { EKeys::R, [&] { AddModule(EModule::Rotator); } },
+            { EKeys::T, [&] { AddModule(EModule::TeleportWrap); } },
+            { EKeys::L, [&] { AddModule(EModule::Link); } },
             { EKeys::X, [&] { Log("Gap"); } },
             { EKeys::W, [&] { Log("Wrap"); } },
-            { EKeys::B, [&] { Log("Bandaged"); } },
             { EKeys::I, [&] { Log("Iron"); } },
             { EKeys::U, [&] { Log("Cloud"); } },
             { EKeys::F, [&] { Log("Rift"); } },
-            { EKeys::L, [&] { Log("Link"); } },
             { EKeys::S, [&] { Log("Swap"); } },
         }),
         // Shift Alt
