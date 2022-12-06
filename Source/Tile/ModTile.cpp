@@ -23,8 +23,8 @@ bool AModTile::HasModule(const EModule module) const { return SideHandler->HasMo
 void AModTile::AddModule(ATileModule* module, const bool addToSiblings)  const
 {
     CurrentSide()->AddModule(module);
-
-    if (addToSiblings)
-    for (ATile* sibling : *siblings)
-        Cast<AModTile>(sibling)->AddModule(module, false);
+    //
+    // if (addToSiblings)
+    // for (ATile* sibling : *siblings)
+    //     Cast<AModTile>(sibling)->AddModule(module, false);
 }

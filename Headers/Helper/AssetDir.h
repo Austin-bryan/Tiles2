@@ -7,6 +7,7 @@
 #define MAT_SELECTION_BOX  "/Game/Materials/Mat_SelectionBody.Mat_SelectionBody"
 #define SELECTION_CYLINDER "/Game/Meshes/SM_SelectionCylinder.SM_SelectionCylinder"
 #include "Logger.h"
+#include "PaperSprite.h"
 
 template<typename T>
 static FORCEINLINE T* LoadObjectFromPath(const FName& path)

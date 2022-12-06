@@ -14,7 +14,5 @@ public:
 	
 	void Init() const override;
 	EModule ModuleType() const override { return EModule::Rotator; }
-
-	UPaperSprite* GetSprite() const override;
 };
 

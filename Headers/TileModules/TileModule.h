@@ -26,6 +26,9 @@ public:
 	static ATileModule* Create(AModTile* tile, const TArray<FParameter>& parameters);
 	
 	virtual EModule ModuleType() const { return EModule::Normal; }
+	FString GetSpritePath() const;
+
+	void Tick(float DeltaSeconds) override;
 protected:
 	UPROPERTY()
 		AModTile* ModTile;
@@ -34,5 +37,5 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 		UPaperSpriteComponent* Sprite;
 
-	virtual UPaperSprite* GetSprite() const { return nullptr; }
+	virtual UPaperSprite* GetSprite() const;
 };

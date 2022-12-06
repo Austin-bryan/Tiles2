@@ -1,9 +1,7 @@
 #include "RotatorModule.h"
 #include "ModTile.h"
 
-void ARotatorModule::Init() const { Super::Init(); }
-UPaperSprite* ARotatorModule::GetSprite() const
+void ARotatorModule::Init() const
 {
-	
-	return Super::GetSprite();
+	Super::Init();
 }

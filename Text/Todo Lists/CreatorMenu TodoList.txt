@@ -37,7 +37,15 @@
         Expand
         Icon
         
-bug where slant selection entirely breaks vertices
+---- bug where slant selection entirely breaks vertices
+make sure rotator matches symmetry level
+    4 arrows for Square
+    3 arrows for Triangle
+    6 arrows for Hexagon
+    have less arrows if is bandaged tile with less symmetry
+        ie: a rectangle should have two arrows
+          : some shapes won't have enough symmetry so they shouldn't be allowed to be rotators
+    Giant shapes, like a 4x4 bandaged, should rotate as expected 
  
  ==== Polish ====
  Animations

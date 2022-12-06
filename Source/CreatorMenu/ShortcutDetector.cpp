@@ -44,6 +44,12 @@ void UShortcutDetector::BeginPlay()
         button->OnToggle();
         UColorCast::ColorCreatorTiles(color);
     };
+    const auto AddModule = [this](const EModule module)
+    {
+        for (const auto c : ACreatorTile::SelectedTiles())
+            if (!c->HasModule(module))
+                c->AddModule(ModuleFactory::Produce(module, c));
+    };
 
     shortcuts =
     {
@@ -97,21 +103,16 @@ void UShortcutDetector::BeginPlay()
         }),
         // Alt
         new ModifiedShortcuts({
-            { EKeys::X, [] { Log("Gap"); } },
-            { EKeys::W, [] { Log("Wrap"); } },
-            { EKeys::C, []
-            {
-                for (const auto c : ACreatorTile::SelectedTiles())
-                    if (!c->HasModule(EModule::Camo))
-                        c->AddModule(ModuleFactory::Produce(EModule::Camo, c));
-            } },
-            { EKeys::B, [] { Log("Bandaged"); } },
-            { EKeys::R, [] { Log("Rotator"); } },
-            { EKeys::I, [] { Log("Iron"); } },
-            { EKeys::U, [] { Log("Cloud"); } },
-            { EKeys::F, [] { Log("Rift"); } },
-            { EKeys::L, [] { Log("Link"); } },
-            { EKeys::S, [] { Log("Swap"); } },
+            { EKeys::C, [&] { AddModule(EModule::Camo); } },
+            { EKeys::R, [&] { AddModule(EModule::Rotator); } },
+            { EKeys::X, [&] { Log("Gap"); } },
+            { EKeys::W, [&] { Log("Wrap"); } },
+            { EKeys::B, [&] { Log("Bandaged"); } },
+            { EKeys::I, [&] { Log("Iron"); } },
+            { EKeys::U, [&] { Log("Cloud"); } },
+            { EKeys::F, [&] { Log("Rift"); } },
+            { EKeys::L, [&] { Log("Link"); } },
+            { EKeys::S, [&] { Log("Swap"); } },
         }),
         // Shift Alt
         new ModifiedShortcuts({
