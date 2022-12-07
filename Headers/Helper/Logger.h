@@ -80,6 +80,13 @@ FString operator+(const FString& lhs, const bool rhs);
 FString operator+(const FString& lhs, const char rhs);
 FString operator+(const FString& lhs, const FVector rhs);
 
+FString operator+(const int     lhs, const FString& rhs);
+FString operator+(const float   lhs, const FString& rhs);
+FString operator+(const char*   lhs, const FString& rhs);
+FString operator+(const bool    lhs, const FString& rhs);
+FString operator+(const char    lhs, const FString& rhs);
+FString operator+(const FVector lhs, const FString& rhs);
+
 inline std::ostringstream& operator<<(std::ostringstream& os, const FString& string)
 {
     os << static_cast<std::string>(TCHAR_TO_UTF8(*string));

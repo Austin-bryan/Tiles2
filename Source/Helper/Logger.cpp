@@ -67,6 +67,13 @@ FString operator+(const FString& lhs, const bool rhs)    { return lhs + fstr(rhs
 FString operator+(const FString& lhs, const char rhs)    { return lhs + fstr(rhs); }
 FString operator+(const FString& lhs, const FVector rhs) { return lhs + rhs.ToString(); }
 
+FString operator+(const int     lhs, const FString& rhs) { return rhs + lhs; }
+FString operator+(const float   lhs, const FString& rhs) { return rhs + lhs; }
+FString operator+(const char*   lhs, const FString& rhs) { return rhs + lhs; }
+FString operator+(const bool    lhs, const FString& rhs) { return rhs + lhs; }
+FString operator+(const char    lhs, const FString& rhs) { return rhs + lhs; }
+FString operator+(const FVector lhs, const FString& rhs) { return rhs + lhs; }
+
 inline std::ostringstream& operator<<(std::ostringstream& os, const FCoordPtr coord)
 {
 	os << coord->ToString();

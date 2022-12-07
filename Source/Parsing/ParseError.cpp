@@ -25,8 +25,8 @@ void ParseError::Throw(const TUniquePtr<LexerPosition>& position, const FString 
 		Staete: <name> Parse State.
 	*/
 	const FString message   = "Invalid Character "_f + "\'"_f + error + "\'"_f + " at Column:  "_f + position->GetIndex() + ", Tile: "_f + position->GetTile();
-	const FString fContext  = "Context: " + fstr(context);
-	const FString stateText = fstr("Parse State: ") + state;
+	const FString fContext  = "Context: "_f + fstr(context);
+	const FString stateText = "Parse State: "_f + state;
 
-	Log(message + NL + fContext + NL + expected + NL + stateText, FColor::Red);
+	Log(message + NL, fContext + NL, expected + NL, stateText, RED);
 }
