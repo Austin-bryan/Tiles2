@@ -37,6 +37,11 @@ FCoordPtr FCoord::Distance(const FCoordPtr a, const FCoordPtr b) {
 		dist(a->Y(), b->Y()),
 		dist(a->Z(), b->Z()));
 }
+bool FCoord::IsAdjacent(const FCoordPtr other) const
+{
+	const auto distance = FVector::Distance(FVector(x, y, z), FVector(other->x, other->y, other->z));
+	return FMath::Abs(FMath::Abs(distance) - AdjacentDistance()) <= 0.001f;
+}
 
 FString FCoord::ToString() const
 {

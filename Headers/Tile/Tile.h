@@ -4,7 +4,7 @@
 #include "ForwardDeclares.h"
 #include "Tile.generated.h"
 
-//#define ShowDebugText
+#define ShowDebugText
 
 class ABoard;
 class UMeshGenerator;
@@ -32,11 +32,11 @@ public:
 	void SetBoard(ABoard* newBoard);
 	void SetCoord(FCoordPtr coord);
 
-
 	int ID()			  const { return id; }
 	ABoard* Board()       const { return board; }
 	FCoordPtr GetCoord()  const { return Coord; }
 	virtual ETileColor GetColor() const;
+	bool IsAdjacent(const ATile* other) const;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadonly)
 		UTextRenderComponent* CoordText;

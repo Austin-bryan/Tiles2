@@ -24,4 +24,5 @@ public:
 	float GetOffsetZ() const override;
 	
 	FString ToString() const override;
+	float AdjacentDistance() const override { return FMath::Sqrt(2.0f); }
 };

@@ -28,10 +28,7 @@ struct TILES2_API FCoord
 	virtual FString ToString() const;
 	float Largest() const;
 
-	bool operator==(const FCoord& other) const
-	{
-		return x == other.x && y == other.y && z == other.z;
-	}
+	bool operator==(const FCoord& other) const { return x == other.x && y == other.y && z == other.z; }
 	bool operator!=(const FCoord& other) const { return !(*this == other); }
 
 	//todo:: remove
@@ -48,10 +45,13 @@ struct TILES2_API FCoord
 	virtual float GetOffsetX() const { return 0; }
 	virtual float GetOffsetZ() const { return 0; }
 
+	bool IsAdjacent(FCoordPtr other) const;
+
 	// ReSharper disable once CppNonExplicitConversionOperator
 	operator FString() const { return ToString(); }
 protected:
 	float x, y, z;
+	virtual float AdjacentDistance() const { return 1; }
 };
 
 inline uint32 GetTypeHash(const FCoord& coord)

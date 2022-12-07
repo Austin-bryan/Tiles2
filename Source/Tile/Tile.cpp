@@ -10,6 +10,7 @@
 
 #ifdef ShowDebugText
 #include "Coord.h"
+#include "Components/TextRenderComponent.h"
 #endif 
 
 int ATile::tileCount = 0;
@@ -68,6 +69,7 @@ void ATile::SetColor(const ETileColor color, const bool colorSiblings)
 	MeshGenerator->ProceduralMesh->SetMaterial(0, instance);
 }
 ETileColor ATile::GetColor() const { return tileColor; }
+bool ATile::IsAdjacent(const ATile* other) const { return Coord->IsAdjacent(other->Coord); }
 
 void ATile::SetBoard(ABoard* newBoard)
 {
