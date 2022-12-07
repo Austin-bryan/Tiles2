@@ -9,8 +9,8 @@ FCoordPtr FCoord::Create(const EBoardShape shape, const float x, const float z, 
 {
 	switch (shape)
 	{
-	case EBoardShape::Triangle: return MakeShared<const FTriCoord>   (x, y, z, true);
-	case EBoardShape::Hex:      return MakeShared<const FHexCoord>   (x, y, z);
+	case EBoardShape::Triangle: return MakeShared<const FTriCoord>(x, y, z, true);
+	case EBoardShape::Hex:      return MakeShared<const FHexCoord>(x, y, z);
 	default:					return MakeShared<const FSqrCoord>(x, z);
 	}
 }
@@ -19,19 +19,13 @@ FCoord::FCoord(const float x, const float z)				: x{ x }, y{ 0 }, z{ z } {}
 FCoord::FCoord(const float x, const float y, const float z) : x{ x }, y{ y }, z{ z } {}
 FCoord::FCoord(const FCoord& other): x{ other.x }, y{ other.y }, z{ other.z } { }
 
-float FCoord::Largest() const
-{
-	return x > y
+float FCoord::Largest() const { return x > y
 		? x > z ? x : z
-		: y > z ? y : z;
-}
+		: y > z ? y : z; }
 
-FCoordPtr FCoord::Distance(const FCoordPtr a, const FCoordPtr b) {
-	auto dist = [](const float af, const float bf)
-	{
-		return std::abs(af - bf);	
-	};
-		
+FCoordPtr FCoord::Distance(const FCoordPtr a, const FCoordPtr b)
+{
+	auto dist = [](const float af, const float bf) { return std::abs(af - bf); };
 	return MakeShared<FCoord>(
 		dist(a->X(), b->X()),
 		dist(a->Y(), b->Y()),
@@ -40,7 +34,7 @@ FCoordPtr FCoord::Distance(const FCoordPtr a, const FCoordPtr b) {
 bool FCoord::IsAdjacent(const FCoordPtr other) const
 {
 	const auto distance = FVector::Distance(FVector(x, y, z), FVector(other->x, other->y, other->z));
-	return FMath::Abs(FMath::Abs(distance) - AdjacentDistance()) <= 0.001f;
+	return FMath::Abs(FMath::Abs(distance) - AdjacentDistance()) <= 0.4f;
 }
 
 FString FCoord::ToString() const

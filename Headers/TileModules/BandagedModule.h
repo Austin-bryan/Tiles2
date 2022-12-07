@@ -11,9 +11,13 @@ class TILES2_API ABandagedModule : public ATileModule
 {
 	GENERATED_BODY()
 public:
-	ABandagedModule() : ATileModule(){}
-	~ABandagedModule(){}
+	ABandagedModule();
+	~ABandagedModule() { }
 	EModule ModuleType() const override { return EModule::Bandaged; }
-protected:
-	float Average(const float a, const float b) const;
+
+	void Tick(float DeltaSeconds) override;
+	TSharedPtr<TArray<AModTile*>> Tiles;
+
+	UPROPERTY(VisibleAnywhere)
+	FString TileIDs;
 };

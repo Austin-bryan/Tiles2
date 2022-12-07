@@ -12,9 +12,9 @@ public:
         const int _vertexIndex, const int _sideCount,
         const FVector _position, UMeshGenerator* _generator);
     
-    ATile* GetTile() const;
-    bool IsMerged() const;
-    bool ShouldRound() const;
+    ATile*  GetTile() const;
+    bool    IsMerged() const;
+    bool    ShouldRound() const;
     Vertex* NextVertex() const;
     Vertex* PrevVertex() const;
     FVector GetLocalPosition() const;

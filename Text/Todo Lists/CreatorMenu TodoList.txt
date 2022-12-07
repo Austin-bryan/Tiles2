@@ -49,9 +49,11 @@ make sure rotator matches symmetry level
 Add rounded corners for Triangle when merging in weird angles
 Fix bugs with black lines being visible in mesh
 When merging bandages, call unmerge, then merge
+Bug where shift selecting separate bandage tiles makes it look like its separate bandages, but the game treats them all as one
+    | Need system to tell when bandage tiles are disconnected and when to separate them 
  
  ==== Polish ====
  Animations
     Animate hover opacity
-    animate selecitn color
+    animate selection color
     animate expansion

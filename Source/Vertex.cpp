@@ -47,5 +47,4 @@ void Vertex::QueuedPosition(const FVector newPosition) { hasBeenMerged = true, q
 void Vertex::SetPosition(const FVector newPosition)
 {
     position = generator->GetOwner()->GetTransform().InverseTransformPosition(newPosition), hasBeenMerged = true;
-    position.Y = 0;
 }

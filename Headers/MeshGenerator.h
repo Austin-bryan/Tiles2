@@ -33,13 +33,11 @@ public:
     UFUNCTION(BlueprintCallable)
         static void Unmerge();
     
-    static ETileColor GetBandagedColor();
-    static TArray<UMeshGenerator*> Generators;
-    
+    static ETileColor GetBandagedColor(const TArray<ACreatorTile*>& tilesToMerge);
     static void MergeTwoVertices(
+        const TArray<ACreatorTile*>& tilesToMerge,
         TArray<Vertex*>& queuedVertices,
-        ACreatorTile* const& creatorTileA,
-        Vertex* vertexA);
+        ACreatorTile* const& creatorTileA, Vertex* vertexA);
     static void MergeThreeVertices(
         TArray<Vertex*>& queuedVertices,
         ACreatorTile* const& creatorTileA,
@@ -83,17 +81,14 @@ public:
         Vertex* vertexA,
         ACreatorTile* const& creatorTileB);
     static void MergeWithNeighbors(
-        TArray<Vertex*>& queuedVertices,
-        ACreatorTile* const& creatorTileA);
+        const TArray<ACreatorTile*>& tilesToMerge,
+        TArray<Vertex*>& queuedVertices, ACreatorTile* const& creatorTileA);
 
     void Init(
         int _radius, int _vertexCount,
         int _angleOffset, int _angle);
     void LinkVertices();
 private:
-    static TSharedPtr<TArray<AModTile*>> sharedSiblings;
-    static TArray<ACreatorTile*> tilesToMerge;
-
     void Draw(bool resetVertices);
     void UpdateMesh();
 
