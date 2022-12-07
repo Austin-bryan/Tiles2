@@ -113,11 +113,6 @@ void ATile::SetShape(const EBoardShape boardShape) const
 		break;
 	}
 	const auto tileMesh = Cast<UStaticMesh>(StaticLoadObject(UStaticMesh::StaticClass(), nullptr, *meshDir));
-	// Mesh->SetStaticMesh(tileMesh);
 	Collider->SetStaticMesh(tileMesh);
 }
-
-void ATile::NotifyActorOnClicked(FKey buttonPressed) 
-{
-	//Log(*Coord);
-}
+void ATile::NotifyActorOnClicked(FKey buttonPressed) { }

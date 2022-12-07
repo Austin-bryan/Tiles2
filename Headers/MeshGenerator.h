@@ -4,7 +4,7 @@
 #include "CreatorBoard.h"
 #include "MeshGenerator.generated.h"
 
-//#define DRAW_DEBUG
+// #define DRAW_DEBUG
 
 class AModTile;
 class ATile;
@@ -28,10 +28,12 @@ public:
 
     UPROPERTY(VisibleAnywhere)
         UProceduralMeshComponent* ProceduralMesh;
-
-    static ETileColor GetBandagedColor();
     UFUNCTION(BlueprintCallable)
         static void Merge();
+    UFUNCTION(BlueprintCallable)
+        static void Unmerge();
+    
+    static ETileColor GetBandagedColor();
     static TArray<UMeshGenerator*> Generators;
     
     static void MergeTwoVertices(
@@ -75,8 +77,7 @@ public:
     static bool ShouldMergeVertices(
         const Vertex* vertexA,
         const Vertex* vertexB);
-    static bool MergeWithNeighbor
-    (
+    static bool MergeWithNeighbor(
         TArray<Vertex*>& queuedVertices,
         ACreatorTile* const& creatorTileA,
         Vertex* vertexA,
@@ -93,7 +94,7 @@ private:
     static TSharedPtr<TArray<AModTile*>> sharedSiblings;
     static TArray<ACreatorTile*> tilesToMerge;
 
-    void Draw();
+    void Draw(bool resetVertices);
     void UpdateMesh();
 
     TArray<Vertex*> vertices;

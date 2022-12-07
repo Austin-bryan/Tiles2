@@ -95,6 +95,7 @@ void UShortcutDetector::BeginPlay()
             { EKeys::D, [] { Log("Deselect"); } },
             { EKeys::N, [] { Log("Size Board"); } },
             { EKeys::S, [] { Log("Save"); } },
+            { EKeys::M, [] { UMeshGenerator::Unmerge(); } },
         }),
         // Shift Ctrl
         new ModifiedShortcuts({

@@ -45,15 +45,6 @@ void ACreatorBoard::BeginPlay()
         ADeselectBoard::StaticClass(),
         &location);
     deselectBoard->SetActorScale3D(FVector(200, 1, 200));
-
-    // Vertices need a delay inorder to link up their neighbors correctly
-    FTimerHandle handle;
-    GetWorldTimerManager().SetTimer(handle, [&]()
-    {
-        const auto tileValues = tiles.Values();
-        for (int i = 0; i < tiles.Num(); i++)
-            tileValues[i]->MeshGenerator->LinkVertices();
-    }, 1, false);
 }
 
 UDragSelect* ACreatorBoard::GetDragSelect() const { return dragSelect; }

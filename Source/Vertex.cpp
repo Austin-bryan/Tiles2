@@ -1,4 +1,5 @@
 #include "Vertex.h"
+
 #include "Logger.h"
 
 TArray<Vertex*> Vertex::Vertices;
@@ -27,6 +28,7 @@ Vertex::Vertex(const int _vertexIndex, const int _sideCount, const FVector _posi
 {
     ID = Vertices.Num();
     Vertices.AddUnique(this);
+    unmergedPosition = _position;
 }
 
 bool    Vertex::ShouldRound()       const { return shouldRoundWhileMerged || !IsMerged(); }
@@ -37,6 +39,7 @@ Vertex* Vertex::NextVertex()        const { return generator->vertices[(vertexIn
 FVector Vertex::GetLocalPosition()  const { return position; }
 FVector Vertex::GetWorldPosition()  const { return generator->GetOwner()->GetActorTransform().TransformPosition(position); }
 FVector Vertex::GetQueuedPosition() const { return queuedPosition; }
+void Vertex::Unmerge() { hasBeenMerged = false, position = unmergedPosition; }
 
 void Vertex::ApplyPosition() { SetPosition(queuedPosition); }
 void Vertex::SetShouldRound(const bool value) { shouldRoundWhileMerged = value; }
@@ -45,5 +48,4 @@ void Vertex::SetPosition(const FVector newPosition)
 {
     position = generator->GetOwner()->GetTransform().InverseTransformPosition(newPosition), hasBeenMerged = true;
     position.Y = 0;
-    UMeshGenerator::Generators.AddUnique(generator);
 }

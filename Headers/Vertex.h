@@ -20,6 +20,7 @@ public:
     FVector GetLocalPosition() const;
     FVector GetWorldPosition() const;
     FVector GetQueuedPosition() const;
+    void Unmerge();
     const TArray<Vertex*>& Neighbors() const { return neighbors; }
 
     float X() const { return GetWorldPosition().X; }
@@ -52,5 +53,6 @@ private:
     TArray<Vertex*> neighbors;
     UMeshGenerator* generator;
     FVector position, queuedPosition;
+    FVector unmergedPosition;
 };
 

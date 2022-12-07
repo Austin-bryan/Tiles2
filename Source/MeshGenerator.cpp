@@ -59,24 +59,35 @@ ACreatorTile* GetCreatorTile(const Vertex* vertex) { return Cast<ACreatorTile>(v
 
 void UMeshGenerator::Merge()
 {
-    Generators.Empty();
+    Unmerge();
     tilesToMerge = ACreatorTile::SelectedTiles();
     sharedSiblings = MakeShared<TArray<AModTile*>>();
 
     TArray<Vertex*> queuedVertices;
     for (const auto& creatorTileA : tilesToMerge)
     {
+        // for (auto v : creatorTileA->MeshGenerator->vertices)
+            // Log(v->IsMerged());
         MergeWithNeighbors(queuedVertices, creatorTileA);
         creatorTileA->BandagedWith(sharedSiblings);
     }
     tilesToMerge[0]->SetColor(GetBandagedColor());
     for (auto& vertex : queuedVertices)
         vertex->ApplyPosition();
-    for (const auto& creatorTileA : tilesToMerge)
+    auto board = tilesToMerge[0]->Board();
+    // for (int i = 0; i < board->GetTiles().Num(); i++)
+    for (const auto& creatorTile : tilesToMerge)
     {
-        creatorTileA->MeshGenerator->Draw();
-        creatorTileA->OnMerge();
+        // auto creatorTile = Cast<ACreatorTile>(board->GetTiles().Values()[i]);
+        creatorTile->MeshGenerator->Draw(false);
+        creatorTile->OnMerge();
     }
+}
+void UMeshGenerator::Unmerge()
+{
+    auto tilesToUnmerge = ACreatorTile::SelectedTiles();
+    for (const auto creatorTile : tilesToUnmerge)
+        creatorTile->MeshGenerator->Draw(true);
 }
 
 void UMeshGenerator::MergeWithNeighbors(TArray<Vertex*>& queuedVertices, ACreatorTile* const& creatorTileA)
@@ -103,7 +114,8 @@ bool UMeshGenerator::MergeWithNeighbor(TArray<Vertex*>& queuedVertices, ACreator
     FVector intersection;
 
     for (auto& vertexB : creatorTileB->MeshGenerator->vertices)
-    if (ShouldMergeVertices(vertexA, vertexB) && IsIntersectionValid(Cast<ACreatorBoard>(creatorTileA->Board())->VertexMode, creatorTileA, creatorTileB, vertexA, vertexB, intersection))
+    if (ShouldMergeVertices(vertexA, vertexB) &&
+        IsIntersectionValid(Cast<ACreatorBoard>(creatorTileA->Board())->VertexMode, creatorTileA, creatorTileB, vertexA, vertexB, intersection))
     {
         QueueVertices(queuedVertices, creatorTileA, vertexA, vertexB, intersection);
         return true;
@@ -170,6 +182,7 @@ bool UMeshGenerator::ShouldMergeVertices(const Vertex* vertexA, const Vertex* ve
     // TODO:: add this check back if board is not triangle
     // if (vertexA->IsMerged() || vertexB->IsMerged())
         // return false;
+    bool r = vertexA->Neighbors().Contains(vertexB);
     return vertexA->Neighbors().Contains(vertexB);
 }
 void UMeshGenerator::QueueVertices(TArray<Vertex*>& queuedVertices, ACreatorTile* const& creatorTileA, Vertex* vertexA, Vertex* vertexB, FVector intersection)
@@ -274,7 +287,7 @@ ETileColor UMeshGenerator::GetBandagedColor()
 void UMeshGenerator::Init(int _radius, int _vertexCount, int _angleOffset, int _angle)
 {
     radius = _radius, vertexCount = _vertexCount, angleOffset = _angleOffset, angle = _angle;
-    Draw();
+    Draw(true);
 }
 void UMeshGenerator::LinkVertices()
 {
@@ -303,11 +316,22 @@ void UMeshGenerator::UpdateMesh()
     }
     ProceduralMesh->CreateMeshSection(0, roundedVertices, triangles, normals, UV, colors, tangents, true);
 }
-void UMeshGenerator::Draw()
+void UMeshGenerator::Draw(bool resetVertices)
 {
-    for (int i = 0; i < vertexCount; i++)
-        vertices.Add(new Vertex(i, vertexCount, FVector(radius * UKismetMathLibrary::DegCos(i * angle + angleOffset), 0
-                                                      , radius * UKismetMathLibrary::DegSin(i * angle + angleOffset)), this));
+    if (resetVertices)
+    {
+        if (vertices.Num() == 0)
+        {
+            for (int i = 0; i < vertexCount; i++)
+                vertices.Add(new Vertex(i, vertexCount, FVector(radius * UKismetMathLibrary::DegCos(i * angle + angleOffset), 0
+                                                              , radius * UKismetMathLibrary::DegSin(i * angle + angleOffset)), this));
+            // Vertices need a delay inorder to link up their neighbors correctly
+            FTimerHandle handle;
+            GetOwner()->GetWorldTimerManager().SetTimer(handle, [&]() { LinkVertices(); }, .01f, false);
+        }
+        else for (auto vertex : vertices)
+            vertex->Unmerge();
+    }
     const float circleRadius = 15;
 
     auto shape = Cast<ATile>(GetOwner())->Board()->GetBoardShape();
@@ -340,6 +364,5 @@ void UMeshGenerator::Draw()
             roundedVertices.Add(edge);
         }
     }
-
     UpdateMesh();
 }
