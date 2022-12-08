@@ -15,18 +15,13 @@ const FCoord* FTriCoord::operator+(const EDirection direction) const
 {
 	switch (direction)
 	{
-	case EDirection::Left:      return isUp ? new FTriCoord(X() + 0, Y() - 1, Z() + 0, !isUp)
-											: new FTriCoord(X() + 1, Y() + 0, Z() + 0, !isUp);
-	case EDirection::Right:     return isUp ? new FTriCoord(X() - 1, Y() + 0, Z() + 0, !isUp)
-											: new FTriCoord(X() + 0, Y() + 1, Z() + 0, !isUp);
-	case EDirection::UpLeft:    return isUp ? new FTriCoord(X() + 0, Y() - 1, Z() + 0, !isUp)
-											: new FTriCoord(X() + 0, Y() + 0, Z() - 1, !isUp);
-	case EDirection::UpRight:   return isUp ? new FTriCoord(X() - 1, Y() + 0, Z() + 0, !isUp)
-											: new FTriCoord(X() + 0, Y() + 0, Z() - 1, !isUp);
-	case EDirection::DownLeft:  return isUp ? new FTriCoord(X() + 0, Y() + 0, Z() + 1, !isUp)
-											: new FTriCoord(X() + 1, Y() + 0, Z() + 0, !isUp);
-	case EDirection::DownRight:	return isUp ? new FTriCoord(X() + 0, Y() + 0, Z() + 1, !isUp)
-											: new FTriCoord(X() + 0, Y() + 1, Z() + 0, !isUp);
+	case EDirection::Left:      return isUp ? new FTriCoord(X(), Y() - 1, Z(), !isUp) : new FTriCoord(X() + 1, Y(), Z(), !isUp);
+	case EDirection::Right:     return isUp ? new FTriCoord(X() - 1, Y(), Z(), !isUp) : new FTriCoord(X(), Y() + 1, Z(), !isUp);
+	case EDirection::UpLeft:    return isUp ? new FTriCoord(X(), Y() - 1, Z(), !isUp) : new FTriCoord(X(), Y(), Z() - 1, !isUp);
+	case EDirection::UpRight:   return isUp ? new FTriCoord(X() - 1, Y(), Z(), !isUp) : new FTriCoord(X(), Y(), Z() - 1, !isUp);
+	case EDirection::DownLeft:  return isUp ? new FTriCoord(X(), Y(), Z() + 1, !isUp) : new FTriCoord(X() + 1, Y(), Z(), !isUp);
+	case EDirection::DownRight:	return isUp ? new FTriCoord(X(), Y(), Z() + 1, !isUp) : new FTriCoord(X(), Y() + 1, Z(), !isUp);
+	case EDirection::Up:		return isUp ? new FTriCoord(X(), Y(), Z() + 1, !isUp) : new FTriCoord(X(), Y(), Z() - 1, !isUp);
 	default: return this;
 	}
 }
@@ -34,15 +29,14 @@ const FCoord* FTriCoord::operator=(const FCoord* other)
 {
 	x = other->X(), y = other->Y(), z = other->Z();
 	isUp = static_cast<const FTriCoord*>(other)->isUp;
-
 	return this;
 }
 
 FString FTriCoord::ToString() const
 {
-	return  fstr("tri(") + FString::SanitizeFloat(X())
-		    + fstr(", ") + FString::SanitizeFloat(Y())
-		    + fstr(", ") + FString::SanitizeFloat(Z()) + fstr(")");
+	return fstr("tri(") + FString::SanitizeFloat(X())
+		 + fstr(", ")   + FString::SanitizeFloat(Y())
+		 + fstr(", ")   + FString::SanitizeFloat(Z()) + fstr(")");
 }
 
 const float triSpacing = 1.0f;
@@ -50,6 +44,7 @@ float FTriCoord::GetSpaceX()  const { return 67 * triSpacing; }
 float FTriCoord::GetSpaceZ()  const { return ACreatorBoard::TriGap * triSpacing; }
 float FTriCoord::GetOffsetX() const { return -x + y; }
 float FTriCoord::GetOffsetZ() const { return -z; }
+TArray<EDirection> FTriCoord::GetNeighborDirections() const { return TArray { EDirection::Left, EDirection::Right, EDirection::Up }; }
 
 const FCoord* FTriCoord::operator+=(const EDirection direction)
 {
@@ -57,7 +52,7 @@ const FCoord* FTriCoord::operator+=(const EDirection direction)
 	x = cache->X();
 	y = cache->Y();
 	z = cache->Z();
-	this->isUp  = cache->isUp;
+	this->isUp = cache->isUp;
 
 	return this;
 }

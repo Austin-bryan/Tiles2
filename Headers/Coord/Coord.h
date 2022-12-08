@@ -50,12 +50,8 @@ struct TILES2_API FCoord
 protected:
 	float x, y, z;
 	virtual float AdjacentDistance() const { return 1; }
-	inline static TMap<EBoardShape, TArray<EDirection>> const Directions
-	{
-		{ EBoardShape::Square,   TArray { EDirection::Down, EDirection::Up,    EDirection::Right,   EDirection::Left } },
-		{ EBoardShape::Hex,      TArray { EDirection::Down, EDirection::Up,    EDirection::UpRight, EDirection::DownRight, EDirection::UpLeft, EDirection::DownLeft } },
-		{ EBoardShape::Triangle, TArray { EDirection::Left, EDirection::Right, EDirection::UpRight, EDirection::DownRight, EDirection::UpLeft, EDirection::DownLeft } },
-	};
+
+	virtual TArray<EDirection> GetNeighborDirections() const { return TArray<EDirection>(); }
 	virtual EBoardShape GetShape() const { return EBoardShape::Square; }
 };
 

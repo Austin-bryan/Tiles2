@@ -41,10 +41,11 @@ FVector Vertex::GetWorldPosition()  const { return generator->GetOwner()->GetAct
 FVector Vertex::GetQueuedPosition() const { return queuedPosition; }
 void Vertex::Unmerge() { hasBeenMerged = false, position = unmergedPosition; }
 
-void Vertex::ApplyPosition() { SetPosition(queuedPosition); }
-void Vertex::SetShouldRound(const bool value) { shouldRoundWhileMerged = value; }
+void Vertex::ApplyPosition()                           { SetPosition(queuedPosition); }
+void Vertex::SetShouldRound(const bool value)          { shouldRoundWhileMerged = value; }
 void Vertex::QueuedPosition(const FVector newPosition) { hasBeenMerged = true, queuedPosition = newPosition; }
 void Vertex::SetPosition(const FVector newPosition)
 {
     position = generator->GetOwner()->GetTransform().InverseTransformPosition(newPosition), hasBeenMerged = true;
+    position.Y = 0;
 }

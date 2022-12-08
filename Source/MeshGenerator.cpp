@@ -55,7 +55,7 @@ bool LineLineIntersection(FVector startA, FVector endA, FVector startB, FVector 
 }
 ACreatorTile* GetCreatorTile(const Vertex* vertex) { return Cast<ACreatorTile>(vertex->GetTile()); }
 
-void Foo(const TArray<ACreatorTile*>& tilesToMerge, TArray<ACreatorTile*>& mergeGroup, ACreatorTile* creatorTile)
+void GenerateBandageGroup(const TArray<ACreatorTile*>& tilesToMerge, TArray<ACreatorTile*>& mergeGroup, ACreatorTile* creatorTile)
 {
     if (mergeGroup.Contains(creatorTile))
         return;
@@ -63,7 +63,7 @@ void Foo(const TArray<ACreatorTile*>& tilesToMerge, TArray<ACreatorTile*>& merge
 
     for (const auto tile : creatorTile->GetAdjacent())
         if (tilesToMerge.Contains(tile))
-            Foo(tilesToMerge, mergeGroup, Cast<ACreatorTile>(tile));    
+            GenerateBandageGroup(tilesToMerge, mergeGroup, Cast<ACreatorTile>(tile));    
 }
 
 void UMeshGenerator::Merge()
@@ -78,7 +78,7 @@ void UMeshGenerator::Merge()
         if (mergeGroups.Num() == 0)
         {
             mergeGroups.Add(TArray<ACreatorTile*>());
-            Foo(tilesToMerge, mergeGroups[0], creatorTile);
+            GenerateBandageGroup(tilesToMerge, mergeGroups[0], creatorTile);
             goto nextTile;
         }
         for (auto mergeGroup : mergeGroups)
@@ -87,12 +87,15 @@ void UMeshGenerator::Merge()
                 goto nextTile;
         }
         mergeGroups.Add(TArray<ACreatorTile*>());
-        Foo(tilesToMerge, mergeGroups.Last(), creatorTile);
+        GenerateBandageGroup(tilesToMerge, mergeGroups.Last(), creatorTile);
         nextTile:;
     }
     for (int i = 0; i < mergeGroups.Num(); i++)
     {
         tilesToMerge = mergeGroups[i];
+
+        if (tilesToMerge.Num() == 1)
+            continue;
         auto sharedSiblings = MakeShared<TArray<AModTile*>>();
         
         TArray<Vertex*> queuedVertices;
@@ -131,7 +134,7 @@ void UMeshGenerator::MergeWithNeighbors(const TArray<ACreatorTile*>& tilesToMerg
         for (auto vertexB : vertexA->Neighbors())
         {
             const auto creatorTileB = GetCreatorTile(vertexB);
-            if (creatorTileB->GetIsSelected())
+            if (tilesToMerge.Contains(creatorTileB))
                 selectedNeighbors.Add(creatorTileB);
         }
         if (selectedNeighbors.Num() == 1)
