@@ -24,6 +24,4 @@ public:
 	float GetSpaceZ()  const override;
 	float GetOffsetX() const override;
 	float GetOffsetZ() const override;
-protected:
-	TArray<EDirection> GetNeighborDirections() const override { return TArray { EDirection::Down, EDirection::Up, EDirection::Right, EDirection::Left }; }
 };

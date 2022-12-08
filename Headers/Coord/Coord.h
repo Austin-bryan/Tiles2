@@ -41,7 +41,6 @@ struct TILES2_API FCoord
 	virtual float GetOffsetX() const { return 0; }
 	virtual float GetOffsetZ() const { return 0; }
 
-	// int GetAdjacent(const ABoard& board) const;
 	TArray<TSharedPtr<const FCoord>> GetAdjacent(const ABoard* board) const;
 	bool IsAdjacent(FCoordPtr other) const;
 
@@ -51,7 +50,12 @@ protected:
 	float x, y, z;
 	virtual float AdjacentDistance() const { return 1; }
 
-	virtual TArray<EDirection> GetNeighborDirections() const { return TArray<EDirection>(); }
+	inline static TMap<EBoardShape, TArray<EDirection>> const NeighborDirections
+	{
+		{ EBoardShape::Square,   { EDirection::Up,   EDirection::Down,  EDirection::Right,   EDirection::Left } }, 
+		{ EBoardShape::Hex,      { EDirection::Up,   EDirection::Down,  EDirection::UpRight, EDirection::UpLeft, EDirection::DownRight, EDirection::DownLeft } }, 
+		{ EBoardShape::Triangle, { EDirection::Left, EDirection::Right, EDirection::UpRight, EDirection::UpLeft, EDirection::DownRight, EDirection::DownLeft } }, 
+	};
 	virtual EBoardShape GetShape() const { return EBoardShape::Square; }
 };
 

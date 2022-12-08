@@ -28,7 +28,6 @@ public:
 	float GetOffsetZ() const override;
 protected:
 	EBoardShape GetShape() const override { return EBoardShape::Triangle; }
-	TArray<EDirection> GetNeighborDirections() const override;
 private:
 	bool isUp;
 };

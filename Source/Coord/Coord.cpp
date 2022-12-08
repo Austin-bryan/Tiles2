@@ -27,7 +27,7 @@ TArray<FCoordPtr> FCoord::GetAdjacent(const ABoard* board) const
 {
 	TArray<FCoordPtr> array;
 	
-	for (const auto direction : GetNeighborDirections())
+	for (const auto direction : NeighborDirections[board->GetBoardShape()])
 	{
 		const auto neighbor = TSharedPtr<const FCoord>(*this + direction);
 		if (IsAdjacent(neighbor) && board->GetTiles().Contains(neighbor))

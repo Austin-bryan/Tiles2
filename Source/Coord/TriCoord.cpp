@@ -32,19 +32,13 @@ const FCoord* FTriCoord::operator=(const FCoord* other)
 	return this;
 }
 
-FString FTriCoord::ToString() const
-{
-	return fstr("tri(") + FString::SanitizeFloat(X())
-		 + fstr(", ")   + FString::SanitizeFloat(Y())
-		 + fstr(", ")   + FString::SanitizeFloat(Z()) + fstr(")");
-}
+FString FTriCoord::ToString() const { return "tri("_f + X() + ", "_f + Y() + ", "_f + Z() + ")"_f; }
 
 const float triSpacing = 1.0f;
 float FTriCoord::GetSpaceX()  const { return 67 * triSpacing; }
 float FTriCoord::GetSpaceZ()  const { return ACreatorBoard::TriGap * triSpacing; }
 float FTriCoord::GetOffsetX() const { return -x + y; }
 float FTriCoord::GetOffsetZ() const { return -z; }
-TArray<EDirection> FTriCoord::GetNeighborDirections() const { return TArray { EDirection::Left, EDirection::Right, EDirection::Up }; }
 
 const FCoord* FTriCoord::operator+=(const EDirection direction)
 {

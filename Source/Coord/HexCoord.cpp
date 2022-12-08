@@ -34,10 +34,4 @@ float FHexCoord::GetSpaceX()  const { return 45 * spaceModifier; }
 float FHexCoord::GetSpaceZ()  const { return 52.0f * spaceModifier; }
 float FHexCoord::GetOffsetX() const { return -x + y + z; }
 float FHexCoord::GetOffsetZ() const { return -z + y; }
-
-FString FHexCoord::ToString() const
-{
-	return fstr("hex(") + FString::SanitizeFloat(X())
-		 + fstr(", ")   + FString::SanitizeFloat(Y())
-		 + fstr(", ")   + FString::SanitizeFloat(Z()) + fstr(")");
-}
+FString FHexCoord::ToString() const { return "hex("_f + X() + ", "_f + Y() + ", "_f + Z() + ")"_f; }

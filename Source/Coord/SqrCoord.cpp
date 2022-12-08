@@ -34,8 +34,4 @@ const FCoord* FSqrCoord::operator+=(const EDirection direction)
 
 	return this;
 }
-FString FSqrCoord::ToString() const
-{
-	return fstr("sqr(") + FString::SanitizeFloat(X())
-		 + fstr(", ")   + FString::SanitizeFloat(Z()) + fstr(")");
-}
+FString FSqrCoord::ToString() const { return "sqr("_f + X() + ", "_f + Z() + ")"_f; }

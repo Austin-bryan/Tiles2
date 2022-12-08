@@ -27,5 +27,4 @@ public:
 	float AdjacentDistance() const override { return FMath::Sqrt(2.0f); }
 protected:
 	EBoardShape GetShape() const override { return EBoardShape::Hex; }
-	TArray<EDirection> GetNeighborDirections() const override { return TArray { EDirection::Down, EDirection::Up, EDirection::UpRight, EDirection::UpLeft, EDirection::DownRight, EDirection::DownLeft }; }
 };
