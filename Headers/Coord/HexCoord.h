@@ -22,7 +22,9 @@ public:
 	float GetSpaceZ()  const override;
 	float GetOffsetX() const override;
 	float GetOffsetZ() const override;
-	
+
 	FString ToString() const override;
 	float AdjacentDistance() const override { return FMath::Sqrt(2.0f); }
+protected:
+	EBoardShape GetShape() const override { return EBoardShape::Hex; }
 };

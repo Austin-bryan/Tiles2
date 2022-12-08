@@ -24,6 +24,7 @@ const FCoord* FSqrCoord::operator=(const FCoord* other)
 	x = other->X(), z = other->Z();
 	return this;
 }
+bool FSqrCoord::operator<(const FCoord& other) const { return other.X() > X() || other.Y() > Y(); }
 
 const FCoord* FSqrCoord::operator+=(const EDirection direction)
 {

@@ -24,12 +24,15 @@ public:
 	const FCoord* operator= (const FCoord* other)  override;
 
 	FString ToString() const override;
-
 	float GetSpaceX()  const override;
 	float GetSpaceZ()  const override;
 	float GetOffsetX() const override;
 	float GetOffsetZ() const override;
+
+protected:
+	EBoardShape GetShape() const override { return EBoardShape::Triangle; }
 private:
 	bool isUp;
+
 };
 int GetHalf(float n);

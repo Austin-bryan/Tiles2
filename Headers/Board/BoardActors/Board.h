@@ -19,10 +19,10 @@ public:
 	ATile*&       At(const FCoordPtr index)       { return tiles[index]; }
 	ATile* const& At(const FCoordPtr index) const { return tiles[index]; }
 
-	Tiles& GetTiles() { return tiles; }
-
-	FCoordPtr GetSize() const { return Size;  }
+	const Tiles& GetTiles() 	const { return tiles; }
+	FCoordPtr GetSize()			const { return Size;  }
 	EBoardShape GetBoardShape() const { return Shape; }
+
 	FVector LocationOf(FCoordPtr coord) const;
 	FCoord MinBounds() const;
 	FCoord MaxBounds() const;

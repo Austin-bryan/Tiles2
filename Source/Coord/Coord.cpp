@@ -4,7 +4,10 @@
 #include "HexCoord.h"
 #include "ForwardDeclares.h"
 #include "Logger.h"
+#include "Board.h"
 
+//TODO:: LAST SESSION:
+//todo: was adding support to get all adjacent tiles for bandage tiles
 FCoordPtr FCoord::Create(const EBoardShape shape, const float x, const float z, const float y)
 {
 	switch (shape)
@@ -23,18 +26,24 @@ float FCoord::Largest() const { return x > y
 		? x > z ? x : z
 		: y > z ? y : z; }
 
-FCoordPtr FCoord::Distance(const FCoordPtr a, const FCoordPtr b)
+TArray<FCoordPtr> FCoord::GetAdjacent(const ABoard* board) const
 {
-	auto dist = [](const float af, const float bf) { return std::abs(af - bf); };
-	return MakeShared<FCoord>(
-		dist(a->X(), b->X()),
-		dist(a->Y(), b->Y()),
-		dist(a->Z(), b->Z()));
+	TArray<FCoordPtr> array;
+	const TArray<EDirection>& directions = Directions[GetShape()];
+	
+	for (const auto direction : directions)
+	{
+		const auto neighbor = TSharedPtr<const FCoord>(*this + direction);
+		if (board->GetTiles().Contains(neighbor))
+			array.Add(neighbor);
+	}
+	return array;
 }
+
 bool FCoord::IsAdjacent(const FCoordPtr other) const
 {
 	const auto distance = FVector::Distance(FVector(x, y, z), FVector(other->x, other->y, other->z));
-	return FMath::Abs(FMath::Abs(distance) - AdjacentDistance()) <= 0.4f;
+	return FMath::Abs(FMath::Abs(distance) - AdjacentDistance()) <= 0.3f;
 }
 
 FString FCoord::ToString() const

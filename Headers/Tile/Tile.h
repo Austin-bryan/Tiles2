@@ -4,7 +4,7 @@
 #include "ForwardDeclares.h"
 #include "Tile.generated.h"
 
-#define ShowDebugText
+// #define ShowDebugText
 
 class ABoard;
 class UMeshGenerator;
@@ -35,6 +35,8 @@ public:
 	int ID()			  const { return id; }
 	ABoard* Board()       const { return board; }
 	FCoordPtr GetCoord()  const { return Coord; }
+
+	TArray<ATile*> GetAdjacent() const;
 	virtual ETileColor GetColor() const;
 	bool IsAdjacent(const ATile* other) const;
 	

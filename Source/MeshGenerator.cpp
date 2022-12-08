@@ -55,35 +55,41 @@ bool LineLineIntersection(FVector startA, FVector endA, FVector startB, FVector 
 }
 ACreatorTile* GetCreatorTile(const Vertex* vertex) { return Cast<ACreatorTile>(vertex->GetTile()); }
 
+void Foo(const TArray<ACreatorTile*>& tilesToMerge, TArray<ACreatorTile*>& mergeGroup, ACreatorTile* creatorTile)
+{
+    if (mergeGroup.Contains(creatorTile))
+        return;
+    mergeGroup.Add(creatorTile);
+
+    for (const auto tile : creatorTile->GetAdjacent())
+        if (tilesToMerge.Contains(tile))
+            Foo(tilesToMerge, mergeGroup, Cast<ACreatorTile>(tile));    
+}
+
 void UMeshGenerator::Merge()
 {
     Unmerge();
     auto tilesToMerge = ACreatorTile::SelectedTiles();
 
     TArray<TArray<ACreatorTile*>> mergeGroups;
+
     for (auto creatorTile : tilesToMerge)
     {
-        Log(creatorTile->ID());
-        for (int i = 0; i < mergeGroups.Num(); i++)             // Check existing groups
+        if (mergeGroups.Num() == 0)
         {
-            for (int j = 0; j < mergeGroups[i].Num(); j++)      // Check each tile in group
-            {
-                if (mergeGroups[i][j]->IsAdjacent(creatorTile))
-                {
-                    mergeGroups[i].Add(creatorTile);
-                    goto nextTile;  
-                }
-            } // Wasn't adjacent to any tile in the group, check the next one
-        } // Wasn't adjacent to any tile in any groups, make a new group and add it
+            mergeGroups.Add(TArray<ACreatorTile*>());
+            Foo(tilesToMerge, mergeGroups[0], creatorTile);
+            goto nextTile;
+        }
+        for (auto mergeGroup : mergeGroups)
+        {
+            if (mergeGroup.Contains(creatorTile))
+                goto nextTile;
+        }
         mergeGroups.Add(TArray<ACreatorTile*>());
-        mergeGroups.Last().Add(creatorTile);
+        Foo(tilesToMerge, mergeGroups.Last(), creatorTile);
         nextTile:;
     }
-
-    // Log("Merge Groups: ", mergeGroups.Num(), GREEN);
-    // for (int i = 0; i < mergeGroups.Num(); i++)             
-    //     Log("Tiles in group: ", mergeGroups[i].Num(), BLUE);
-
     for (int i = 0; i < mergeGroups.Num(); i++)
     {
         tilesToMerge = mergeGroups[i];
@@ -105,7 +111,6 @@ void UMeshGenerator::Merge()
             vertex->ApplyPosition();
         for (const auto& creatorTile : tilesToMerge)
         {
-            // auto creatorTile = Cast<ACreatorTile>(board->GetTiles().Values()[i]);
             creatorTile->MeshGenerator->Draw(false);
             creatorTile->OnMerge();
         }

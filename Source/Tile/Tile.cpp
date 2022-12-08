@@ -68,6 +68,15 @@ void ATile::SetColor(const ETileColor color, const bool colorSiblings)
 	instance->SetVectorParameterValue(FName("Color"), UColorCast::TileColorToLinearColor(color));
 	MeshGenerator->ProceduralMesh->SetMaterial(0, instance);
 }
+TArray<ATile*> ATile::GetAdjacent() const
+{
+	TArray<ATile*> tiles;
+	const auto adjacentCoords = Coord->GetAdjacent(board);
+
+	for (const auto coord : adjacentCoords)
+		tiles.Add(board->GetTiles()[coord]);
+	return tiles;
+}
 ETileColor ATile::GetColor() const { return tileColor; }
 bool ATile::IsAdjacent(const ATile* other) const { return Coord->IsAdjacent(other->Coord); }
 
