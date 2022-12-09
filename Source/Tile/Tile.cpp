@@ -54,7 +54,7 @@ ATile::ATile()
 	CoordText->SetWorldSize(18);
 #endif
 }
-void ATile::SetColor(const ETileColor color, const bool colorSiblings)
+void ATile::SetColor(const ETileColor color, bool propagate)
 {
 	const FString path = "MaterialInstanceConstant'/Game/Materials/TileColors/MI_TileColor.MI_TileColor'"_f;
 

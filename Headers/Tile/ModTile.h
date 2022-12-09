@@ -15,25 +15,27 @@ UCLASS()
 class TILES2_API AModTile : public ATile
 {
 	GENERATED_BODY()
+    friend class ABandagedModule;
 public:
     AModTile();
 
-    void SetColor(
-        const ETileColor color,
-        bool colorSiblings = true) override;
     ETileColor GetColor() const override;
-
     void BeginPlay() override;
-
     ATileSide* CurrentSide() const;
     TArray<ATileModule*> Modules() const;
     
-    void BandagedWith(TSharedPtr<TArray<AModTile*>> sharedSiblings);
     bool HasModule(const EModule module) const;
-    void AddModule(ATileModule* module, bool addToSiblings = true) const;
-    void OnMerge();
+    void SetColor(const ETileColor color,
+        bool propagate) override;
+    void AddModule(ATileModule* module,
+        bool addToSiblings = true) const;
+    const UTileSideHandler* GetSideHandler() const;
+
     TSharedPtr<TArray<AModTile*>> siblings;
 protected:
     UPROPERTY(VisibleAnywhere)
     UTileSideHandler* SideHandler;
+private:
+    UPROPERTY()
+    UTileSideHandler* oldSideHandler; 
 };

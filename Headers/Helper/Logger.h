@@ -27,7 +27,7 @@ class LogParams;
 struct FParameter;
 
 // TODO:: have a template<...>Format() function that has the same interface as template<...>Log(),
-// todo: then internally, Log uses Format() to reuse code. This allows string formatting of the same functions and interface
+//      : then internally, Log uses Format() to reuse code. This allows string formatting of the same functions and interface
 
 constexpr float defaultTime = 600.0f;
 const FColor defaultColor = FColor::Cyan;

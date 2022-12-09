@@ -13,7 +13,6 @@
 #include "SelectionAngle.h"
 #include "ToggleButton.h"
 
-// TODO:: pressing A or D should automatically switch to Rect mode then applies the angle
 UShortcutDetector::UShortcutDetector() { }
 
 // ReSharper disable once CppMemberFunctionMayBeConst

@@ -3,6 +3,7 @@
 #include "TileModule.h"
 #include "BandagedModule.generated.h"
 
+class ATile;
 /**
  * BandagedTiles are normal tiles stuck together to move as one.
  */
@@ -15,9 +16,14 @@ public:
 	~ABandagedModule() { }
 	EModule ModuleType() const override { return EModule::Bandaged; }
 
+	void Finish();
+	void Init() const override;
 	void Tick(float DeltaSeconds) override;
-	TSharedPtr<TArray<AModTile*>> Tiles;
+	void AddModTile(AModTile* tile);
+	void RemoveModTile(AModTile* tile);
+	void SetColor(const ETileColor color, const bool propagate) override;
 
+	TArray<AModTile*> Tiles;
 	UPROPERTY(VisibleAnywhere)
 	FString TileIDs;
 };

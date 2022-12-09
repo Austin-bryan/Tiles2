@@ -2,9 +2,9 @@
 #include "SqrCoord.h"
 
 // todo:: move get offset to coord
-// todo: have get location be a virtual coord method
-// todo: coord position can be acquired directly from coord
-// todo: setting player coord will automatically set player position
+//      : have get location be a virtual coord method
+//      : coord position can be acquired directly from coord
+//      : setting player coord will automatically set player position
 void SqrBoardPopulator::Populate(const FCoordPtr size, Tiles& tiles) 
 {
 	const float posX = size->X() / 2;

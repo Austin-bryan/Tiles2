@@ -25,7 +25,7 @@ FLinearColor UColorCast::TileColorToLinearColor(const ETileColor color)
 void UColorCast::ColorCreatorTiles(const ETileColor color)
 {
     for (const auto& selectedTile : ACreatorTile::SelectedTiles())
-        selectedTile->SetColor(color);
+        selectedTile->SetColor(color, true);
 }
 FKey UColorCast::GetKey(const ETileColor color)
 {

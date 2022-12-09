@@ -12,7 +12,7 @@ int  UTileSideHandler::CurrentIndex() const { return currentIndex; }
 bool UTileSideHandler::IsMultiSided() const { return SideCount() > 1; }
 void UTileSideHandler::BeginPlay()                            { Super::BeginPlay(); }
 void UTileSideHandler::SetModTile(AModTile* _modTile)         { modTile = _modTile; }
-void UTileSideHandler::SetColor(const ETileColor _color)const { CurrentSide()->SetColor(_color); }
+// void UTileSideHandler::SetColor(const ETileColor _color)const { CurrentSide()->SetColor(_color); }
 
 ATileSide* UTileSideHandler::CurrentSide()              const { return (*this)[currentIndex]; }
 ETileColor UTileSideHandler::Color()                    const { return CurrentSide()->ModTile()->GetColor(); }

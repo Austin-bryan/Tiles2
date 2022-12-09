@@ -55,6 +55,7 @@ bool LineLineIntersection(FVector startA, FVector endA, FVector startB, FVector 
 }
 ACreatorTile* GetCreatorTile(const Vertex* vertex) { return Cast<ACreatorTile>(vertex->GetTile()); }
 
+// Recurisvely adds all tiles that are adjacent to each other
 void GenerateBandageGroup(const TArray<ACreatorTile*>& tilesToMerge, TArray<ACreatorTile*>& mergeGroup, ACreatorTile* creatorTile)
 {
     if (mergeGroup.Contains(creatorTile))
@@ -86,6 +87,9 @@ void UMeshGenerator::Merge()
             if (mergeGroup.Contains(creatorTile))
                 goto nextTile;
         }
+        
+        // If we are here then the tile has not been included in any of the merge groups,
+        // so create a new one and fill it up
         mergeGroups.Add(TArray<ACreatorTile*>());
         GenerateBandageGroup(tilesToMerge, mergeGroups.Last(), creatorTile);
         nextTile:;
@@ -96,34 +100,37 @@ void UMeshGenerator::Merge()
 
         if (tilesToMerge.Num() == 1)
             continue;
-        auto sharedSiblings = MakeShared<TArray<AModTile*>>();
+        // auto sharedSiblings = MakeShared<TArray<AModTile*>>();
         
         TArray<Vertex*> queuedVertices;
         for (const auto& creatorTileA : tilesToMerge)
-        {
             MergeWithNeighbors(tilesToMerge, queuedVertices, creatorTileA);
-            creatorTileA->BandagedWith(sharedSiblings);
-            creatorTileA->AddModule(ModuleFactory::Produce(EModule::Bandaged, creatorTileA));
-
-            auto b = Cast<ABandagedModule>(creatorTileA->CurrentSide()->GetModule(EModule::Bandaged));
-            b->Tiles = sharedSiblings;
-        }
-        tilesToMerge[0]->SetColor(GetBandagedColor(tilesToMerge));
+        
+        tilesToMerge[0]->AddModule(ModuleFactory::Produce(EModule::Bandaged, tilesToMerge[0]));
+        auto bandagedModule = Cast<ABandagedModule>(tilesToMerge[0]->CurrentSide()->GetModule(EModule::Bandaged));
+        bandagedModule->Init();
         
         for (auto& vertex : queuedVertices)
             vertex->ApplyPosition();
         for (const auto& creatorTile : tilesToMerge)
         {
             creatorTile->MeshGenerator->Draw(false);
-            creatorTile->OnMerge();
+            bandagedModule->AddModTile(creatorTile);
         }
+        bandagedModule->Finish();
+        tilesToMerge[0]->SetColor(GetBandagedColor(tilesToMerge), true);
     }
 }
 void UMeshGenerator::Unmerge()
 {
     auto tilesToUnmerge = ACreatorTile::SelectedTiles();
     for (const auto creatorTile : tilesToUnmerge)
+    {
         creatorTile->MeshGenerator->Draw(true);
+
+        if (auto bandedModule = creatorTile->CurrentSide()->GetModule(EModule::Bandaged))
+            Cast<ABandagedModule>(bandedModule)->RemoveModTile(creatorTile);
+    }
 }
 
 void UMeshGenerator::MergeWithNeighbors(const TArray<ACreatorTile*>& tilesToMerge, TArray<Vertex*>& queuedVertices, ACreatorTile* const& creatorTileA)
