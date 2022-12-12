@@ -4,7 +4,9 @@
 #include "ForwardDeclares.h"
 #include "Tile.generated.h"
 
-// #define ShowDebugText
+#define ShowDebugText
+// #define ShowCoord
+#define ShowID
 
 class ABoard;
 class UMeshGenerator;

@@ -1,4 +1,5 @@
 #include "ModTile.h"
+#include "Logger.h"
 #include "TileSideHandler.h"
 
 AModTile::AModTile()
@@ -25,4 +26,4 @@ ATileSide* AModTile::CurrentSide()                 const { return SideHandler->C
 TArray<ATileModule*> AModTile::Modules()           const { return SideHandler->CurrentModules(); }
 bool AModTile::HasModule(const EModule module)     const { return SideHandler->HasModule(module); }
 const UTileSideHandler* AModTile::GetSideHandler() const { return SideHandler; }
-void AModTile::AddModule(ATileModule* module, const bool addToSiblings)  const { CurrentSide()->AddModule(module); }
+void AModTile::AddModule(ATileModule* module, const bool addToSiblings) const { CurrentSide()->AddModule(module); }

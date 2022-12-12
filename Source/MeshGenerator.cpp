@@ -70,8 +70,11 @@ void GenerateBandageGroup(const TArray<ACreatorTile*>& tilesToMerge, TArray<ACre
 void UMeshGenerator::Merge()
 {
     Unmerge();
-    auto tilesToMerge = ACreatorTile::SelectedTiles();
-
+    Merge(ACreatorTile::SelectedTiles());    
+}
+void UMeshGenerator::Merge(const TArray<ACreatorTile*>& tilesToMerge)
+{
+    // auto tilesToMerge = ACreatorTile::SelectedTiles();
     TArray<TArray<ACreatorTile*>> mergeGroups;
 
     for (auto creatorTile : tilesToMerge)
@@ -96,40 +99,74 @@ void UMeshGenerator::Merge()
     }
     for (int i = 0; i < mergeGroups.Num(); i++)
     {
-        tilesToMerge = mergeGroups[i];
+        auto mergeGroup = mergeGroups[i];
 
-        if (tilesToMerge.Num() == 1)
+        // Log("Merge size: ", mergeGroup.Num(), YELLOW);
+        if (mergeGroup.Num() == 1)
             continue;
-        // auto sharedSiblings = MakeShared<TArray<AModTile*>>();
-        
         TArray<Vertex*> queuedVertices;
-        for (const auto& creatorTileA : tilesToMerge)
-            MergeWithNeighbors(tilesToMerge, queuedVertices, creatorTileA);
+        for (const auto& creatorTileA : mergeGroup)
+            MergeWithNeighbors(mergeGroup, queuedVertices, creatorTileA);
         
-        tilesToMerge[0]->AddModule(ModuleFactory::Produce(EModule::Bandaged, tilesToMerge[0]));
-        auto bandagedModule = Cast<ABandagedModule>(tilesToMerge[0]->CurrentSide()->GetModule(EModule::Bandaged));
+        mergeGroup[0]->AddModule(ModuleFactory::Produce(EModule::Bandaged, mergeGroup[0]));
+        auto bandagedModule = Cast<ABandagedModule>(mergeGroup[0]->CurrentSide()->GetModule(EModule::Bandaged));
         bandagedModule->Init();
         
         for (auto& vertex : queuedVertices)
             vertex->ApplyPosition();
-        for (const auto& creatorTile : tilesToMerge)
+        for (const auto& creatorTile : mergeGroup)
         {
             creatorTile->MeshGenerator->Draw(false);
             bandagedModule->AddModTile(creatorTile);
         }
         bandagedModule->Finish();
-        tilesToMerge[0]->SetColor(GetBandagedColor(tilesToMerge), true);
+        mergeGroup[0]->SetColor(GetBandagedColor(mergeGroup), true);
     }
 }
-void UMeshGenerator::Unmerge()
+void UMeshGenerator::Unmerge() { Unmerge(ACreatorTile::SelectedTiles()); }
+void UMeshGenerator::Unmerge(TArray<ACreatorTile*> tilesToUnmerge)
 {
-    auto tilesToUnmerge = ACreatorTile::SelectedTiles();
+    if (tilesToUnmerge.Num() == 0)
+        return;
+    TArray<ABandagedModule*> modules;
+
     for (const auto creatorTile : tilesToUnmerge)
     {
+        {
+            // TODO:: if this gets merged afterwards then this draw operation is wasted
+            //      : its only here to reset vertices, but if it could know that its going to merge
+            //      : it could just call the reset vertices method and save some time
+        }
         creatorTile->MeshGenerator->Draw(true);
 
-        if (auto bandedModule = creatorTile->CurrentSide()->GetModule(EModule::Bandaged))
-            Cast<ABandagedModule>(bandedModule)->RemoveModTile(creatorTile);
+        if (auto bandagedModule = Cast<ABandagedModule>(creatorTile->CurrentSide()->GetModule(EModule::Bandaged)))
+        {
+            // Back up tiles to remove to prevent mutating the array during the for loop
+            TArray<AModTile*> bandageTiles = bandagedModule->Tiles;
+            for (auto tile : bandageTiles)
+                if (tilesToUnmerge.Contains(tile))
+                    bandagedModule->RemoveModTile(tile);
+            bandagedModule->RemoveModTile(creatorTile);
+            modules.AddUnique(bandagedModule);
+        }
+    }
+    
+    TArray<TArray<ACreatorTile*>> remainingTiles;
+    int i = 0;
+    for (auto module : modules)
+    if (module)
+    {
+        remainingTiles.Add(TArray<ACreatorTile*>());
+        for (auto tile : module->Tiles)
+            remainingTiles[i].AddUnique(static_cast<ACreatorTile*>(tile));
+        for (auto tile : remainingTiles[i])
+            module->RemoveModTile(tile);
+        i++;
+    }
+    for (auto mergeGroup : remainingTiles)
+    {
+        Unmerge(mergeGroup);
+        Merge(mergeGroup);
     }
 }
 
@@ -149,7 +186,7 @@ void UMeshGenerator::MergeWithNeighbors(const TArray<ACreatorTile*>& tilesToMerg
         if (selectedNeighbors.Num() == 2 && creatorTileA->Board()->GetBoardShape() == EBoardShape::Triangle)
             MergeThreeVertices(queuedVertices, creatorTileA, vertexA, selectedNeighbors);
         else if (selectedNeighbors.Num() > 1)
-            MergeMultipleVertices(vertexA);
+            MergeMultipleVertices(tilesToMerge, vertexA);
     }
 }
 bool UMeshGenerator::MergeWithNeighbor(TArray<Vertex*>& queuedVertices, ACreatorTile* const& creatorTileA, Vertex* vertexA, ACreatorTile* const& creatorTileB)
@@ -206,13 +243,13 @@ void UMeshGenerator::MergeThreeVertices(TArray<Vertex*>& queuedVertices, ACreato
         queuedVertices.Add(vertexB);
     }
 }
-void UMeshGenerator::MergeMultipleVertices(const Vertex* vertexA)
+void UMeshGenerator::MergeMultipleVertices(const TArray<ACreatorTile*>& tilesToMerge, const Vertex* vertexA)
 {
     FVector sum = FVector::Zero();
     TArray<Vertex*> selectedVertices;
-            
+
     for (auto vertexB : vertexA->Neighbors())
-        if (GetCreatorTile(vertexB)->GetIsSelected())
+        if (tilesToMerge.Contains(GetCreatorTile(vertexB)))
         {
             selectedVertices.Add(vertexB);
             sum += vertexB->GetWorldPosition();
@@ -354,6 +391,11 @@ void UMeshGenerator::UpdateMesh()
     }
     ProceduralMesh->CreateMeshSection(0, roundedVertices, triangles, normals, UV, colors, tangents, true);
 }
+void UMeshGenerator::ResetVertices()
+{
+    for (auto vertex : vertices)
+        vertex->Unmerge();
+}
 void UMeshGenerator::Draw(bool resetVertices)
 {
     if (resetVertices)
@@ -367,8 +409,7 @@ void UMeshGenerator::Draw(bool resetVertices)
             FTimerHandle handle;
             GetOwner()->GetWorldTimerManager().SetTimer(handle, [&]() { LinkVertices(); }, .01f, false);
         }
-        else for (auto vertex : vertices)
-            vertex->Unmerge();
+        else ResetVertices();
     }
     const float circleRadius = 15;
 

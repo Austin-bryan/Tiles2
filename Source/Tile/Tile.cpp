@@ -64,8 +64,12 @@ void ATile::SetColor(const ETileColor color, bool propagate)
 		StaticLoadObject(UMaterialInstanceConstant::StaticClass(), nullptr, *path));
 		instance = UMaterialInstanceDynamic::Create(mat, this);
 	}
+	
 	tileColor = color;
+	if (!instance) { Log("Null instance in tile.cpp", RED); return; }
 	instance->SetVectorParameterValue(FName("Color"), UColorCast::TileColorToLinearColor(color));
+
+	if (!MeshGenerator) { Log("Null mesh gen in tile.cpp", RED); return; }
 	MeshGenerator->ProceduralMesh->SetMaterial(0, instance);
 }
 TArray<ATile*> ATile::GetAdjacent() const
@@ -90,18 +94,37 @@ void ATile::SetBoard(ABoard* newBoard)
 void ATile::Tick    (const float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+//TODO:: consladate CoordText setter
 #ifdef UE_BUILD_DEBUG
 #ifdef ShowDebugText
 	CoordText->SetWorldRotation(FRotator(0, 90, 0));
-	CoordText->SetText(FText::FromString(Coord->ToString() + "\n"_f + fstr(id)));
+	FString text;
+
+#ifdef ShowCoord
+	text = text + coord->ToString() + "\n"_f;
+#endif
+#ifdef ShowID
+	text = text + id;
+#endif
+	CoordText->SetText(FText::FromString(text));
 #endif
 #endif
 }
 void ATile::SetCoord(const FCoordPtr coord)
 {
 	Coord = coord;
+#ifdef UE_BUILD_DEBUG
 #ifdef ShowDebugText
-	CoordText->SetText(FText::FromString(coord->ToString() + "\n"_f + fstr(id)));
+	FString text;
+
+#ifdef ShowCoord
+	text = text + coord->ToString() + "\n"_f;
+#endif
+#ifdef ShowID
+	text = text + id;
+#endif
+	CoordText->SetText(FText::FromString(text));
+#endif
 #endif
 	SetActorLocation(board->LocationOf(coord));
 }

@@ -21,6 +21,7 @@
 #define MAGENTA LogParams(FColor::Magenta)
 #define PURPLE LogParams(FColor::Purple)
 
+enum class ETileColor : uint8;
 enum class EModule : uint8;
 class Vertex;
 class LogParams;
@@ -35,9 +36,9 @@ const FColor defaultColor = FColor::Cyan;
 class LogParams
 {
 public:
-    LogParams() : color{ defaultColor }, time{ defaultTime } { }
+    LogParams()                                                            : color{ defaultColor }, time{ defaultTime } { }
+    explicit LogParams(const float time)                                   : color{ defaultColor }, time{ time } { }
     explicit LogParams(const FColor color, const float time = defaultTime) : color{ color }, time{ time } { }
-    explicit LogParams(const float time) : time{ time } { }
 
     FColor Color() const { return color; }
     float Time()   const { return time; }
@@ -111,3 +112,4 @@ inline std::ostringstream& operator<<(std::ostringstream& os, const FCoordPtr co
 inline std::ostringstream& operator<<(std::ostringstream& os, const FParameter& coord);
 inline std::ostringstream& operator<<(std::ostringstream& os, const Vertex& vertex);
 inline std::ostringstream& operator<<(std::ostringstream& os, const EModule module);
+inline std::ostringstream& operator<<(std::ostringstream& os, const ETileColor color);

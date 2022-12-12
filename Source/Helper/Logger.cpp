@@ -96,3 +96,10 @@ std::ostringstream& operator<<(std::ostringstream& os, const EModule module)
 	os << moduleName;
 	return os;
 }
+std::ostringstream& operator<<(std::ostringstream& os, const ETileColor color)
+{
+	auto moduleName = UEnum::GetValueAsName(color).ToString();
+	moduleName.RemoveFromStart("ETileColor::"_f);
+	os << moduleName;
+	return os;
+}

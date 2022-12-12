@@ -25,22 +25,24 @@ ATileModule* ATileModule::Create(AModTile* tile, const TArray<FParameter>& param
 	
 	return module;
 }
+
 void ATileModule::BeginPlay()
 {
 	Super::BeginPlay();
 	Sprite->SetSprite(GetSprite());
 	AddActorLocalOffset(FVector(0, SpriteOrder(), 0));
 }
+void ATileModule::Tick(const float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+	SetActorScale3D(ModTile->GetActorScale());
+}
 void ATileModule::Init() const { }
+
 FString ATileModule::GetSpritePath() const
 {
 	auto moduleName = UEnum::GetValueAsName(ModuleType()).ToString();
 	moduleName.RemoveFromStart("EModule::"_f);
 	return  "/Game/Sprites/Tiles/Normal/"_f + moduleName + "_Sprite."_f + moduleName + "_Sprite"_f ;
-}
-void ATileModule::Tick(const float DeltaSeconds)
-{
-	Super::Tick(DeltaSeconds);
-	SetActorScale3D(ModTile->GetActorScale());
 }
 UPaperSprite* ATileModule::GetSprite() const { return LoadObjectFromPath<UPaperSprite>(FName(GetSpritePath())); }

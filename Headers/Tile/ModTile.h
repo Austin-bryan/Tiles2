@@ -15,6 +15,7 @@ UCLASS()
 class TILES2_API AModTile : public ATile
 {
 	GENERATED_BODY()
+    //TODO:: remove this friend class
     friend class ABandagedModule;
 public:
     AModTile();

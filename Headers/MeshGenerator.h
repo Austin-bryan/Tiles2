@@ -44,6 +44,7 @@ public:
         Vertex* vertexA,
         TArray<ACreatorTile*> selectedNeighbors);
     static void MergeMultipleVertices(
+        const TArray<ACreatorTile*>& tilesToMerge,
         const Vertex* vertexA);
 
     static void AverageVertices(
@@ -89,8 +90,12 @@ public:
         int _angleOffset, int _angle);
     void LinkVertices();
 private:
+    static void Merge(const TArray<ACreatorTile*>& tilesToMerge);
+    static void Unmerge(TArray<ACreatorTile*> tilesToUnmerge);
+
     void Draw(bool resetVertices);
     void UpdateMesh();
+    void ResetVertices();
 
     TArray<Vertex*> vertices;
     TArray<FVector> roundedVertices;

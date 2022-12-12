@@ -10,10 +10,9 @@ int  UTileSideHandler::SideCount()    const { return GetOwner()->Children.Num();
 int  UTileSideHandler::TileID()       const { return ModTile()->ID(); }
 int  UTileSideHandler::CurrentIndex() const { return currentIndex; }
 bool UTileSideHandler::IsMultiSided() const { return SideCount() > 1; }
-void UTileSideHandler::BeginPlay()                            { Super::BeginPlay(); }
-void UTileSideHandler::SetModTile(AModTile* _modTile)         { modTile = _modTile; }
-// void UTileSideHandler::SetColor(const ETileColor _color)const { CurrentSide()->SetColor(_color); }
+void UTileSideHandler::BeginPlay()          { Super::BeginPlay(); }
 
+void UTileSideHandler::SetModTile(AModTile* _modTile)         { modTile = _modTile, name = _modTile->GetName(); }
 ATileSide* UTileSideHandler::CurrentSide()              const { return (*this)[currentIndex]; }
 ETileColor UTileSideHandler::Color()                    const { return CurrentSide()->ModTile()->GetColor(); }
 AModTile*  UTileSideHandler::ModTile()                  const { return modTile; }

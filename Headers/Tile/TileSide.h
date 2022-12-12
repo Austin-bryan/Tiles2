@@ -12,6 +12,7 @@ UCLASS()
 class ATileSide : public AActor
 {
     GENERATED_BODY()
+    friend class ABandagedModule;
 public:
     ETileColor Color() const;
     AModTile* ModTile() const;
@@ -20,14 +21,14 @@ public:
     TArray<ATileModule*> Modules() const;
 
     ATileSide();
-
-    void SetColor(ETileColor _color);
+    void Tick(float DeltaSeconds) override;
     void SetModTile(AModTile* _modTile);
     void BeginPlay() override;
     
     // ---- Module Manipulation ---- /
     void AddModule(ATileModule* module);
-    void RemoveModule(EModule module);
+    void RemoveModule(const ATileModule* module);
+    void RemoveModule(EModule module, bool shouldDestroy = true);
     void RemoveAll();
 
     UPROPERTY(VisibleAnywhere)

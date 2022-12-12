@@ -53,6 +53,8 @@ public:
     void PrevSide();
     void ChangeSide(int newSide, bool shouldHide = true);
 
+    UPROPERTY(VisibleAnywhere)
+    FString name;
 private:
     int currentIndex;
 
