@@ -1,7 +1,7 @@
 #include "Populators/HexBoardPopulator.h"
 #include "HexCoord.h"
 
-void HexBoardPopulator::Populate(const FCoordPtr size, Tiles& tiles)
+void HexBoardPopulator::Populate(const FCoordPtr size, TilesMap& tiles)
 {
 	const auto adjustedSize = FHexCoord(size->X() - 1, size->Y() - 1, size->Z() - 1);
 	

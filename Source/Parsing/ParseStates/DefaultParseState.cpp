@@ -17,7 +17,7 @@ void DefaultParseState::ParseAlpha(const char c)
 		if (currentColor == ETileColor::None)
 		{
 			currentColor = parser.TileColorParseKey[c];
-			CurrentTile()->SetColor(currentColor);
+			CurrentTile()->SetColor(currentColor, true);
 		}
 		else parser.Throw(c, "/");
 	}

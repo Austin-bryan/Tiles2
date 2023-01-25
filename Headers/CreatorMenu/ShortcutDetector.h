@@ -2,6 +2,7 @@
 #include "CoreMinimal.h"
 #include "ShortcutDetector.generated.h"
 
+class ACreatorTile;
 class UDragSelect;
 class UCreatorRotator;
 class ACreatorBoard;
@@ -28,14 +29,9 @@ public:
     UShortcutDetector* SetCreatorMenu(UCreatorMenu* _creatorMenu) { creatorMenu  = _creatorMenu;  return this; }
 
     UFUNCTION(BlueprintCallable)
-    void CallShortcut(const FKey key) const
-    {
-        const int modifier = Alt() << 2 | Ctrl() << 1 | Shift() << 0;
-
-        if (shortcuts[modifier]->Contains(key))
-            (*shortcuts[modifier])[key]();
-    }
+    void CallShortcut(const FKey key) const;
 private:
+    enum class EModifier { None, Shift, Control, Alt };
     APlayerController* controller;
     ACreatorBoard* creatorBoard; 
     UCreatorRotator* rotator;
@@ -43,11 +39,18 @@ private:
     UCreatorMenu* creatorMenu;
     
     TArray<ModifiedShortcuts*> shortcuts;
-    void AnyKey(FKey key);
 
-    bool Key(FKey key) const;
+    void SelectAdjacentTiles(
+        ACreatorTile* creatorTile,
+        TArray<ACreatorTile*>& creatorTiles);
+
+    void AnyKey (FKey key);
+    bool Key    (FKey key) const;
     bool KeyDown(FKey key) const;
+    bool IsModifierDown(FKey left, FKey right, EModifier modifier) const;
     bool Shift() const;
     bool Ctrl() const;
     bool Alt() const;
+
+    TMap<EModifier, float> modifierTimes;
 };

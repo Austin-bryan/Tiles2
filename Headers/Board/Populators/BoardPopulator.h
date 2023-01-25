@@ -16,9 +16,9 @@ class TILES2_API BoardPopulator
 public:
 	virtual ~BoardPopulator() = default;
 	explicit BoardPopulator(ABoard* const);
-	virtual void Populate(FCoordPtr, Tiles& tiles) {}
+	virtual void Populate(FCoordPtr, TilesMap& tiles) {}
 protected:
 	ABoard* board;
 	EBoardShape boardShape;
-	ATile* CreateTile(FCoordPtr, Tiles& tiles) const;
+	ATile* CreateTile(FCoordPtr, TilesMap& tiles) const;
 };

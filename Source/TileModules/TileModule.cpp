@@ -1,29 +1,48 @@
 #include "TileModule.h"
 
-UTileModule::UTileModule()
+#include "AssetDir.h"
+#include "Logger.h"
+#include "ModTile.h"
+#include "PaperSpriteComponent.h"
+
+ATileModule::ATileModule()
 {
-	PrimaryComponentTick.bCanEverTick = true;
+	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
+	SetRootComponent(Root);
+
+	Sprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("Sprite"));
+	Sprite->AttachToComponent(Root, FAttachmentTransformRules::KeepRelativeTransform);
+	Sprite->SetRelativeScale3D(FVector(0.125f));
 }
-UTileModule::~UTileModule() {}
 
 template<class T>
-UTileModule* UTileModule::Create(ATile* tile, const TArray<FParameter>& parameters)
+ATileModule* ATileModule::Create(AModTile* tile, const TArray<FParameter>& parameters)
 {
-	//todo:= assert generic is right class
-	UTileModule* module = NewObject<UTileModule>(tile, T::StaticClass(), FName(T::StaticClass()->GetName()));
+	ATileModule* module = Cast<T>(tile->GetWorld()->SpawnActor(T::StaticClass()));
 	module->ModTile = tile;
-	module->RegisterComponent();
-	module->AttachToComponent(tile->GetRootComponent(), FAttachmentTransformRules::KeepWorldTransform);
-	module->CreationMethod = EComponentCreationMethod::Instance;
+	module->AttachToComponent(tile->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
 	module->ApplyParameters(parameters);
 	
 	return module;
 }
-void UTileModule::BeginPlay()
+
+void ATileModule::BeginPlay()
 {
 	Super::BeginPlay();
+	Sprite->SetSprite(GetSprite());
+	AddActorLocalOffset(FVector(0, SpriteOrder(), 0));
 }
-void UTileModule::TickComponent(const float DeltaTime, const ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+void ATileModule::Tick(const float DeltaSeconds)
 {
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	Super::Tick(DeltaSeconds);
+	SetActorScale3D(ModTile->GetActorScale());
 }
+void ATileModule::Init() const { }
+
+FString ATileModule::GetSpritePath() const
+{
+	auto moduleName = UEnum::GetValueAsName(ModuleType()).ToString();
+	moduleName.RemoveFromStart("EModule::"_f);
+	return  "/Game/Sprites/Tiles/Normal/"_f + moduleName + "_Sprite."_f + moduleName + "_Sprite"_f ;
+}
+UPaperSprite* ATileModule::GetSprite() const { return LoadObjectFromPath<UPaperSprite>(GetSpritePath()); }

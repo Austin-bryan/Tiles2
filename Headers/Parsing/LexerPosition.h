@@ -1,9 +1,7 @@
-// Fill out your copyright notice in the Description page of Project Settings.
 #pragma once
 #include "CoreMinimal.h"
 
 /**
- * DEPERACATED: TODO:: REMOVE
  * Maintains position for lexer, as well as column and tile count used later for debugging
  */
 class TILES2_API LexerPosition

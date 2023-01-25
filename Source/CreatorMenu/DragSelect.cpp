@@ -26,11 +26,7 @@ void UDragSelect::TickComponent(const float deltaTime, const ELevelTick tickType
 {
     Super::TickComponent(deltaTime, tickType, ThisTickFunction);
 
-    if (!board) { Log("Board is null", LogParams(0)); return; }
-    if (!board->GetWorld()) { Log("World is null", LogParams(0)); return; }
-    if (!board->GetWorld()->GetFirstPlayerController()) { Log("Controller is null", LogParams(0)); return; }
-
-    const auto controller = board->GetWorld()->GetFirstPlayerController();
+    const auto controller = GetBoard()->GetWorld()->GetFirstPlayerController();
     auto GetScreenToWorld = [this, controller]
     {
         float posX, posY;
@@ -44,19 +40,18 @@ void UDragSelect::TickComponent(const float deltaTime, const ELevelTick tickType
     if (anchorPoint.IsSet())
     {
         if (FVector::Distance(GetScreenToWorld(), *anchorPoint) < 10)
-        {
             selectionBox->SetActorLocation(FVector::Zero());
-            return;
-        }
-
-        if (controller->IsInputKeyDown(EKeys::LeftMouseButton))
-            drawer->Draw(GetScreenToWorld(), *anchorPoint);
         else
         {
-            lineBatchComponent->Flush();
-            anchorPoint.Reset();
-            rotation = FRotator::ZeroRotator;
-            selectionBox->SetVisibility(false);
+            if (controller->IsInputKeyDown(EKeys::LeftMouseButton))    
+                drawer->Draw(GetScreenToWorld(), *anchorPoint);        
+            else                                                       
+            {                                                          
+                lineBatchComponent->Flush();                           
+                anchorPoint.Reset();                                   
+                rotation = FRotator::ZeroRotator;                      
+                selectionBox->SetVisibility(false);                    
+            }                                                              
         }
     }
     else if (controller->IsInputKeyDown(EKeys::LeftMouseButton))
@@ -65,11 +60,10 @@ void UDragSelect::TickComponent(const float deltaTime, const ELevelTick tickType
         selectionBox->SetVisibility(true);
     }
 }
-void UDragSelect::SetBoard(ACreatorBoard* _board) { board = _board; }
 void UDragSelect::OnRotate() const { selectionBox->SetVisibility(false, true); }
 void UDragSelect::ChangeSelectionShape(const ESelectionShape _shape)
 {
     drawer = SelectionDrawer::Create(_shape, lineBatchComponent, selectionBox);
-    drawer->SetCreatorBoard(board);
+    drawer->SetCreatorBoard(GetBoard());
     shape = _shape; 
 }

@@ -4,13 +4,13 @@ using UnrealBuildTool;
 
 public class Tiles2 : ModuleRules
 {
-	public Tiles2(ReadOnlyTargetRules Target) : base(Target)
+	public Tiles2(ReadOnlyTargetRules target) : base(target)
 	{
 		//PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 		//string enginePath = Path.GetFullPath(BuildConfiguration.RelativeEnginePath);
 		//string sourcePath = enginePath + "Source/Tiles2/";
 
-		PrivateIncludePaths.AddRange(new string[]
+		PrivateIncludePaths.AddRange(new[]
 		{
 			"Headers",
 			"Headers/Coord",
@@ -22,7 +22,6 @@ public class Tiles2 : ModuleRules
 			"Headers/Tile",
 			"Headers/TileModules",
 			"Headers/Board/BoardActors",
-			"Headers/TileModules/BandagedModule",
 			"Headers/Enums",
 			"Headers/CreatorMenu",
 			
@@ -36,22 +35,12 @@ public class Tiles2 : ModuleRules
 			"Source/Tile",
 			"Source/TileModules",
 			"Source/Board/BoardActors",
-			"Source/TileModules/BandagedModule",
 			"Source/Enums",
 			"Source/CreatorMenu",
-			
-			// "RuntimeMeshComponent",
-			// "RuntimeMeshComponent/Public/Providers",
-			// "RuntimeMeshComponent/Public/Components"
 		});
 
-		PublicDependencyModuleNames.AddRange(new string[]
-		{
-			"Core", "CoreUObject", "Engine", "InputCore",
-			"UMG", "RuntimeMeshComponent",
-		});
-		PrivateDependencyModuleNames.AddRange(new string[] { "RD", "RD", "ProceduralMeshComponent" });
-
+		PublicDependencyModuleNames.AddRange(new[] { "Core", "CoreUObject", "Engine", "InputCore", "UMG" });
+		PrivateDependencyModuleNames.AddRange(new string[] { "ProceduralMeshComponent", "Paper2D", "WorkspaceMenuStructure", "Boost", "Niagara" });
 
 		// Uncomment if you are using Slate UI
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });

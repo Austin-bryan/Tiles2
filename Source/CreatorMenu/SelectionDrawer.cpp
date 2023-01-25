@@ -18,7 +18,6 @@ void SelectionDrawer::Init()
 
 TUniquePtr<SelectionDrawer> SelectionDrawer::Create(const ESelectionShape mode, ULineBatchComponent* lineBatch, ASelectionBox* box)
 {
-    // TODO:: Handle angle cases
     TUniquePtr<SelectionDrawer> drawer;
     
     switch(mode)

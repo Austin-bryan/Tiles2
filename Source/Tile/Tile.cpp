@@ -1,17 +1,17 @@
 #include "Tile.h"
 #include "AssetDir.h"
 #include "Board.h"
-#include "Logger.h"
 #include "Enums.h"
-#include "TileModule.h"
 #include "TileColor.h"
 #include "MeshGenerator.h"
-#include "Components/TextRenderComponent.h"
+#include "ProceduralMeshComponent.h"
+#include "Engine/StaticMesh.h"
 #include "Materials/MaterialInstanceConstant.h"
+#include "Materials/MaterialInstanceDynamic.h"
 
-//#define ShowDebugText
-#ifdef ShowDebugText
+#ifdef SHOW_DEBUG_TEXT
 #include "Coord.h"
+#include "Components/TextRenderComponent.h"
 #endif 
 
 int ATile::tileCount = 0;
@@ -43,22 +43,43 @@ ATile::ATile()
 	Collider->SetCollisionProfileName("OverlapAll");
 	Collider->SetVisibility(false);
 
-#ifdef ShowDebugText
+#ifdef SHOW_DEBUG_TEXT
 	CoordText = CreateDefaultSubobject<UTextRenderComponent>(TEXT("Coord Text"));
-	if (!CoordText)
-		return;
 	CoordText->SetText(FText::FromString(TEXT("swag")));
 	CoordText->AttachToComponent(Root, FAttachmentTransformRules::KeepRelativeTransform);
-	CoordText->SetRelativeLocation(FVector::ZeroVector + GetActorForwardVector() + 17);
-	CoordText->SetRelativeRotation(FRotator(0, 0, 0));
-	CoordText->HorizontalAlignment = EHorizTextAligment::EHTA_Center;
 	CoordText->SetWorldSize(18);
+	CoordText->VerticalAlignment   = EVRTA_TextCenter;
+	CoordText->HorizontalAlignment = EHTA_Center;
+	CoordText->SetRelativeLocation(FVector::ZeroVector + GetActorForwardVector() + 17);
 #endif
 }
-void ATile::SetColor(const ETileColor color)
+void ATile::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+#ifdef SHOW_DEBUG_TEXT
+	CoordText->SetWorldRotation(FRotator(0, 90, 0));
+#endif
+}
+
+// TODO:: This is a copy-paste from Vertex::IsOnBoardEdge(). Reuse the code somehow
+bool ATile::IsOnBoardEdge() const
+{
+	int neighborCount = GetNeighbors().Num();
+	
+	return Shape() == EBoardShape::Triangle && neighborCount != 3
+		|| Shape() == EBoardShape::Square 	&& neighborCount != 4
+		|| Shape() == EBoardShape::Hex    	&& neighborCount != 6;
+}
+ATile* ATile::GetNeighbor(EDirection direction) const
+{
+	auto neighborCoord = GetCoord() + direction;
+	return board->Contains(neighborCoord) ? board->At(GetCoord() + direction) : nullptr;
+}
+void ATile::SetColor(ETileColor color, bool propagate) { ApplyColor(color, propagate); }
+void ATile::ApplyColor(ETileColor color, bool propagate)
 {
 	const FString path = "MaterialInstanceConstant'/Game/Materials/TileColors/MI_TileColor.MI_TileColor'"_f;
-
+	
 	if (instance == nullptr)
 	{
 		const auto mat = Cast<UMaterialInstanceConstant>(
@@ -67,9 +88,23 @@ void ATile::SetColor(const ETileColor color)
 	}
 	tileColor = color;
 	instance->SetVectorParameterValue(FName("Color"), UColorCast::TileColorToLinearColor(color));
+	
 	MeshGenerator->ProceduralMesh->SetMaterial(0, instance);
 }
-ETileColor ATile::GetColor() const { return tileColor; }
+TArray<ATile*> ATile::GetNeighbors() const
+{
+	TArray<ATile*> tiles;
+	const auto adjacentCoords = Coord->GetAdjacent(board);
+
+	for (const auto coord : adjacentCoords)
+		tiles.Add(board->GetTiles()[coord]);
+	return tiles;
+}
+
+// TODO:: make this a field be held by tileside
+ETileColor ATile::GetColor() 			   const { return tileColor; }
+EBoardShape ATile::Shape()   			   const { return Board()->GetBoardShape(); }
+bool ATile::IsAdjacent(const ATile* other) const { return Coord->IsAdjacent(other->Coord); }
 
 void ATile::SetBoard(ABoard* newBoard)
 {
@@ -78,24 +113,27 @@ void ATile::SetBoard(ABoard* newBoard)
 	board = newBoard;
 	AttachToActor(board, FAttachmentTransformRules::KeepRelativeTransform);
 }
-void ATile::Tick    (const float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-#ifdef UE_BUILD_DEBUG
-#ifdef ShowDebugText
-	CoordText->SetWorldRotation(FRotator(0, 90, 0));
-	CoordText->SetText(FText::FromString(Coord->ToString() + "\n"_f + fstr(id)));
-#endif
-#endif
-}
 void ATile::SetCoord(const FCoordPtr coord)
 {
 	Coord = coord;
-#ifdef ShowDebugText
-	CoordText->SetText(FText::FromString(coord->ToString() + "\n"_f + fstr(id)));
-#endif
+	SetDebugText();
 	SetActorLocation(board->LocationOf(coord));
 }
+void ATile::SetDebugText() const
+{
+#ifdef SHOW_DEBUG_TEXT
+	FString text;
+#ifdef SHOW_COORD
+	text = text + Coord->ToString() + "\n"_f;
+#endif
+#ifdef SHOW_ID
+	text = text + id;
+#endif
+	CoordText->SetText(ftxt(text));
+	CoordText->SetRelativeLocation(FVector(0, 10, 0));
+#endif
+}
+
 void ATile::SetShape(const EBoardShape boardShape) const
 {
 	FString meshDir;
@@ -115,10 +153,6 @@ void ATile::SetShape(const EBoardShape boardShape) const
 		break;
 	}
 	const auto tileMesh = Cast<UStaticMesh>(StaticLoadObject(UStaticMesh::StaticClass(), nullptr, *meshDir));
-	// Mesh->SetStaticMesh(tileMesh);
 	Collider->SetStaticMesh(tileMesh);
 }
-void ATile::NotifyActorOnClicked(FKey buttonPressed) 
-{
-	//Log(*Coord);
-}
+void ATile::NotifyActorOnClicked(FKey buttonPressed) { }

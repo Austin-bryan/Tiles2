@@ -1,5 +1,6 @@
 #pragma once
 #include "CoreMinimal.h"
+#include "CreatorBoard.h"
 #include "SelectionDrawer.h"
 #include "DragSelect.generated.h"
 
@@ -23,7 +24,6 @@ public:
 
     void OnRotate() const;
     void BeginPlay() override;
-    void SetBoard(ACreatorBoard* _board);
     void TickComponent(float deltaTime, ELevelTick tickType, FActorComponentTickFunction* ThisTickFunction) override;
     ESelectionShape Shape() const { return shape; }
 
@@ -31,13 +31,12 @@ public:
         void ChangeSelectionShape(ESelectionShape _shape);
 protected:
     UPROPERTY()
-        ACreatorBoard* board;
-    UPROPERTY()
         ULineBatchComponent* lineBatchComponent;
     UPROPERTY()
         ASelectionBox* selectionBox;
     TOptional<FVector> anchorPoint;
 private:
+    ACreatorBoard* GetBoard() const { return Cast<ACreatorBoard>(GetOwner()); }
     FRotator rotation;
     TUniquePtr<SelectionDrawer> drawer;
     ESelectionShape shape;

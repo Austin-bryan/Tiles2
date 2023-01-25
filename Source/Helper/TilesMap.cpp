@@ -1,27 +1,21 @@
 #pragma once
 #include "TilesMap.h"
 #include "Coord.h"
+#include "Logger.h"
 
-ATile*&       Tiles::operator[](const FCoordPtr index)       { return map[*index]; }
-ATile* const& Tiles::operator[](const FCoordPtr index) const { return map[*index]; }
+ATile*&       TilesMap::operator[](const FCoordPtr index)       { return map[*index]; }
+ATile* const& TilesMap::operator[](const FCoordPtr index) const { return map[*index]; }
 
-TArray<FCoordPtr> Tiles::Keys() const 
-{
-    TArray<FCoordPtr> keys;
-    sliceMap.GenerateValueArray(keys);
-    return keys;
-}
-TArray<ATile*> Tiles::Values() const
+ATile*&       TilesMap::operator[](const FCoord& index)       { return map[index]; }
+ATile* const& TilesMap::operator[](const FCoord& index) const { return map[index]; }
+
+TArray<ATile*> TilesMap::Values() const
 {
     TArray<ATile*> tiles;
     map.GenerateValueArray(tiles);
     return tiles;
 }
-void Tiles::Add(const FCoordPtr coord, ATile* tile)
-{
-    map.Add(static_cast<FCoord>(*coord), tile);
-}
-bool Tiles::Contains(const FCoordPtr coord) const
-{
-    return map.Contains(*coord);
-}
+void TilesMap::Add(const FCoordPtr coord, ATile* tile) { map.Add(*coord, tile); }
+bool TilesMap::Contains(const FCoordPtr coord) const   { return map.Contains(*coord); }
+bool TilesMap::Contains(const FCoord& coord) const     { return map.Contains(coord); }
+void TilesMap::Empty() { map.Empty(); }

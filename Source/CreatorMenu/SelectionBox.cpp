@@ -49,7 +49,7 @@ void ASelectionBox::ScaleArea(float width, float height) const
 }
 void ASelectionBox::SetMesh(const FString meshName) const
 {
-    const auto staticMesh = LoadObjectFromPath<UStaticMesh>(FName(meshName));
+    const auto staticMesh = LoadObjectFromPath<UStaticMesh>(meshName);
 
     mesh->SetStaticMesh(staticMesh);
     collider->SetStaticMesh(staticMesh);

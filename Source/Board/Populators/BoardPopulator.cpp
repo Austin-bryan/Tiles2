@@ -1,7 +1,8 @@
 #include "Populators/BoardPopulator.h"
-#include "Kismet/GameplayStatics.h"
 #include "Board.h"
 #include "Tile.h"
+#include "Engine/World.h"
+#include "Kismet/GameplayStatics.h"
 
 BoardPopulator::BoardPopulator(ABoard* const board) : board{board}, boardShape{ board->GetBoardShape() } 
 { 
@@ -11,16 +12,16 @@ BoardPopulator::BoardPopulator(ABoard* const board) : board{board}, boardShape{ 
 	controller->bEnableClickEvents     = true;
 	controller->bEnableMouseOverEvents = true;
 }
-ATile* BoardPopulator::CreateTile(const FCoordPtr coord, Tiles& tiles) const
+ATile* BoardPopulator::CreateTile(const FCoordPtr coord, TilesMap& tiles) const
 {
-	const auto tile = board->GetWorld()->SpawnActor<ATile>(
+	ATile* tile = board->GetWorld()->SpawnActor<ATile>(
 		board->TileClass(),
 		board->LocationOf(coord),
 		FRotator::ZeroRotator);
 	tiles.Add(coord, tile);
 	tile->SetBoard(board);
-	tile->SetShape(boardShape);
 	tile->SetCoord(coord);
+	tile->SetShape(boardShape);
 	
 	return tile;
 }

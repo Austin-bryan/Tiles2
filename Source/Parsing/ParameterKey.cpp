@@ -14,7 +14,7 @@ ParameterKey::ParameterKey(const EBoardShape boardShape)
         { ICamo,    IVoid },
         { ICircuitWrap, IVoid },
         { IRotator,	   IString }, { ICorrectCounter,format({INumber, INumber}) },
-        { IMirrorWrap,  IVoid },   { ITeleportWrap,  format({INumber, IString, INumber, INumber})},
+        { IMirrorWrap,  IVoid },   { ITeleportWrap,  format({INumber, IString, INumber, INumber})}, 
     };
     
     switch (boardShape)

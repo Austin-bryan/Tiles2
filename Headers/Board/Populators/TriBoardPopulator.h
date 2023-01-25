@@ -10,5 +10,5 @@ class TILES2_API TriBoardPopulator : public BoardPopulator
 {
 public:
 	explicit TriBoardPopulator(ABoard* const board) : BoardPopulator(board){ }
-	void Populate(FCoordPtr, Tiles& tiles) override;
+	void Populate(FCoordPtr, TilesMap& tiles) override;
 };

@@ -37,10 +37,23 @@
         Expand
         Icon
         
-bug where slant selection entirely breaks vertices
+---- bug where slant selection entirely breaks vertices
+make sure rotator matches symmetry level
+    4 arrows for Square
+    3 arrows for Triangle
+    6 arrows for Hexagon
+    have less arrows if is bandaged tile with less symmetry
+        ie: a rectangle should have two arrows
+          : some shapes won't have enough symmetry so they shouldn't be allowed to be rotators
+    Giant shapes, like a 4x4 bandaged, should rotate as expected
+Add rounded corners for Triangle when merging in weird angles
+Fix bugs with black lines being visible in mesh
+When merging bandages, call unmerge, then merge
+Bug where shift selecting separate bandage tiles makes it look like its separate bandages, but the game treats them all as one
+    | Need system to tell when bandage tiles are disconnected and when to separate them 
  
  ==== Polish ====
  Animations
     Animate hover opacity
-    animate selecitn color
+    animate selection color
     animate expansion

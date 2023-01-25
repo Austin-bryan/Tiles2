@@ -17,12 +17,9 @@ public:
 	const FCoord* operator+ (const EDirection direction) const override;
 	const FCoord* operator+=(const EDirection direction) override;
 	const FCoord* operator= (const FCoord* other) override;
+	const FCoord* operator+ (const FCoord* other) const override;	
+	const FCoord* operator- (const FCoord* other) const override;
 	
-	bool operator<(const FCoord& other) const override
-	{
-		return other.X() > X() || other.Y() > Y();
-	}
-
 	float GetSpaceX()  const override;
 	float GetSpaceZ()  const override;
 	float GetOffsetX() const override;

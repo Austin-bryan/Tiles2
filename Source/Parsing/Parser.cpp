@@ -5,6 +5,7 @@
 #include "BoardPopulator.h"
 #include "BoardPopulatorFactory.h"
 #include "Coord.h"
+#include "CreatorTile.h"
 #include "Enums.h"
 #include "LexerPosition.h"
 #include "Logger.h"
@@ -15,8 +16,11 @@
 #include "Token.h"
 #include "ParameterKey.h"
 #include "TileColor.h"
+#include "TileSide.h"
 
 ParameterKey Parser::parameterKey;
+TMap<char, ETileColor> Parser::TileColorParseKey;
+TMap<ETileColor, char> Parser::ReverseTileColorParseKey;
 
 ATile* Parser::CurrentTile;
 Parser::Parser(ABoard* board, FString seed) : board{ board }, seed{ seed }
@@ -31,14 +35,16 @@ Parser::Parser(ABoard* board, FString seed) : board{ board }, seed{ seed }
 
 	TileColorParseKey = TMap<char, ETileColor>
 	{
-		{ 'w', ETileColor::White },   { 'r', ETileColor::Red },   { 'o', ETileColor::Orange },
-		{ 'y', ETileColor::Yellow },  { 'g', ETileColor::Green }, { 'c', ETileColor::Cyan },
-		{ 'b', ETileColor::Blue },    { 'p', ETileColor::Purple },{ 'n', ETileColor::Pink },
-		{ 't', ETileColor::Magenta }, { 'k', ETileColor::Black }, { 'm', ETileColor::Maroon }
+		{ 'w', ETileColor::White },   { 'r', ETileColor::Red },    { 'o', ETileColor::Orange },
+		{ 'y', ETileColor::Yellow },  { 'g', ETileColor::Green },  { 'c', ETileColor::Cyan },
+		{ 'b', ETileColor::Blue },    { 'p', ETileColor::Purple }, { 'n', ETileColor::Pink },
+		{ 't', ETileColor::Magenta }, { 'k', ETileColor::Black },  { 'm', ETileColor::Maroon }
 	};
+	for (auto tileColorParseKey : TileColorParseKey)
+		ReverseTileColorParseKey.Add(tileColorParseKey.Value, tileColorParseKey.Key);
 }
 
-void Parser::Parse(EBoardShape& shape, FCoordPtr& size, Tiles& tiles)
+void Parser::Parse(EBoardShape& shape, FCoordPtr& size, TilesMap& tilesMap)
 {
 	FString parsedText;
 	ATile::ResetTileCount();
@@ -46,20 +52,12 @@ void Parser::Parse(EBoardShape& shape, FCoordPtr& size, Tiles& tiles)
 	SetupBoard(shape, size);
 	parameterKey = ParameterKey(shape);
 
-	if (size == nullptr)
-	{
-		Log("Null coord @ Parser.cpp line 29");
-		return;
-	}
 	const auto populator = BoardPopulatorFactory::Create(board);
-	populator->Populate(size, tiles);
+	populator->Populate(size, tilesMap);
 
-	TArray<ATile*> spawnedTiles = tiles.Values();
-	if (spawnedTiles.Num() < 1)
-	{
-		Log("no tiles");
-		return;
-	}
+	if (tilesMap.Num() < 1) { Log("no tiles"); return; }
+	
+	TArray<ATile*> spawnedTiles = tilesMap.Values();
 	CurrentTile = spawnedTiles[0];
 
 	for (int i = 0; i < tileSeed.Len(); i++)
@@ -78,7 +76,7 @@ void Parser::Parse(EBoardShape& shape, FCoordPtr& size, Tiles& tiles)
 
 		if (!isalnum(currentChar) && !Tokens.Contains(fstr(currentChar)))
 		{
-			Throw(currentChar, fstr("Identifier or token expected"));
+			Throw(currentChar, "Identifier or token expected"_f);
 			break;
 		}
 		stack->CurrentState()->ParseChar(currentChar, parsedText);
@@ -94,7 +92,7 @@ void Parser::SetupBoard(EBoardShape& shape, FCoordPtr& coord)
 
 	if (boardShapeSeed != TSqrBoard && boardShapeSeed != TTriBoard && boardShapeSeed != THexBoard)
 	{
-		Throw(boardShapeSeed, fstr("Invalid board shape"));
+		Throw(boardShapeSeed, "Invalid board shape"_f);
 		return;
 	}
 	shape = boardShapeSeed == TSqrBoard
@@ -152,19 +150,25 @@ void Parser::ParseBoardSize(FCoordPtr& coord, const EBoardShape& shape)
 	pos->Reset();
 }
 
-void Parser::Throw(const char    error, FString&& expected)
+FString Parser::ReverseParseTile(const ACreatorTile* creatorTile)
 {
-	Throw(error, std::move(expected), parseError);
+	if (creatorTile->SideCount() == 1)
+		return ReverseParseSide(creatorTile, creatorTile->CurrentSide());
+
+	FString parsedText = "<";
+
+	for (auto side : creatorTile->GetSides())
+		parsedText += ReverseParseSide(creatorTile, side);
+	return parsedText + ">";
 }
-void Parser::Throw(const FString error, FString&& expected)
-{
-	Throw(error, std::move(expected), parseError);
-}
-void Parser::Throw(const char    error, FString&& expected, const TUniquePtr<ParseError>& errorThrower)
-{
-	Throw(fstr(error), std::move(expected), errorThrower);
-}
-void Parser::Throw(const FString error, FString&& expected, const TUniquePtr<ParseError>& errorThrower)
+FString Parser::ReverseParseColor(ETileColor tileColor)			  						 { return fstr(ReverseTileColorParseKey[tileColor]); }
+FString Parser::ReverseParseModules(TArray<ATileModule*> modules) 						 { return ""; }
+FString Parser::ReverseParseSide(const ACreatorTile* creatorTile, const ATileSide* side) { return ReverseParseColor(creatorTile->GetColor()); }
+
+void Parser::Throw(char    error, FString&& expected) { Throw(error, std::move(expected), parseError); }
+void Parser::Throw(FString error, FString&& expected) { Throw(error, std::move(expected), parseError); }
+void Parser::Throw(char    error, FString&& expected, const TUniquePtr<ParseError>& errorThrower) { Throw(fstr(error), std::move(expected), errorThrower); }
+void Parser::Throw(FString error, FString&& expected, const TUniquePtr<ParseError>& errorThrower)
 {
 	errorThrower->Throw(pos, error, expected, stack->CurrentState()->Name());
 	shouldBreak = true;

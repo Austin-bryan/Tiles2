@@ -19,12 +19,11 @@ public:
     void SetDragSelect(UDragSelect* _dragSelect) { dragSelect = _dragSelect; }
 
     UFUNCTION(BlueprintCallable, Category="Default")
-        void SetSelectionType(ESelectionAngle _selectionType);
-protected:
-    UPROPERTY()
-        ACreatorBoard* board = nullptr;
+    void SetSelectionType(ESelectionAngle _selectionType);
 private:
+    ACreatorBoard* board = nullptr;
     UDragSelect* dragSelect;
+private:
     ESelectionAngle selectionType;
     float newRoll = 0;
     float increment = 15;

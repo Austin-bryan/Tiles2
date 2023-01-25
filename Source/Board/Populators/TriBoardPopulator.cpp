@@ -4,7 +4,7 @@
 #include "Tile.h"
 #include "TriCoord.h"
 
-void TriBoardPopulator::Populate(const FCoordPtr size, Tiles& tiles)
+void TriBoardPopulator::Populate(const FCoordPtr size, TilesMap& tiles)
 {
 	/* size->X controls column loop, size->Z controls row loop, while size->Y doesn't control any loops
 	 * startCoord positions itself in the topleft most tile. 
@@ -60,18 +60,4 @@ void TriBoardPopulator::Populate(const FCoordPtr size, Tiles& tiles)
 		startCoord += EDirection::DownLeft;
 		coord = startCoord;
 	}
-
-	// Positions the camera to be centered
-	// todo:: add cam zoom out
-	// TArray<FVector> positions;
-	// TArray<ATile*> tileValue;
-	//
-	// tiles.GenerateValueArray(tileValue);
-	// for (int i = 0; i < tiles.Num(); i++)
-	// 	positions.Add(tileValue[i]->GetActorLocation());
-	// FVector averagePos = UKismetMathLibrary::GetVectorArrayAverage(positions);
-	//
-	// APawn* pawn  = UGameplayStatics::GetPlayerPawn(board, 0);
-	// averagePos.X = pawn->GetActorLocation().X;
-	// pawn->SetActorLocation(averagePos);
 }

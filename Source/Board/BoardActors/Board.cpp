@@ -1,8 +1,6 @@
 #include "Board.h"
-#include "MathUtil.h"
 #include "Parser.h"
 #include "Coord.h"
-#include "GameFramework/Actor.h"
 
 ABoard::ABoard()
 {
@@ -11,10 +9,11 @@ ABoard::ABoard()
 }
 FVector ABoard::LocationOf(const FCoordPtr coord) const
 {
-	const auto forward = GetActorForwardVector();
-	const auto positionZ      = FVector(0, 0, coord->GetOffsetZ() * coord->GetSpaceZ());
-	const auto positionX = forward * coord->GetOffsetX() * coord->GetSpaceX();
-	return GetActorLocation() + positionX + positionZ;
+	const FVector forward   = GetActorForwardVector();
+	const FVector positionZ = FVector(0, 0, coord->GetOffsetZ() * coord->GetSpaceZ());
+	const FVector positionX = forward * coord->GetOffsetX() * coord->GetSpaceX();
+	
+	return GetActorLocation() - positionX + positionZ;
 }
 
 void ABoard::BeginPlay()
@@ -24,15 +23,16 @@ void ABoard::BeginPlay()
 	parser.Parse(Shape, Size, tiles);
 }
 float ABoard::GetCenteredPosition(const float coord) { return coord / 2; }
-
-//todo:: ensure this works with other boardshapes
-float GetMax(const float n) { return FMathf::Abs(n) * 2; }
-FCoord ABoard::MinBounds() const
+void ABoard::OnConstruction(const FTransform& Transform)
 {
-	return FCoord(0, 0, 0);
+	Super::OnConstruction(Transform);
+	
+	if (!UseCustomSeed)
+		BoardSeed = Shape == EBoardShape::Square ? ToString(SquareSeed)
+				  : Shape == EBoardShape::Hex ? ToString(HexSeed)
+				  : ToString(TriangleSeed);
 }
-FCoord ABoard::MaxBounds() const
-{
-	return FCoord(GetMax(Size->X()), GetMax(Size->Y()), GetMax(Size->Z()));
-}
+float GetMax(const float n)              { return FMath::Abs(n) * 2; }
+FCoord ABoard::MinBounds() const         { return FCoord(0, 0, 0); }
+FCoord ABoard::MaxBounds() const         { return FCoord(GetMax(Size->X()), GetMax(Size->Y()), GetMax(Size->Z())); }
 void ABoard::Tick(const float deltaTime) { Super::Tick(deltaTime); }

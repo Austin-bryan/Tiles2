@@ -2,7 +2,11 @@
 #include "CoreMinimal.h"
 enum class EBoardShape;
 
-// TODO:: This class might not be needed.
+/*
+ * Maintains the parameter list for all tile modules.
+ * Some modules have overloads, such as BandagaeModule,
+ * so this selects which overload to use as well.
+ */
 class TILES2_API ParameterKey
 {
 public:

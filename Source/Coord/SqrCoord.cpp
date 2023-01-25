@@ -24,7 +24,8 @@ const FCoord* FSqrCoord::operator=(const FCoord* other)
 	x = other->X(), z = other->Z();
 	return this;
 }
-
+const FCoord* FSqrCoord::operator+(const FCoord* other) const { return new FSqrCoord(x + other->X(), z + other->Z()); }
+const FCoord* FSqrCoord::operator-(const FCoord* other) const { return new FSqrCoord(x - other->X(), z - other->Z()); }
 const FCoord* FSqrCoord::operator+=(const EDirection direction)
 {
 	const auto cache = static_cast<const FSqrCoord*>(*this + direction);
@@ -33,8 +34,4 @@ const FCoord* FSqrCoord::operator+=(const EDirection direction)
 
 	return this;
 }
-FString FSqrCoord::ToString() const
-{
-	return fstr("sqr(") + FString::SanitizeFloat(X())
-		 + fstr(", ")   + FString::SanitizeFloat(Z()) + fstr(")");
-}
+FString FSqrCoord::ToString() const { return "sqr("_f + X() + ", "_f + Z() + ")"_f; }

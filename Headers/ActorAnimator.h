@@ -15,12 +15,14 @@ public:
     void Tick(float deltaSeconds);
     void Play(bool forwards);
     void Toggle();
-    void FinishAnimation() const;
+    void FinishAnimation();
 
+    const FVector& Value()    const { return value; }
     EAnimState GetAnimState() const { return animState; }
 private:
     void SetupAnim(float _alpha, EAnimState _animState, bool _isSelected);
-    void ApplyAnimation(FVector value) const;
+    void ApplyAnimation(FVector _value);
+    FVector value;
     
     USceneComponent* target;
     bool isSelected = false;

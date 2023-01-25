@@ -1,8 +1,10 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "Board.h"
+#include "Clipboard.h"
 #include "CreatorBoard.generated.h"
 
+class ASeedCreator;
 class ATile;
 class UCreatorMenu;
 class UDragSelect;
@@ -10,37 +12,31 @@ class UCreatorRotator;
 class UShortcutDetector;
 enum class EBoardShape;
 
-UENUM()
-enum class EVertexMode : uint8 { PrevPrev, PrevNext, NextNext, NextPrev };
-
 UCLASS()
 class TILES2_API ACreatorBoard : public ABoard
 {
 	GENERATED_BODY()
 public:
-	static float TriGap;
 	UClass* TileClass() const override;
-	ACreatorBoard();
-	~ACreatorBoard();
+	void Tick(float DeltaSeconds) override;
 	void BeginPlay() override;
-
-	UPROPERTY(EditAnywhere)
-		float triGap;
-
-	// todo:: can these be protected?
-	UFUNCTION(BlueprintCallable, Category="Default")
-		UDragSelect* GetDragSelect() const;
-	UFUNCTION(BlueprintCallable, Category="Default")
-		UCreatorRotator* GetCreatorRotator() const;
-	UFUNCTION(BlueprintCallable, Category="Default")
-		void SetCreatorMenu(UCreatorMenu* _creatorMenu);
-	UPROPERTY(EditAnywhere)
-		EVertexMode VertexMode;
+	ACreatorBoard();
+	Clipboard& GetClipboard() { return clipboard.GetValue(); }
 protected:
-	UShortcutDetector* shortcutDetector;
-	UDragSelect* dragSelect;
-	UCreatorRotator* rotator;
-	UCreatorMenu* creatorMenu;
+	UFUNCTION(BlueprintCallable, Category="Default")
+	UDragSelect* GetDragSelect() const;
+
+	UFUNCTION(BlueprintCallable, Category="Default")
+	UCreatorRotator* GetCreatorRotator() const;
+
+	UFUNCTION(BlueprintCallable, Category="Default")
+	void SetCreatorMenu(UCreatorMenu* _creatorMenu);
+
+	UPROPERTY() UShortcutDetector* shortcutDetector;
+	UPROPERTY() UDragSelect* dragSelect;
+	UPROPERTY() UCreatorRotator* rotator;
+	UPROPERTY() UCreatorMenu* creatorMenu;
+	UPROPERTY() ASeedCreator* SeedCreator;
 private:
-	int rand = 0;
+	TOptional<Clipboard> clipboard;
 };
